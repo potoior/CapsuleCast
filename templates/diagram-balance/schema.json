@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": { "type": "string", "minLength": 2, "maxLength": 16, "description": "左上角标签" },
+    "headline": { "type": "string", "minLength": 2, "maxLength": 16, "description": "标题" },
+    "left_label": { "type": "string", "minLength": 1, "maxLength": 8, "description": "左盘概念" },
+    "left_sub": { "type": "string", "minLength": 0, "maxLength": 16, "description": "左盘小注" },
+    "right_label": { "type": "string", "minLength": 1, "maxLength": 8, "description": "右盘概念" },
+    "right_sub": { "type": "string", "minLength": 0, "maxLength": 16, "description": "右盘小注" },
+    "verdict": { "type": "string", "minLength": 2, "maxLength": 14, "description": "裁决/结论" },
+    "note": { "type": "string", "minLength": 0, "maxLength": 22, "description": "注解（可留空）" }
+  },
+  "required": ["kicker", "headline", "left_label", "right_label", "verdict"],
+  "additionalProperties": false
+}

@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "左上角标签"
+    },
+    "headline": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "标题"
+    },
+    "center": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 8,
+      "description": "中心概念（≤8字）"
+    },
+    "spokes": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 5,
+      "items": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 20
+      },
+      "description": "辐射因素，格式「因素|小注」，如「利率|钱变贵了」"
+    },
+    "note": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 22,
+      "description": "注解（可留空）"
+    },
+    "weights": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 5,
+      "items": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 5
+      },
+      "description": "（可选）各辐条强度 1-5：节点大小与线宽随强度变化，缺省为等权"
+    }
+  },
+  "required": [
+    "kicker",
+    "headline",
+    "center",
+    "spokes"
+  ],
+  "additionalProperties": false
+}

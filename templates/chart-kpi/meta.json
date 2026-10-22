@@ -1,0 +1,10 @@
+{
+  "id": "chart-kpi", "name": "数据卡片组", "role": "body",
+  "description": "2-4 张数据卡并列：大数字 + 标签 + 可选涨跌角标，复盘/成绩单式快节奏展示。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "cards-rise",
+  "min_duration_s": 5, "max_duration_s": 16,
+  "field_order": ["kicker", "headline", "cards", "note"],
+  "example": {"kicker": "月度复盘", "headline": "这个月的成绩单",
+              "cards": ["2.4万|完播人次|+36%", "860|新增粉丝|+12%", "312|收益|+58%"],
+              "note": "下月冲刺五千粉"}
+}

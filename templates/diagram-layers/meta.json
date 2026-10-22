@@ -1,0 +1,18 @@
+{
+  "id": "diagram-layers",
+  "name": "网络层级图",
+  "description": "SVG 神经网络层级图：节点逐列点亮、连线绘制、一条数据流高亮。适合讲网络结构、深度、层数。",
+  "role": "body",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "motion": "layers-draw",
+  "min_duration_s": 6,
+  "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "layer_labels", "flow_note", "note"],
+  "example": {
+    "kicker": "深度在哪",
+    "headline": "一层层叠出深度",
+    "layer_labels": ["输入层", "隐藏层", "隐藏层", "输出层"],
+    "flow_note": "深度 = 隐藏层数量",
+    "note": "层数越多，提炼的特征越抽象"
+  }
+}

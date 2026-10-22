@@ -1,0 +1,11 @@
+{
+  "id": "chart-scatter", "name": "散点图", "role": "body",
+  "description": "双变量散点：X/Y 轴各一指标，3-6 个实体按数值定位，首点高亮。适合相关性、城市/产品定位。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "dots-drop",
+  "min_duration_s": 6, "max_duration_s": 18,
+  "field_order": ["kicker", "headline", "x_label", "y_label", "points", "note"],
+  "example": {"kicker": "城市定位", "headline": "房价与通勤的取舍",
+              "x_label": "房价 →", "y_label": "通勤时长 ↑",
+              "points": ["鹤岗|15|30", "成都|55|45", "深圳|90|75", "昆明|40|25"],
+              "note": "左下角是天堂"}
+}

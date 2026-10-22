@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6.2cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .kpi-row {
+          flex: 1; display: grid; gap: 2cqw;
+          grid-template-columns: repeat({{ fields.cards | length }}, 1fr);
+          align-content: center; min-height: 0; width: 88cqw;
+        }
+        #f-{{ scene_id }} .kpi {
+          border: 1px solid var(--hairline-strong);
+          border-radius: var(--tile-radius);
+          background: var(--cream);
+          padding: 3cqh 1.6cqw;
+          display: flex; flex-direction: column; align-items: center; justify-content: center;
+          gap: 1.2cqh; min-width: 0;
+        }
+        #f-{{ scene_id }} .kpi.hot { border-color: var(--coral); background: color-mix(in srgb, var(--coral) 9%, var(--cream)); }
+        #f-{{ scene_id }} .kpi .num {
+          font-family: var(--font-display); font-weight: 700;
+          font-size: 6.4cqmin; line-height: 1; color: var(--ink);
+          font-variant-numeric: tabular-nums; letter-spacing: -0.02em;
+        }
+        #f-{{ scene_id }} .kpi.hot .num { color: var(--coral-deep); }
+        #f-{{ scene_id }} .kpi .lab { font-family: var(--font-mono); font-size: 2.2cqmin; color: var(--ink-faint); letter-spacing: 0.1em; }
+        #f-{{ scene_id }} .kpi .delta {
+          font-family: var(--font-mono); font-size: 2cqmin; font-weight: 700;
+          padding: 0.4cqh 1.2cqw; border-radius: var(--pill-radius, 8px);
+          background: var(--pill-bg, var(--tile)); color: var(--coral-deep);
+        }
+        #f-{{ scene_id }} .note { margin-top: 1.4cqh; font-family: var(--font-mono); font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em; }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .kpi-row { grid-template-columns: 1fr; width: 92cqw; }
+          #f-{{ scene_id }} .kpi { flex-direction: row; justify-content: space-between; padding: 2cqh 4cqw; }
+        }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="kpi-row">
+            {%- for raw in fields.cards %}
+            {%- set parts = raw.split("|") %}
+            <div class="kpi{% if loop.index0 == 0 %} hot{% endif %}" id="s-{{ scene_id }}-kpi-{{ loop.index0 }}">
+              <span class="num">{{ parts[0] }}</span>
+              <span class="lab">{{ parts[1] if parts|length > 1 else "" }}</span>
+              {% if parts|length > 2 and parts[2] %}<span class="delta">{{ parts[2] }}</span>{% endif %}
+            </div>
+            {%- endfor %}
+          </div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}", D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.26);
+          var n = {{ fields.cards | length }};
+          var start = D * 0.28, span = D * 0.34;
+          for (var i = 0; i < n; i++) {
+            tl.fromTo("#" + SID + "-kpi-" + i,
+              { opacity: 0, y: 44 * AD.flip, scale: 0.96 },
+              { opacity: 1, y: 0, scale: 1, duration: 0.5 * AD.pace, ease: "back.out(1.4)" },
+              start + (span * i) / n);
+          }
+          if (document.getElementById(SID + "-note")) {
+            tl.fromTo("#" + SID + "-note", { opacity: 0 }, { opacity: 1, duration: 0.6 }, D * 0.72);
+          }
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

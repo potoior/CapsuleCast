@@ -1,0 +1,13 @@
+{
+  "id": "free-blocks", "name": "自由拼装", "role": "body",
+  "description": "可组合版式引擎：标题区 + 2-4 个内容块（清单/大数字/金句/标签）自由拼装，四种布局（左右分栏/横幅/居中）。适合要点、数字、金句混排的综合页。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "blocks-stagger",
+  "min_duration_s": 6, "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "layout", "blocks", "note"],
+  "example": {"kicker": "一周复盘", "headline": "这条视频做对了什么",
+              "layout": 0,
+              "blocks": ["list|开头三秒换钩子；把结论前置；每层只讲一件事",
+                         "stat|2.4万|完播人次",
+                         "quote|把观众当聪明人"],
+              "note": "下周继续试"}
+}

@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ scene_id }}</title>
+  </head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline {
+          font-family: var(--font-display);
+          font-size: 6.4cqmin;
+          margin-top: 3cqh;
+        }
+        #f-{{ scene_id }} .chain {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0;
+          min-height: 0;
+          width: 100%;
+        }
+        #f-{{ scene_id }} .node {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 1.6cqh;
+          width: 17cqw;
+        }
+        #f-{{ scene_id }} .chip {
+          width: 6.4cqmin;
+          height: 6.4cqmin;
+          border-radius: 50%;
+          border: 1px solid var(--hairline-strong);
+          background: var(--cream);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-family: var(--font-mono);
+          font-size: 2.4cqmin;
+          color: var(--ink);
+        }
+        #f-{{ scene_id }} .node.on .chip {
+          background: var(--navy);
+          color: var(--cream);
+          border-color: var(--navy);
+        }
+        #f-{{ scene_id }} .labels {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.6cqh;
+        }
+        #f-{{ scene_id }} .lb {
+          font-family: var(--font-body);
+          font-weight: 700;
+          font-size: 2.9cqmin;
+          color: var(--ink);
+        }
+        #f-{{ scene_id }} .dt {
+          font-family: var(--font-mono);
+          font-size: 1.9cqmin;
+          letter-spacing: 0.06em;
+          color: var(--ink-soft);
+          text-align: center;
+        }
+        #f-{{ scene_id }} .link {
+          width: 7.5cqw;
+          height: 3px;
+          background: var(--coral);
+          transform: scaleX(0);
+          transform-origin: left center;
+          flex: none;
+          margin-bottom: 8cqh;
+        }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .chain { flex-direction: column; gap: 1cqh; }
+          #f-{{ scene_id }} .node { flex-direction: row; width: 84cqw; justify-content: flex-start; gap: 4cqw; }
+          #f-{{ scene_id }} .labels { align-items: flex-start; }
+          #f-{{ scene_id }} .link { width: 3px; height: 3.2cqh; margin: 0 0 0 3.2cqmin; transform: scaleY(0); transform-origin: top center; }
+        }
+      </style>
+
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker">
+            <span class="hf-spike"></span> {{ fields.kicker }}
+          </div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+
+          <div class="chain">
+            {% for s in fields.steps %}
+            <div class="node" id="s-{{ scene_id }}-node-{{ loop.index0 }}">
+              <div class="chip">{{ loop.index }}</div>
+              <div class="labels">
+                <div class="lb">{{ s.label }}</div>
+                <div class="dt">{{ s.detail }}</div>
+              </div>
+            </div>
+            {% if not loop.last %}
+            <div class="link" id="s-{{ scene_id }}-link-{{ loop.index0 }}"></div>
+            {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var N = {{ fields.steps | length }};
+          var tl = gsap.timeline({ paused: true });
+
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 22 },
+            { opacity: 1, y: 0, duration: 0.65, ease: "power3.out" }, 0.26);
+
+          var portrait = document.getElementById("f-{{ scene_id }}").offsetHeight >
+                         document.getElementById("f-{{ scene_id }}").offsetWidth;
+          var span = D * 0.62 - D * 0.2;
+          for (var i = 0; i < N; i++) {
+            var at = D * 0.2 + (span * i) / Math.max(1, N - 1);
+            tl.fromTo("#" + SID + "-node-" + i, { opacity: 0, y: 24 },
+              { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at);
+            // seek-safe 点亮：className SET（逐帧 seek 时也会应用；回调不会）
+            tl.set("#" + SID + "-node-" + i, { className: "node on" }, at);
+            if (i < N - 1) {
+              var lat = at + 0.25;
+              var linkTween = portrait
+                ? { scaleY: 1, duration: 0.4, ease: "power2.inOut" }
+                : { scaleX: 1, duration: 0.4, ease: "power2.inOut" };
+              tl.to("#" + SID + "-link-" + i, linkTween, lat);
+            }
+          }
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

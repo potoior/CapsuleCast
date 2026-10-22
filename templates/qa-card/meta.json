@@ -1,0 +1,11 @@
+{
+  "id": "qa-card", "name": "问答卡", "role": "body",
+  "description": "问题先行、答案延迟揭示：大 Q 问题卡压场，A 答案卡随后推入。适合 FAQ、为什么体、悬念讲解。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "q-then-a",
+  "min_duration_s": 6, "max_duration_s": 18,
+  "field_order": ["kicker", "headline", "question", "answer", "note"],
+  "example": {"kicker": "快问快答", "headline": "牛奶空腹能喝吗",
+              "question": "空腹喝牛奶会伤胃吗？",
+              "answer": "不会。乳糖不耐的人才会不舒服，和空腹无关。",
+              "note": "不舒服的是乳糖，不是奶"}
+}

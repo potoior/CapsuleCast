@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ scene_id }}</title>
+  </head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline {
+          font-family: var(--font-display);
+          font-size: 6.2cqmin;
+          margin-top: 3cqh;
+        }
+        #f-{{ scene_id }} .tree-zone {
+          flex: 1; width: 90cqw; margin-top: 2cqh;
+          position: relative;
+          display: grid;
+          grid-template-columns: 26cqw 1fr;
+          align-items: center;
+          gap: 0 2cqw;
+          min-height: 0;
+        }
+        #f-{{ scene_id }} .root-block {
+          justify-self: end;
+          background: var(--ink); color: var(--cream);
+          padding: 2.4cqh 1.8cqw; border-radius: var(--tile-radius);
+          font-family: var(--font-display); font-weight: 700;
+          font-size: 3.6cqmin; line-height: 1.3;
+          text-align: center; max-width: 100%;
+        }
+        #f-{{ scene_id }} svg.links {
+          position: absolute; inset: 0; width: 100%; height: 100%;
+          pointer-events: none; z-index: 0;
+        }
+        #f-{{ scene_id }} .links path {
+          fill: none; stroke: var(--hairline-strong); stroke-width: 3;
+          stroke-linecap: round;
+        }
+        #f-{{ scene_id }} .links path.hot { stroke: var(--coral); }
+        #f-{{ scene_id }} .branch-stack {
+          display: flex; flex-direction: column;
+          justify-content: center; gap: 1.8cqh; position: relative; z-index: 1;
+        }
+        #f-{{ scene_id }} .branch {
+          display: flex; align-items: center; gap: 1.2cqw;
+          background: var(--cream); border: 1px solid var(--hairline-strong);
+          border-radius: var(--tile-radius);
+          padding: 1.5cqh 1.6cqw;
+          width: fit-content; max-width: 100%;
+        }
+        #f-{{ scene_id }} .branch.hot {
+          border-color: var(--coral);
+          background: color-mix(in srgb, var(--coral) 10%, var(--cream));
+        }
+        #f-{{ scene_id }} .branch .b-name {
+          font-family: var(--font-body); font-weight: 700;
+          font-size: 3cqmin; color: var(--ink); line-height: 1.25;
+        }
+        #f-{{ scene_id }} .branch .b-sub {
+          margin-left: 1cqw;
+          font-family: var(--font-mono); font-size: 1.9cqmin;
+          color: var(--ink-faint); letter-spacing: 0.04em;
+        }
+        #f-{{ scene_id }} .note {
+          margin-top: 1.4cqh; font-family: var(--font-mono);
+          font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em;
+        }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .tree-zone { grid-template-columns: 1fr; gap: 2cqh 0; }
+          #f-{{ scene_id }} .root-block { justify-self: center; padding: 1.6cqh 4cqw; }
+          #f-{{ scene_id }} .links { display: none; }
+        }
+      </style>
+
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker">
+            <span class="hf-spike"></span> {{ fields.kicker }}
+          </div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="tree-zone" id="s-{{ scene_id }}-zone">
+            <svg class="links" id="s-{{ scene_id }}-links"></svg>
+            <div class="root-block" id="s-{{ scene_id }}-root">{{ fields.root }}</div>
+            <div class="branch-stack" id="s-{{ scene_id }}-stack">
+              {%- for raw in fields.branches %}
+              {%- set parts = raw.split("|") %}
+              <div class="branch{% if loop.index0 == 0 %} hot{% endif %}"
+                id="s-{{ scene_id }}-b-{{ loop.index0 }}">
+                <span class="chip{% if loop.index0 == 0 %} hot{% endif %}">0{{ loop.index }}</span>
+                <span class="b-name">{{ parts[0] }}</span>
+                {% if parts|length > 1 and parts[1] %}<span class="b-sub">{{ parts[1] }}</span>{% endif %}
+              </div>
+              {%- endfor %}
+            </div>
+          </div>
+          {% if fields.get('note') %}
+          <div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var tl = gsap.timeline({ paused: true });
+
+          // 肘形连接线：根右缘中点 → 分支左缘中点（等所有元素布局完成后画）
+          var zone = document.getElementById(SID + "-zone");
+          var svg = document.getElementById(SID + "-links");
+          var N = {{ fields.branches | length }};
+          function drawLinks() {
+            var zr = zone.getBoundingClientRect(), sr = svg.getBoundingClientRect();
+            var off = { x: zr.left - sr.left, y: zr.top - sr.top };
+            var root = document.getElementById(SID + "-root").getBoundingClientRect();
+            var rx = root.right - zr.left + off.x, ry = root.top + root.height / 2 - zr.top + off.y;
+            while (svg.firstChild) { svg.removeChild(svg.firstChild); }
+            for (var i = 0; i < N; i++) {
+              var b = document.getElementById(SID + "-b-" + i).getBoundingClientRect();
+              var bx = b.left - zr.left + off.x, by = b.top + b.height / 2 - zr.top + off.y;
+              var midX = (rx + bx) / 2;
+              var p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+              p.setAttribute("d", "M " + rx + " " + ry +
+                " C " + midX + " " + ry + ", " + midX + " " + by + ", " + bx + " " + by);
+              if (i === 0) { p.setAttribute("class", "hot"); }
+              p.id = SID + "-ln-" + i;
+              var len = p.getTotalLength();
+              p.style.strokeDasharray = len + " " + len;
+              p.style.strokeDashoffset = len;
+              svg.appendChild(p);
+            }
+          }
+          drawLinks();
+
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.26);
+
+          // 根块先落
+          tl.fromTo("#" + SID + "-root", { opacity: 0, x: -30, scale: 0.94 },
+            { opacity: 1, x: 0, scale: 1, duration: 0.55, ease: "back.out(1.5)" }, D * 0.22);
+
+          // 分支 + 连线依次生长
+          var start = D * 0.30, span = D * 0.38;
+          for (var i = 0; i < N; i++) {
+            var at = start + (span * i) / N;
+            tl.fromTo("#" + SID + "-b-" + i, { opacity: 0, x: 26 },
+              { opacity: 1, x: 0, duration: 0.45, ease: "power3.out" }, at);
+            var ln = document.getElementById(SID + "-ln-" + i);
+            if (ln) {
+              tl.to(ln, { strokeDashoffset: 0, duration: 0.4, ease: "power2.out" }, at + 0.05);
+            }
+          }
+          if (document.getElementById(SID + "-note")) {
+            tl.fromTo("#" + SID + "-note", { opacity: 0 },
+              { opacity: 1, duration: 0.6 }, D * 0.72);
+          }
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

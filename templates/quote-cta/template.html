@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ scene_id }}</title>
+  </head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .center {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 3.4cqh;
+          min-height: 0;
+          text-align: center;
+        }
+        #f-{{ scene_id }} .mark {
+          font-family: var(--font-display);
+          font-size: 10cqmin;
+          line-height: 0.5;
+          color: var(--coral);
+          opacity: 0;
+        }
+        #f-{{ scene_id }} .quote {
+          font-family: var(--font-display);
+          font-size: 7.2cqmin;
+          line-height: 1.25;
+          letter-spacing: -0.01em;
+          max-width: 78cqw;
+        }
+        #f-{{ scene_id }} .cta {
+          display: flex;
+          align-items: center;
+          gap: 1.6cqw;
+          font-family: var(--font-mono);
+          font-size: 2.7cqmin;
+          letter-spacing: 0.12em;
+          color: var(--ink);
+          padding: 1.7cqh 3.2cqw;
+          border: 1px solid var(--hairline-strong);
+          border-radius: 2cqmin;
+          background: var(--tile);
+          opacity: 0;
+        }
+        #f-{{ scene_id }} .cta .arrow { color: var(--coral); }
+        /* v1 明信片：卡片 + 微旋转 + 胶带 */
+        #f-{{ scene_id }} .center.v-card { position: relative; }
+        #f-{{ scene_id }} .center.v-card .pcard {
+          background: var(--cream);
+          border: 1px solid var(--hairline-strong);
+          border-radius: var(--tile-radius);
+          padding: 4.4cqh 4cqw;
+          max-width: 80cqw;
+          transform: rotate(-1.2deg);
+          box-shadow: 0 2cqmin 6cqh color-mix(in srgb, var(--ink) 10%, transparent);
+          position: relative;
+          display: flex; flex-direction: column; align-items: center; gap: 2.6cqh;
+        }
+        #f-{{ scene_id }} .center.v-card .pcard::before {
+          content: "";
+          position: absolute; top: -1.6cqh; left: 50%; transform: translateX(-50%) rotate(2deg);
+          width: 14cqw; height: 3.2cqh;
+          background: color-mix(in srgb, var(--coral) 55%, var(--cream));
+          opacity: 0.85;
+        }
+        #f-{{ scene_id }} .foot {
+          font-family: var(--font-mono);
+          font-size: 1.9cqmin;
+          letter-spacing: 0.22em;
+          color: var(--ink-faint);
+          opacity: 0;
+        }
+      </style>
+
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker">
+            <span class="hf-spike"></span> {{ fields.kicker }}
+          </div>
+
+          {% set V = fields.get('variant', 0) %}
+          <div class="center{% if V == 1 %} v-card{% endif %}">
+            {% if V == 1 %}<div class="pcard" id="s-{{ scene_id }}-pcard">{% endif %}
+            <div class="mark" id="s-{{ scene_id }}-mark">”</div>
+            <div class="quote" id="s-{{ scene_id }}-quote">{{ fields.quote }}</div>
+            <div class="cta" id="s-{{ scene_id }}-cta">
+              <span class="arrow">→</span> {{ fields.cta }}
+            </div>
+            {% if V == 1 %}</div>{% endif %}
+            <div class="foot" id="s-{{ scene_id }}-foot">{{ fields.footnote }}</div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+
+          if (document.getElementById(SID + "-pcard")) {
+            tl.fromTo("#" + SID + "-pcard",
+              { opacity: 0, y: 44, rotation: AD.flip * -5 },
+              { opacity: 1, y: 0, rotation: -1.2, duration: 0.8 * AD.pace, ease: "power3.out" }, 0.08);
+          }
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.to("#" + SID + "-mark", { opacity: 1, duration: 0.7, ease: "power2.out" },
+            Math.min(0.4, D * 0.12));
+          tl.fromTo("#" + SID + "-quote", { opacity: 0, y: 34 },
+            { opacity: 1, y: 0, duration: 0.95, ease: "power3.out" },
+            Math.min(0.55, D * 0.16));
+          tl.to("#" + SID + "-cta", { opacity: 1, duration: 0.6, ease: "power3.out" },
+            Math.min(1.45, D * 0.42));
+          tl.fromTo("#" + SID + "-cta", { y: 14 }, { y: 0, duration: 0.6, ease: "power3.out" },
+            Math.min(1.45, D * 0.42));
+          tl.to("#" + SID + "-foot", { opacity: 1, duration: 0.6 },
+            Math.min(1.9, D * 0.56));
+
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

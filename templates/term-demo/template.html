@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ scene_id }}</title>
+  </head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline {
+          font-family: var(--font-display);
+          font-size: 6.4cqmin;
+          margin-top: 3cqh;
+        }
+        #f-{{ scene_id }} .term {
+          margin-top: 4.2cqh;
+          width: 82cqw;
+          background: #0B0E14;
+          border: 1px solid color-mix(in srgb, var(--ink) 28%, transparent);
+          border-radius: 1.6cqmin;
+          box-shadow:
+            0 1cqmin 4cqh color-mix(in srgb, var(--ink) 16%, transparent);
+          overflow: hidden;
+        }
+        #f-{{ scene_id }} .term-bar {
+          display: flex;
+          align-items: center;
+          gap: 1cqw;
+          padding: 1.6cqh 2.4cqw;
+          background: color-mix(in srgb, var(--ink) 8%, #0B0E14);
+          border-bottom: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
+        }
+        #f-{{ scene_id }} .dot {
+          width: 1.15cqmin; height: 1.15cqmin; border-radius: 50%;
+        }
+        #f-{{ scene_id }} .dot.r { background: #F4574F; }
+        #f-{{ scene_id }} .dot.y { background: #F5BD4F; }
+        #f-{{ scene_id }} .dot.g { background: #43C24F; }
+        #f-{{ scene_id }} .term-title {
+          margin-left: 2cqw;
+          font-family: var(--font-mono);
+          font-size: 1.9cqmin;
+          color: color-mix(in srgb, var(--ink) 45%, #0B0E14);
+          letter-spacing: 0.06em;
+        }
+        #f-{{ scene_id }} .term-body {
+          padding: 2.6cqh 2.8cqw 3cqh;
+          font-family: var(--font-mono);
+          font-size: 3.1cqmin;
+          line-height: 1.75;
+          color: #E8EDF4;
+          min-height: 24cqh;
+        }
+        #f-{{ scene_id }} .prompt { color: var(--coral); font-weight: 700; }
+        #f-{{ scene_id }} .cmd-ch {
+          opacity: 0;
+          display: inline-block;
+        }
+        #f-{{ scene_id }} .cursor {
+          display: inline-block;
+          width: 1.7cqmin; height: 3.4cqmin;
+          background: var(--coral);
+          vertical-align: -0.4cqmin;
+          margin-left: 0.5cqmin;
+        }
+        #f-{{ scene_id }} .out-line {
+          opacity: 0;
+          display: block;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        #f-{{ scene_id }} .out-line .ln { color: #7FD1AE; }
+        #f-{{ scene_id }} .note {
+          margin-top: 3.4cqh;
+          font-family: var(--font-mono);
+          font-size: 2.1cqmin;
+          color: var(--ink-faint);
+        }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .term { width: 92cqw; }
+          #f-{{ scene_id }} .term-body { font-size: 3.7cqmin; }
+          #f-{{ scene_id }} .headline { font-size: 7.4cqmin; }
+        }
+      </style>
+
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker">
+            <span class="hf-spike"></span> {{ fields.kicker }}
+          </div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="term" id="s-{{ scene_id }}-term">
+            <div class="term-bar">
+              <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+              <span class="term-title">zsh — demo</span>
+            </div>
+            <div class="term-body">
+              <div id="s-{{ scene_id }}-cmdline">
+                <span class="prompt">$&nbsp;</span
+                >{%- for ch in fields.command %}<span class="cmd-ch" id="s-{{ scene_id }}-ch-{{ loop.index0 }}">{{ ch }}</span>{%- endfor %}<span class="cursor" id="s-{{ scene_id }}-cursor"></span>
+              </div>
+              {%- for ln in fields.output_lines %}
+              <span class="out-line" id="s-{{ scene_id }}-out-{{ loop.index0 }}"
+                ><span class="ln">▸ </span>{{ ln }}</span>
+              {%- endfor %}
+            </div>
+          </div>
+          {% if fields.get('note') %}
+          <div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var NCH = {{ fields.command | length }};
+          var NOUT = {{ fields.output_lines | length }};
+          var tl = gsap.timeline({ paused: true });
+
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.25);
+          tl.fromTo("#" + SID + "-term", { opacity: 0, y: 34, scale: 0.98 },
+            { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: "power3.out" }, 0.4);
+
+          // 打字机：命令逐字，占 12%–42% 时长；空格字符快些（模拟手速）
+          var typeStart = D * 0.12;
+          var typeSpan = D * 0.30;
+          var per = typeSpan / Math.max(1, NCH);
+          for (var i = 0; i < NCH; i++) {
+            var ch = document.getElementById(SID + "-ch-" + i);
+            var dur = (ch && ch.textContent === " ") ? per * 0.4 : per * 0.95;
+            tl.fromTo("#" + SID + "-ch-" + i, { opacity: 0 },
+              { opacity: 1, duration: Math.max(0.02, dur), ease: "none" },
+              typeStart + per * i);
+          }
+          var cmdDone = typeStart + typeSpan;
+
+          // 光标闪烁：0.55s 周期翻转到命令完成，之后常亮
+          var blink = 0;
+          for (var t = 0.6; t < cmdDone; t += 0.55) {
+            tl.fromTo("#" + SID + "-cursor", { opacity: 1 },
+              { opacity: 0, duration: 0.02, ease: "none" }, t);
+            tl.fromTo("#" + SID + "-cursor", { opacity: 0 },
+              { opacity: 1, duration: 0.02, ease: "none" }, t + 0.28);
+            blink = t;
+          }
+
+          // 输出行级联：命令完成后逐行亮起，占 48%–75%
+          var outStart = D * 0.48;
+          var outSpan = D * 0.27;
+          for (var i = 0; i < NOUT; i++) {
+            var at = outStart + (outSpan * i) / Math.max(1, NOUT);
+            tl.fromTo("#" + SID + "-out-" + i, { opacity: 0, x: -14 },
+              { opacity: 1, x: 0, duration: 0.45, ease: "power3.out" }, at);
+          }
+          tl.fromTo("#" + SID + "-note", { opacity: 0 },
+            { opacity: 1, duration: 0.6 }, D * 0.78);
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

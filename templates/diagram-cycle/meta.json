@@ -1,0 +1,10 @@
+{
+  "id": "diagram-cycle", "name": "循环图", "role": "body",
+  "description": "环形循环/飞轮图：环节绕圈排布、弧形箭头顺时针衔接。适合飞轮效应、反馈回路、PDCA、生态循环。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "cycle-draw",
+  "min_duration_s": 6, "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "steps", "note"],
+  "example": {"kicker": "增长飞轮", "headline": "为什么越转越快",
+              "steps": ["内容好|用户留下", "用户多|数据变多", "推荐准|新客自来", "收入涨|投入更多"],
+              "note": "每一圈都比上一圈快"}
+}

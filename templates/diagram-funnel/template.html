@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ scene_id }}</title>
+  </head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline {
+          font-family: var(--font-display);
+          font-size: 6.2cqmin;
+          margin-top: 3cqh;
+        }
+        #f-{{ scene_id }} .funnel-zone {
+          flex: 1;
+          width: 72cqw;
+          margin-top: 2.6cqh;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 1.1cqh;
+          min-height: 0;
+        }
+        {%- set NS = (fields.stages | length) %}
+        {%- for raw in fields.stages %}
+        {%- set w = 100 - loop.index0 * (60 / (NS)) %}
+        #f-{{ scene_id }} .tier-{{ loop.index0 }} {
+          width: {{ w }}cqw;
+          clip-path: polygon(3cqw 0, calc(100% - 3cqw) 0, 100% 100%, 0 100%);
+          background: var(--tile);
+          border-top: 2px solid var(--hairline-strong);
+          display: flex; align-items: center; justify-content: center;
+          gap: 1.6cqw; padding: 1.5cqh 3cqw;
+        }
+        #f-{{ scene_id }} .tier-{{ loop.index0 }} .t-num {
+          font-family: var(--font-mono); font-weight: 700;
+          font-size: 3.4cqmin; color: var(--coral-deep);
+          font-variant-numeric: tabular-nums;
+        }
+        #f-{{ scene_id }} .tier-{{ loop.index0 }} .t-name {
+          font-family: var(--font-body); font-weight: 600;
+          font-size: 2.6cqmin; color: var(--ink);
+        }
+        {%- endfor %}
+        #f-{{ scene_id }} .tier-hot {
+          background: var(--coral-soft, color-mix(in srgb, var(--coral) 18%, var(--cream)));
+          border-top-color: var(--coral);
+        }
+        #f-{{ scene_id }} .tier-hot .t-num { color: var(--coral-deep); font-size: 3.8cqmin; }
+        #f-{{ scene_id }} .drop {
+          font-size: 2.4cqmin; color: var(--ink-faint);
+          line-height: 1; font-family: var(--font-mono);
+        }
+        #f-{{ scene_id }} .note {
+          margin-top: 1.4cqh; font-family: var(--font-mono);
+          font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em;
+        }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .funnel-zone { width: 88cqw; }
+          #f-{{ scene_id }} .tier-0, #f-{{ scene_id }} .tier-1,
+          #f-{{ scene_id }} .tier-2, #f-{{ scene_id }} .tier-3 { clip-path: none; border-radius: var(--tile-radius); }
+        }
+      </style>
+
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker">
+            <span class="hf-spike"></span> {{ fields.kicker }}
+          </div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="funnel-zone">
+            {%- set hot = (fields.stages | length) - 1 %}
+            {%- for raw in fields.stages %}
+            {%- set parts = raw.split("|") %}
+            <div class="tier-{{ loop.index0 }}{% if loop.index0 == hot %} tier-hot{% endif %}"
+              id="s-{{ scene_id }}-tier-{{ loop.index0 }}">
+              <span class="t-num">{{ parts[0] }}</span>
+              <span class="t-name">{{ parts[1] if parts|length > 1 else "" }}</span>
+            </div>
+            {% if not loop.last %}<div class="drop" id="s-{{ scene_id }}-drop-{{ loop.index0 }}">▼</div>{% endif %}
+            {%- endfor %}
+          </div>
+          {% if fields.get('note') %}
+          <div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var tl = gsap.timeline({ paused: true });
+
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.26);
+
+          var n = {{ fields.stages | length }};
+          var start = D * 0.24, span = D * 0.42;
+          for (var i = 0; i < n; i++) {
+            var at = start + (span * i) / n;
+            tl.fromTo("#" + SID + "-tier-" + i,
+              { opacity: 0, y: -34, scaleY: 1.08, transformOrigin: "50% 0%" },
+              { opacity: 1, y: 0, scaleY: 1, duration: 0.5, ease: "back.out(1.4)" }, at);
+            var dEl = document.getElementById(SID + "-drop-" + i);
+            if (dEl) {
+              tl.fromTo(dEl, { opacity: 0 }, { opacity: 1, duration: 0.3 }, at + span / n * 0.55);
+            }
+          }
+          if (document.getElementById(SID + "-note")) {
+            tl.fromTo("#" + SID + "-note", { opacity: 0 },
+              { opacity: 1, duration: 0.6 }, D * 0.72);
+          }
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

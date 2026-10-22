@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ scene_id }}</title>
+  </head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline {
+          font-family: var(--font-display);
+          font-size: 6.8cqmin;
+          margin-top: 3cqh;
+        }
+        #f-{{ scene_id }} .list {
+          margin-top: 4cqh;
+          display: flex;
+          flex-direction: column;
+          gap: 2.2cqh;
+          max-width: 74cqw;
+        }
+        #f-{{ scene_id }} .item {
+          display: flex;
+          align-items: baseline;
+          gap: 2cqw;
+          padding-bottom: 1.6cqh;
+        }
+        #f-{{ scene_id }} .item + .item { border-top: 1px solid var(--hairline); }
+        #f-{{ scene_id }} .no {
+          font-family: var(--font-mono);
+          font-size: 2.4cqmin;
+          color: var(--ink-faint);
+          letter-spacing: 0.12em;
+          flex: none;
+          width: 6cqw;
+        }
+        #f-{{ scene_id }} .txt {
+          font-family: var(--font-body);
+          font-size: 3.4cqmin;
+          line-height: 1.35;
+          color: var(--ink);
+        }
+        #f-{{ scene_id }} .item.hot .no { color: var(--coral); }
+        #f-{{ scene_id }} .item.hot .txt {
+          font-weight: 700;
+          border-bottom: 3px solid var(--coral);
+          padding-bottom: 0.4cqh;
+        }
+        /* v1 卡片网格 */
+        #f-{{ scene_id }} .list.v-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 1.8cqh 1.8cqw;
+          max-width: 86cqw;
+        }
+        #f-{{ scene_id }} .list.v-grid .item {
+          border: 1px solid var(--hairline-strong);
+          border-radius: var(--tile-radius);
+          background: var(--cream);
+          padding: 2cqh 1.8cqw;
+          flex-direction: column;
+          gap: 1.2cqh;
+        }
+        #f-{{ scene_id }} .list.v-grid .item + .item { border-top: 1px solid var(--hairline-strong); }
+        #f-{{ scene_id }} .list.v-grid .no {
+          width: auto; border: 1px solid var(--hairline-strong); border-radius: 50%;
+          padding: 0.5cqh 1.05cqmin; line-height: 1; align-self: flex-start;
+        }
+        #f-{{ scene_id }} .list.v-grid .item.hot {
+          border-color: var(--coral);
+          background: color-mix(in srgb, var(--coral) 9%, var(--cream));
+        }
+        #f-{{ scene_id }} .list.v-grid .item.hot .no { border-color: var(--coral); color: var(--coral); }
+        #f-{{ scene_id }} .list.v-grid .item.hot .txt { border-bottom: none; padding-bottom: 0; }
+        /* v2 极简流 */
+        #f-{{ scene_id }} .list.v-flow { gap: 1.6cqh; max-width: 78cqw; }
+        #f-{{ scene_id }} .list.v-flow .item { border-top: none; padding-bottom: 1.2cqh; align-items: first baseline; }
+        #f-{{ scene_id }} .list.v-flow .item + .item { border-top: none; }
+        #f-{{ scene_id }} .list.v-flow .no { display: none; }
+        #f-{{ scene_id }} .list.v-flow .txt { font-size: 3.8cqmin; }
+        #f-{{ scene_id }} .list.v-flow .txt::before {
+          content: "—\00a0\00a0"; color: var(--coral); font-weight: 700;
+        }
+        #f-{{ scene_id }} .list.v-flow .item.hot .txt { border-bottom: none; padding-bottom: 0; }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .list { max-width: 88cqw; }
+          #f-{{ scene_id }} .list.v-grid { grid-template-columns: 1fr; max-width: 88cqw; }
+          #f-{{ scene_id }} .txt { font-size: 4cqmin; }
+        }
+      </style>
+
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker">
+            <span class="hf-spike"></span> {{ fields.kicker }}
+          </div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          {% set V = fields.get('variant', 0) %}
+          <div class="list{% if V == 1 %} v-grid{% elif V == 2 %} v-flow{% endif %}">
+            {% for b in fields.bullets %}
+            <div class="item{% if fields.highlight_index is defined and loop.index0 == fields.highlight_index %} hot{% endif %}"
+              id="s-{{ scene_id }}-item-{{ loop.index0 }}">
+              <span class="no">{{ "%02d" | format(loop.index) }}</span>
+              <span class="txt">{{ b }}</span>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var N = {{ fields.bullets | length }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+
+          // 逐条级联：起点在 22%–55% 的时长区间内均分
+          var span = D * 0.55 - D * 0.2;
+          for (var i = 0; i < N; i++) {
+            var at = D * 0.2 + (span * i) / Math.max(1, N - 1);
+            tl.fromTo("#" + SID + "-item-" + i,
+              { opacity: 0, x: -36 * AD.flip, rotation: 2 * AD.flip },
+              { opacity: 1, x: 0, rotation: 0, duration: 0.6 * AD.pace, ease: "back.out(1.7)" }, at);
+            if (i > 0) {
+              tl.fromTo("#" + SID + "-item-" + i, { borderColor: "rgba(20,20,19,0)" },
+                { borderColor: "rgba(20,20,19,0.12)", duration: 0.4 }, at + 0.1);
+            }
+          }
+          if (N > 0) {
+            AM.pulse(tl, "#" + SID + "-item-" + (N - 1), D * 0.2 + span + 0.7);
+          }
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, [id^='" + SID + "-item-']", D);{% endif %}
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

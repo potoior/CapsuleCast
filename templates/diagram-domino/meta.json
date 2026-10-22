@@ -1,0 +1,10 @@
+{
+  "id": "diagram-domino", "name": "多米诺连锁", "role": "body",
+  "description": "一排依次倒下的骨牌：一环扣一环的因果连锁故事。适合「因为A所以B导致C」的连锁反应科普。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "cascade-fall",
+  "min_duration_s": 6, "max_duration_s": 16,
+  "field_order": ["kicker", "headline", "tiles", "note"],
+  "example": {"kicker": "连锁反应", "headline": "一只蝴蝶如何掀翻你的周一",
+              "tiles": ["蝴蝶扇了下翅膀|微不足道", "气流偏移|看不出来", "远方暴雨|航班取消", "会议改线上|全乱了", "周一报废|躺平认命"],
+              "note": "初始条件差一点，结局差很多"}
+}

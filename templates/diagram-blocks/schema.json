@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": { "type": "string", "minLength": 2, "maxLength": 16, "description": "左上角标签" },
+    "headline": { "type": "string", "minLength": 2, "maxLength": 16, "description": "标题" },
+    "parts": {
+      "type": "array", "minItems": 2, "maxItems": 4,
+      "items": { "type": "string", "minLength": 2, "maxLength": 16 },
+      "description": "构成块，格式「块名|小注」"
+    },
+    "whole": { "type": "string", "minLength": 2, "maxLength": 18, "description": "整体，格式「整体名|小注」" },
+    "note": { "type": "string", "minLength": 0, "maxLength": 22, "description": "注解（可留空）" }
+  },
+  "required": ["kicker", "headline", "parts", "whole"],
+  "additionalProperties": false
+}

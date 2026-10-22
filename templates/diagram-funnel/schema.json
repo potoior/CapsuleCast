@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": { "type": "string", "minLength": 2, "maxLength": 16, "description": "左上角标签" },
+    "headline": { "type": "string", "minLength": 2, "maxLength": 16, "description": "标题" },
+    "stages": {
+      "type": "array", "minItems": 3, "maxItems": 4,
+      "items": { "type": "string", "minLength": 2, "maxLength": 20 },
+      "description": "从上到下的漏斗层级，格式「数量|阶段名」，末层自动高亮"
+    },
+    "note": { "type": "string", "minLength": 0, "maxLength": 22, "description": "注解（可留空）" }
+  },
+  "required": ["kicker", "headline", "stages"],
+  "additionalProperties": false
+}

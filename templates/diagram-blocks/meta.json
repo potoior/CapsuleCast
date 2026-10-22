@@ -1,0 +1,11 @@
+{
+  "id": "diagram-blocks", "name": "拼图构成", "role": "body",
+  "description": "积木拼成整体：分块从四周聚拢堆叠，整体大卡压顶登场。适合「A+B+C=X」的构成、要素组合。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "converge-merge",
+  "min_duration_s": 5, "max_duration_s": 16,
+  "field_order": ["kicker", "headline", "parts", "whole", "note"],
+  "example": {"kicker": "生意拆解", "headline": "一门生意由什么构成",
+              "parts": ["产品|解决什么", "流量|谁来找你", "复购|凭什么再来"],
+              "whole": "生意|三者咬合，缺一不可",
+              "note": "少一块都转不动"}
+}

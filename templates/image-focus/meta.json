@@ -1,0 +1,18 @@
+{
+  "id": "image-focus",
+  "name": "图片特写",
+  "description": "全幅图片 + 缓慢推拉运镜（ken-burns）+ 底部渐变压字。需要上传图片，适合产品图/截图/场景图。",
+  "role": "body",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "motion": "ken-burns",
+  "min_duration_s": 5,
+  "max_duration_s": 18,
+  "user_only": true,
+  "field_order": ["kicker", "headline", "image", "caption"],
+  "example": {
+    "kicker": "这就是成品",
+    "headline": "一眼看懂架构",
+    "image": "media:projects/demo/media/x.png",
+    "caption": "图：系统拓扑示意"
+  }
+}

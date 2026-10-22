@@ -1,0 +1,10 @@
+{
+  "id": "facts-trio", "name": "反直觉三连", "role": "body",
+  "description": "三张编号冷知识卡连击：每张一个反直觉事实+一句纠正。适合「你不知道的X」「冷知识轰炸」的钩子段。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "trio-punch",
+  "min_duration_s": 6, "max_duration_s": 16,
+  "field_order": ["kicker", "headline", "facts", "note"],
+  "example": {"kicker": "冷知识", "headline": "关于睡眠的三个反常识",
+              "facts": ["睡够8小时才健康|因人而异，7-9小时都行", "周末补觉能还债|生物钟不是账本，错位更伤", "喝酒助眠|只是麻醉，后半夜更碎"],
+              "note": "越理所当然的，越值得查一遍"}
+}

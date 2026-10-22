@@ -1,0 +1,17 @@
+{
+  "id": "diagram-flow",
+  "name": "流程图解",
+  "description": "节点卡片 + 箭头生长动画的流程/原理图。适合讲机制、步骤链、数据流。",
+  "role": "body",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "motion": "flow-draw",
+  "min_duration_s": 6,
+  "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "nodes", "note"],
+  "example": {
+    "kicker": "一次预测怎么走",
+    "headline": "前向传播四步",
+    "nodes": ["输入文本|变成数字", "乘权重|逐层加工", "算概率|给出预测", "比答案|量化差距"],
+    "note": "数据只往前流，所以叫前向"
+  }
+}

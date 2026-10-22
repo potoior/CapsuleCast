@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "左上角标签"
+    },
+    "headline": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "标题"
+    },
+    "bullets": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 5,
+      "items": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 18
+      },
+      "description": "要点（3-5 条）"
+    },
+    "highlight_index": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4,
+      "description": "高亮第几条（从 0 开始，-1 表示不高亮）"
+    },
+    "variant": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2,
+      "labels": [
+        "标准列表",
+        "卡片网格",
+        "极简流"
+      ],
+      "description": "版式变体（缺省按旁白哈希自动分配）"
+    }
+  },
+  "required": [
+    "kicker",
+    "headline",
+    "bullets"
+  ],
+  "additionalProperties": false
+}

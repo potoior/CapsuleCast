@@ -1,0 +1,11 @@
+{
+  "id": "formula-card", "name": "公式卡", "role": "body",
+  "description": "心法公式：N 个要素卡片用运算符串联，等号后高亮结果卡。适合方法论、心法、成功要素。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "equation-build",
+  "min_duration_s": 5, "max_duration_s": 16,
+  "field_order": ["kicker", "headline", "terms", "operator", "result", "note"],
+  "example": {"kicker": "流量心法", "headline": "爆款的三要素",
+              "terms": ["选题|对的眼", "表达|讲得清", "节奏|留得住"],
+              "operator": "×", "result": "爆款|缺一不可",
+              "note": "少一个都白搭"}
+}

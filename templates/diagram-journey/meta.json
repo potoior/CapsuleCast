@@ -1,0 +1,11 @@
+{
+  "id": "diagram-journey", "name": "用户旅程", "role": "body",
+  "description": "阶段旅程 + 情绪曲线：触点在基线上，曲线随情绪值起伏。适合购物旅程、使用体验、心理变化。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "curve-draw",
+  "min_duration_s": 6, "max_duration_s": 18,
+  "field_order": ["kicker", "headline", "stages", "note"],
+  "example": {"kicker": "下单心理", "headline": "从刷到到下单的五步",
+              "stages": ["刷到|算法推给我|70", "点开|封面戳中我|80", "比价|货比三家|40",
+                         "犹豫|差评吓一跳|25", "下单|优惠临门一脚|90"],
+              "note": "情绪谷底在比价"}
+}

@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6.4cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .arena {
+          flex: 1; display: flex; flex-direction: column; justify-content: center;
+          gap: 2.4cqh; min-height: 0; width: 92cqw;
+        }
+        #f-{{ scene_id }} .sides { display: grid; grid-template-columns: 1fr 1fr; gap: 8cqw; }
+        #f-{{ scene_id }} .force {
+          border: 1.5px solid var(--hairline-strong); border-radius: var(--tile-radius);
+          padding: 2.4cqh 1.8cqw; display: flex; flex-direction: column; gap: 1.1cqh; min-width: 0;
+        }
+        #f-{{ scene_id }} .force.l { background: var(--tile); }
+        #f-{{ scene_id }} .force.r {
+          background: color-mix(in srgb, var(--coral) 10%, var(--cream)); border-color: var(--coral);
+        }
+        #f-{{ scene_id }} .force .fname {
+          font-family: var(--font-display); font-size: 4.4cqmin; font-weight: 700; color: var(--ink);
+        }
+        #f-{{ scene_id }} .force.r .fname { color: var(--coral-deep); }
+        #f-{{ scene_id }} .force .pt { display: flex; flex-direction: column; gap: 0.2cqh; padding-left: 1cqw; border-left: 2px solid var(--hairline-strong); }
+        #f-{{ scene_id }} .force .pt b { font-size: 2.9cqmin; font-weight: 600; color: var(--ink); }
+        #f-{{ scene_id }} .force .pt i { font-family: var(--font-mono); font-style: normal; font-size: 1.9cqmin; color: var(--ink-faint); }
+        #f-{{ scene_id }} .rope-row { position: relative; height: 6cqh; }
+        #f-{{ scene_id }} .rope {
+          position: absolute; left: 2cqw; right: 2cqw; top: 50%; height: 2px;
+          background: var(--ink); transform-origin: "50% 50%";
+        }
+        #f-{{ scene_id }} .knot {
+          position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+          width: 2.6cqw; height: 2.6cqw; border-radius: 50%; background: var(--coral);
+        }
+        #f-{{ scene_id }} .knot::after {
+          content: ""; position: absolute; inset: -35%; border-radius: 50%;
+          border: 1.5px solid var(--coral); opacity: 0.55;
+        }
+        #f-{{ scene_id }} .verdict {
+          align-self: center; padding: 1.4cqh 3cqw; border-radius: var(--tile-radius);
+          background: var(--ink); color: var(--cream); font-size: 3cqmin; font-weight: 600;
+        }
+        #f-{{ scene_id }} .note { margin-top: 0.6cqh; font-family: var(--font-mono); font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em; text-align: center; }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .sides { grid-template-columns: 1fr; gap: 1.4cqh; }
+          #f-{{ scene_id }} .force { padding: 1.6cqh 3cqw; }
+        }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="arena">
+            <div class="sides">
+              <div class="force l" id="s-{{ scene_id }}-left">
+                <div class="fname">{{ fields.left_force }}</div>
+                {%- for raw in fields.left_points %}
+                {%- set parts = raw.split("|") %}
+                <div class="pt" id="s-{{ scene_id }}-lp-{{ loop.index0 }}">
+                  <b>{{ parts[0] }}</b>
+                  {% if parts|length > 1 and parts[1] %}<i>{{ parts[1] }}</i>{% endif %}
+                </div>
+                {%- endfor %}
+              </div>
+              <div class="force r" id="s-{{ scene_id }}-right">
+                <div class="fname">{{ fields.right_force }}</div>
+                {%- for raw in fields.right_points %}
+                {%- set parts = raw.split("|") %}
+                <div class="pt" id="s-{{ scene_id }}-rp-{{ loop.index0 }}">
+                  <b>{{ parts[0] }}</b>
+                  {% if parts|length > 1 and parts[1] %}<i>{{ parts[1] }}</i>{% endif %}
+                </div>
+                {%- endfor %}
+              </div>
+            </div>
+            <div class="rope-row">
+              <div class="rope" id="s-{{ scene_id }}-rope"></div>
+              <div class="knot" id="s-{{ scene_id }}-knot"></div>
+            </div>
+            <div class="verdict" id="s-{{ scene_id }}-verdict">{{ fields.verdict }}</div>
+          </div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+
+          // 两侧力量对撞 → 绳子拉直 → 绳结被拽向赢家
+          var t0 = Math.min(0.9, D * 0.16);
+          tl.fromTo("#" + SID + "-left", { opacity: 0, x: -40 * AD.flip },
+            { opacity: 1, x: 0, duration: 0.6, ease: "back.out(1.6)" }, t0);
+          tl.fromTo("#" + SID + "-right", { opacity: 0, x: 40 * AD.flip },
+            { opacity: 1, x: 0, duration: 0.6, ease: "back.out(1.6)" }, t0 + 0.1);
+          AM.pop(tl, '[id^="' + SID + '-lp-"]', t0 + 0.35, 0.4);
+          AM.pop(tl, '[id^="' + SID + '-rp-"]', t0 + 0.45, 0.4);
+          tl.fromTo("#" + SID + "-rope", { scaleX: 0 },
+            { scaleX: 1, duration: 0.6, ease: "power2.inOut" }, t0 + 0.6);
+          tl.fromTo("#" + SID + "-knot", { opacity: 0, scale: 0.3 },
+            { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(2)" }, t0 + 1.0);
+          tl.fromTo("#" + SID + "-knot", { xPercent: 0 },
+            { xPercent: 26 * AD.flip, duration: 0.9, ease: "power2.inOut" },
+            Math.min(t0 + 1.5, D * 0.6));
+          AM.pulse(tl, "#" + SID + "-knot", Math.min(t0 + 2.4, D * 0.7));
+          var tV = Math.min(t0 + 2.2, D * 0.68);
+          AM.wipe(tl, "#" + SID + "-verdict", tV, 0.65, "bottom");
+          if (document.getElementById(SID + "-note")) {
+            tl.fromTo("#" + SID + "-note", { opacity: 0 },
+              { opacity: 1, duration: 0.5 }, Math.min(tV + 0.5, D * 0.8));
+          }
+
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, #" + SID + "-left, #" + SID + "-right, #" + SID + "-rope, #" + SID + "-knot, #" + SID + "-verdict, [id^='" + SID + "-lp-'], [id^='" + SID + "-rp-']", D);{% endif %}
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "id": "diagram-hub", "name": "辐射图", "role": "body",
+  "description": "中心概念向外辐射多个因素的关系图。适合「影响 X 的 N 个因素」、多方面拆解、生态系统。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "hub-radiate",
+  "min_duration_s": 6, "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "center", "spokes", "note"],
+  "example": {"kicker": "涨跌密码", "headline": "什么决定房价",
+              "center": "房价", "spokes": ["地段|稀缺性", "利率|钱贵不贵", "人口|接盘的人", "政策|限购松紧"],
+              "note": "短期看政策，长期看人口"}
+}

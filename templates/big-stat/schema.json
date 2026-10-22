@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "左上角标签"
+    },
+    "stat_value": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 10,
+      "description": "目标数值（含单位符号，如 10×、99%）"
+    },
+    "stat_unit": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 12,
+      "description": "数值下方的小注（英文/单位）"
+    },
+    "stat_from": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 10,
+      "description": "计数起始值（如 1.00）"
+    },
+    "headline": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 20,
+      "description": "结论标题"
+    },
+    "note": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 26,
+      "description": "底部注释"
+    },
+    "variant": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1,
+      "labels": [
+        "居中数字",
+        "编辑式左对齐"
+      ],
+      "description": "版式变体（缺省按旁白哈希自动分配）"
+    }
+  },
+  "required": [
+    "kicker",
+    "stat_value",
+    "stat_unit",
+    "stat_from",
+    "headline",
+    "note"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,11 @@
+{
+  "id": "bio-card", "name": "人物卡", "role": "body",
+  "description": "人物速写卡：大名 + 头衔 + 标签胶囊 + 金句。适合讲人物、创始人、科学家故事。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "name-first",
+  "min_duration_s": 5, "max_duration_s": 16,
+  "field_order": ["kicker", "name", "title", "tags", "quote", "note"],
+  "example": {"kicker": "人物速写", "name": "张桂梅", "title": "华坪女高校长",
+              "tags": ["大山里的女校", "两千个女孩的命运", "燃烧自己的人"],
+              "quote": "我生来就是高山而非溪流。",
+              "note": "她把自己烧成了火把"}
+}

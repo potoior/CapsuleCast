@@ -1,0 +1,10 @@
+{
+  "id": "price-compare", "name": "定价卡", "role": "body",
+  "description": "2-3 档定价对比：档名 + 大价格 + ✓ 特性清单，推荐档高亮抬升 + 顶部缎带。适合产品定价、套餐、会员档位。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "tiers-rise",
+  "min_duration_s": 6, "max_duration_s": 18,
+  "field_order": ["kicker", "headline", "tiers", "hot_index", "note"],
+  "example": {"kicker": "会员定价", "headline": "三档怎么选",
+              "tiers": ["免费版|0元|基础功能；社区支持", "专业版|99/月|全部功能；优先客服；数据分析", "企业版|定制|私有部署；专属服务；SLA保障"],
+              "hot_index": 1, "note": "大多数人选中间档"}
+}

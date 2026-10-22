@@ -1,0 +1,18 @@
+{
+  "id": "term-demo",
+  "name": "终端演示",
+  "description": "仿 macOS 终端窗口：命令打字机逐字敲入 + 输出行逐行亮起 + 光标闪烁。适合演示命令、代码、工具用法。",
+  "role": "body",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "motion": "typewriter",
+  "min_duration_s": 6,
+  "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "command", "output_lines", "note"],
+  "example": {
+    "kicker": "一行命令",
+    "headline": "让 Git 记住谁写的",
+    "command": "git blame src/api.py -L 42",
+    "output_lines": ["a1b2c3 (张三 2024-03-01 42)", "这行是三个月前写的接口", "到现在没人敢动"],
+    "note": " blames 之前先 pull"
+  }
+}

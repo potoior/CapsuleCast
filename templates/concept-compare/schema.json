@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": { "type": "string", "minLength": 2, "maxLength": 16, "description": "左上角标签" },
+    "headline": { "type": "string", "minLength": 2, "maxLength": 16, "description": "顶部大标题" },
+    "left_title": { "type": "string", "minLength": 2, "maxLength": 8, "description": "左侧概念名" },
+    "left_points": {
+      "type": "array", "minItems": 2, "maxItems": 3,
+      "items": { "type": "string", "minLength": 2, "maxLength": 14 },
+      "description": "左侧要点（2-3 条）"
+    },
+    "right_title": { "type": "string", "minLength": 2, "maxLength": 8, "description": "右侧概念名" },
+    "right_points": {
+      "type": "array", "minItems": 2, "maxItems": 3,
+      "items": { "type": "string", "minLength": 2, "maxLength": 14 },
+      "description": "右侧要点（2-3 条）"
+    },
+    "verdict": { "type": "string", "minLength": 2, "maxLength": 18, "description": "底部结论" }
+  },
+  "required": ["kicker", "headline", "left_title", "left_points", "right_title", "right_points", "verdict"],
+  "additionalProperties": false
+}

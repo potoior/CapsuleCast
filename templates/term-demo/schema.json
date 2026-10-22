@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": { "type": "string", "minLength": 2, "maxLength": 16, "description": "左上角标签" },
+    "headline": { "type": "string", "minLength": 2, "maxLength": 16, "description": "标题" },
+    "command": { "type": "string", "minLength": 3, "maxLength": 48, "description": "要敲的命令（打字机逐字出现）" },
+    "output_lines": {
+      "type": "array", "minItems": 2, "maxItems": 5,
+      "items": { "type": "string", "minLength": 1, "maxLength": 34 },
+      "description": "命令输出行（逐行亮起）"
+    },
+    "note": { "type": "string", "minLength": 0, "maxLength": 20, "description": "一句点评（可留空）" }
+  },
+  "required": ["kicker", "headline", "command", "output_lines"],
+  "additionalProperties": false
+}

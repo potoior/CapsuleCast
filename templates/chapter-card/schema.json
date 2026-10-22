@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": { "type": "string", "minLength": 2, "maxLength": 12, "description": "小标签（如「第二部分」）" },
+    "part_no": { "type": "string", "minLength": 1, "maxLength": 4, "description": "章节序号（如 02）" },
+    "part_total": { "type": "string", "minLength": 1, "maxLength": 4, "description": "总章数（如 05）" },
+    "chapter_title": { "type": "string", "minLength": 2, "maxLength": 14, "description": "章节标题" }
+  },
+  "required": ["kicker", "part_no", "chapter_title"],
+  "additionalProperties": false
+}

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": { "type": "string", "minLength": 2, "maxLength": 16, "description": "左上角标签" },
+    "headline": { "type": "string", "minLength": 2, "maxLength": 16, "description": "标题（叠在图片上）" },
+    "image": { "type": "string", "minLength": 3, "maxLength": 200, "description": "图片引用（media:key，由上传填充）" },
+    "caption": { "type": "string", "minLength": 0, "maxLength": 24, "description": "图片说明（右下角小字，可留空）" }
+  },
+  "required": ["kicker", "headline", "image"],
+  "additionalProperties": false
+}

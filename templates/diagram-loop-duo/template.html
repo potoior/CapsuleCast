@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6.2cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .duo {
+          flex: 1; display: grid; grid-template-columns: 1fr 1fr;
+          gap: 3cqw; align-content: center; min-height: 0; width: 94cqw;
+        }
+        #f-{{ scene_id }} .ringbox {
+          position: relative; place-self: center; margin: 0 auto;
+          width: min(43cqw, 48cqh); height: min(43cqw, 48cqh);
+        }
+        #f-{{ scene_id }} .ringbox svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+        #f-{{ scene_id }} .ringbox .loop-label {
+          position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+          font-family: var(--font-display); font-size: 3.4cqmin; font-weight: 700;
+          white-space: nowrap; padding: 0.6cqh 1.4cqw; border-radius: var(--pill-radius, 999px);
+        }
+        #f-{{ scene_id }} .ringbox.bad .loop-label { color: var(--ink-faint); border: 1.5px solid var(--hairline-strong); }
+        #f-{{ scene_id }} .ringbox.good .loop-label { color: var(--coral-deep); border: 1.5px solid var(--coral); }
+        #f-{{ scene_id }} .node {
+          position: absolute; transform: translate(-50%, -50%);
+          background: var(--cream); border: 1px solid var(--hairline-strong);
+          border-radius: var(--pill-radius, 999px); padding: 0.9cqh 1.2cqw;
+          font-size: 2.3cqmin; font-weight: 600; color: var(--ink);
+          white-space: nowrap; max-width: 22cqw; text-align: center; line-height: 1.3;
+        }
+        #f-{{ scene_id }} .ringbox.good .node { border-color: color-mix(in srgb, var(--coral) 55%, transparent); }
+        #f-{{ scene_id }} .n3 .node:nth-child(2) { left: 50%; top: 13%; }
+        #f-{{ scene_id }} .n3 .node:nth-child(3) { left: 15%; top: 76%; }
+        #f-{{ scene_id }} .n3 .node:nth-child(4) { left: 85%; top: 76%; }
+        #f-{{ scene_id }} .n4 .node:nth-child(2) { left: 50%; top: 10%; }
+        #f-{{ scene_id }} .n4 .node:nth-child(3) { left: 88%; top: 50%; }
+        #f-{{ scene_id }} .n4 .node:nth-child(4) { left: 50%; top: 90%; }
+        #f-{{ scene_id }} .n4 .node:nth-child(5) { left: 12%; top: 50%; }
+        #f-{{ scene_id }} .note { margin-top: 1.4cqh; font-family: var(--font-mono); font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em; text-align: center; }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .duo { grid-template-columns: 1fr; }
+          #f-{{ scene_id }} .ringbox { width: min(64cqw, 30cqh); height: min(64cqw, 30cqh); }
+          #f-{{ scene_id }} .node { font-size: 2.1cqmin; max-width: 26cqw; }
+        }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="duo">
+            <div class="ringbox bad n{{ fields.bad_loop | length }}" id="s-{{ scene_id }}-bad">
+              <svg viewBox="0 0 100 100">
+                <circle id="s-{{ scene_id }}-bad-ring" cx="50" cy="50" r="36"
+                  fill="none" stroke="var(--ink)" stroke-width="0.8"
+                  stroke-dasharray="3 3" opacity="0.5"></circle>
+              </svg>
+              <div class="loop-label" id="s-{{ scene_id }}-bad-label">{{ fields.bad_label }}</div>
+              {%- for step in fields.bad_loop %}
+              <div class="node" id="s-{{ scene_id }}-bn-{{ loop.index0 }}">{{ step }}</div>
+              {%- endfor %}
+            </div>
+            <div class="ringbox good n{{ fields.good_loop | length }}" id="s-{{ scene_id }}-good">
+              <svg viewBox="0 0 100 100">
+                <circle id="s-{{ scene_id }}-good-ring" cx="50" cy="50" r="36"
+                  fill="none" stroke="var(--coral)" stroke-width="0.8" opacity="0.6"></circle>
+              </svg>
+              <div class="loop-label" id="s-{{ scene_id }}-good-label">{{ fields.good_label }}</div>
+              {%- for step in fields.good_loop %}
+              <div class="node" id="s-{{ scene_id }}-gn-{{ loop.index0 }}">{{ step }}</div>
+              {%- endfor %}
+            </div>
+          </div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+
+          // 左坏环先转起来（压抑），右好环跟进登场（点亮）+ 呼吸
+          var t0 = Math.min(0.9, D * 0.16);
+          AM.focus(tl, "#" + SID + "-bad-label", t0, 0.7);
+          AM.pop(tl, '[id^="' + SID + '-bn-"]', t0 + 0.3, 0.45);
+          var tG = Math.min(t0 + 1.1, D * 0.45);
+          AM.focus(tl, "#" + SID + "-good-label", tG, 0.7);
+          AM.pop(tl, '[id^="' + SID + '-gn-"]', tG + 0.3, 0.45);
+          AM.pulse(tl, "#" + SID + "-good-label", tG + 0.9);
+          if (document.getElementById(SID + "-note")) {
+            AM.wipe(tl, "#" + SID + "-note", Math.min(tG + 1.4, D * 0.78), 0.6, "bottom");
+          }
+
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, #" + SID + "-bad, #" + SID + "-good, [id^='" + SID + "-bn-'], [id^='" + SID + "-gn-']", D);{% endif %}
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

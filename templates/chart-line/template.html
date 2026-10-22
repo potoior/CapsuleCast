@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ scene_id }}</title>
+  </head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline {
+          font-family: var(--font-display);
+          font-size: 6.2cqmin;
+          margin-top: 3cqh;
+        }
+        #f-{{ scene_id }} .line-zone {
+          flex: 1; width: 90cqw; margin-top: 1.4cqh;
+          display: flex; align-items: center; justify-content: center;
+          min-height: 0;
+        }
+        #f-{{ scene_id }} svg.pline { width: 100%; height: 100%; }
+        #f-{{ scene_id }} .pl-axis { stroke: var(--hairline-strong); stroke-width: 2.5; }
+        #f-{{ scene_id }} .pl-grid { stroke: var(--hairline); stroke-width: 1.5; stroke-dasharray: 6 8; }
+        #f-{{ scene_id }} .pl-line {
+          fill: none; stroke: var(--coral); stroke-width: 5;
+          stroke-linecap: round; stroke-linejoin: round;
+        }
+        #f-{{ scene_id }} .pl-dot { fill: var(--cream); stroke: var(--coral); stroke-width: 4; }
+        #f-{{ scene_id }} .pl-dot.hot { fill: var(--coral); stroke-width: 0; }
+        #f-{{ scene_id }} .pl-xlab {
+          font-family: var(--font-mono); font-size: 2cqmin;
+          fill: var(--ink-faint); text-anchor: middle;
+        }
+        #f-{{ scene_id }} .pl-callout {
+          font-family: var(--font-mono); font-weight: 700; font-size: 2.6cqmin;
+          fill: var(--coral-deep); text-anchor: middle;
+        }
+        #f-{{ scene_id }} .pl-unit {
+          font-family: var(--font-mono); font-size: 1.9cqmin;
+          fill: var(--ink-faint);
+        }
+        #f-{{ scene_id }} .note {
+          margin-top: 1.2cqh; font-family: var(--font-mono);
+          font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em;
+        }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .pl-xlab { font-size: 2.4cqmin; }
+        }
+      </style>
+
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker">
+            <span class="hf-spike"></span> {{ fields.kicker }}
+          </div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="line-zone">
+            <svg class="pline" id="s-{{ scene_id }}-svg" viewBox="0 0 1920 620" preserveAspectRatio="xMidYMid meet"></svg>
+          </div>
+          {% if fields.get('note') %}
+          <div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var SVGNS = "http://www.w3.org/2000/svg";
+          var svg = document.getElementById(SID + "-svg");
+
+          var pts = [];
+          {% for raw in fields.points -%}
+          {%- set parts = raw.split("|") -%}
+          pts.push({ lab: {{ parts[0] | tojson }}, val: {{ (parts[1] if parts|length > 1 else parts[0]) | tojson }} });
+          {% endfor -%}
+
+          // 数值解析：抓首个数字（含小数）；抓不到按序号排
+          var nums = pts.map(function (p, i) {
+            var m = String(p.val).match(/-?\d+(?:\.\d+)?/);
+            return m ? parseFloat(m[0]) : i;
+          });
+          var lo = Math.min.apply(null, nums), hi = Math.max.apply(null, nums);
+          if (hi === lo) { hi = lo + 1; }
+          var peakIdx = nums.indexOf(hi);
+
+          var L = 90, R = 1820, T = 60, B = 540;   // 绘图区
+          var n = pts.length;
+          function X(i) { return L + (R - L) * (n === 1 ? 0.5 : i / (n - 1)); }
+          function Y(v) { return B - (B - T) * ((v - lo) / (hi - lo)) * 0.92 - (B - T) * 0.04; }
+
+          function el(tag, attrs) {
+            var e = document.createElementNS(SVGNS, tag);
+            for (var k in attrs) { e.setAttribute(k, attrs[k]); }
+            svg.appendChild(e);
+            return e;
+          }
+          function txt(cls, x, y, s, id) {
+            var e = el("text", { class: cls, x: x, y: y });
+            if (id) { e.id = id; }
+            e.textContent = s;
+            return e;
+          }
+
+          // 轴 + 网格
+          var axV = el("line", { class: "pl-axis", x1: L, y1: T - 14, x2: L, y2: B });
+          var axH = el("line", { class: "pl-axis", x1: L, y1: B, x2: R + 14, y2: B });
+          axV.id = SID + "-axv"; axH.id = SID + "-axh";
+          for (var g = 1; g <= 2; g++) {
+            var gy = T + (B - T) * g / 3;
+            var gl = el("line", { class: "pl-grid", x1: L, y1: gy, x2: R, y2: gy });
+            gl.id = SID + "-grid-" + g;
+          }
+          var unit = txt("pl-unit", L, T - 26, "{{ fields.series_label }}", SID + "-unit");
+
+          // 折线
+          var d = "";
+          for (var i = 0; i < n; i++) {
+            d += (i ? " L " : "M ") + X(i) + " " + Y(nums[i]);
+          }
+          var line = el("path", { class: "pl-line", d: d });
+          line.id = SID + "-line";
+          var len = line.getTotalLength();
+          line.style.strokeDasharray = len + " " + len;
+          line.style.strokeDashoffset = len;
+
+          // 数据点 + 标签
+          var dots = [], labs = [];
+          for (var j = 0; j < n; j++) {
+            var dot = el("circle", { class: "pl-dot" + (j === peakIdx ? " hot" : ""),
+              cx: X(j), cy: Y(nums[j]), r: j === peakIdx ? 13 : 9 });
+            dot.id = SID + "-dot-" + j; dots.push(dot);
+            var lb = txt("pl-xlab", X(j), B + 44, pts[j].lab, SID + "-xl-" + j);
+            labs.push(lb);
+          }
+          // 峰值标注
+          var callout = txt("pl-callout", X(peakIdx), Y(nums[peakIdx]) - 26,
+            pts[peakIdx].val, SID + "-co");
+          callout.setAttribute("opacity", "0");
+
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.26);
+
+          tl.fromTo(axV, { attr: { y2: T - 14 } }, { attr: { y2: B }, duration: 0.4 }, D * 0.22);
+          tl.fromTo(axH, { attr: { x2: L } }, { attr: { x2: R + 14 }, duration: 0.5 }, D * 0.22);
+          tl.fromTo(unit, { opacity: 0 }, { opacity: 1, duration: 0.4 }, D * 0.28);
+          for (var g2 = 1; g2 <= 2; g2++) {
+            tl.fromTo("#" + SID + "-grid-" + g2, { opacity: 0 },
+              { opacity: 1, duration: 0.35 }, D * 0.26 + g2 * 0.06);
+          }
+
+          // 折线生长 + 点依次弹出
+          tl.to(line, { strokeDashoffset: 0, duration: D * 0.26, ease: "power2.inOut" }, D * 0.30);
+          for (var k = 0; k < n; k++) {
+            var at = D * 0.30 + D * 0.26 * (k / Math.max(1, n - 1));
+            tl.fromTo(dots[k], { attr: { r: 0 }, opacity: 0 },
+              { attr: { r: k === peakIdx ? 13 : 9 }, opacity: 1,
+                duration: 0.3, ease: "back.out(2)" }, at);
+            tl.fromTo(labs[k], { opacity: 0, y: 10 },
+              { opacity: 1, y: 0, duration: 0.3 }, at + 0.04);
+          }
+          tl.fromTo(callout, { attr: { opacity: 0 } }, { attr: { opacity: 1 }, duration: 0.45, ease: "back.out(1.6)" }, D * 0.62);
+          if (document.getElementById(SID + "-note")) {
+            tl.fromTo("#" + SID + "-note", { opacity: 0 },
+              { opacity: 1, duration: 0.6 }, D * 0.72);
+          }
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

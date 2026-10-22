@@ -1,0 +1,171 @@
+<template id="captions-template" data-composition-id="captions" data-width="{{ width }}" data-height="{{ height }}">
+<style>
+  @font-face {
+    font-family: "LXGW WenKai";
+    src: local("LXGW WenKai"), local("LXGWWenKai"), local("霞鹜文楷");
+    font-weight: 400; font-style: normal; font-display: block;
+  }
+  @font-face {
+    font-family: "LXGW WenKai";
+    src: local("LXGW WenKai Medium"), local("LXGWWenKai Medium"), local("霞鹜文楷 Medium");
+    font-weight: 700; font-style: normal; font-display: block;
+  }
+  @font-face {
+    font-family: "CJK Serif SC";
+    src: local("Noto Serif CJK SC"), local("Noto Serif SC");
+    font-weight: 400 900; font-style: normal; font-display: block;
+  }
+  #captions-root {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    --ink: #141413;
+    --cream: #FAF9F5;
+    --coral: #CC785C;
+    --accent-2: #ECE3D4;
+  }
+  {{ theme_css }}
+  .caption-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    pointer-events: none;
+  }
+  .caption-stage {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: {{ band_top_pct }}%;
+    height: {{ band_height_pct }}%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .caption-group {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+  }
+  .caption-pill {
+    max-width: {{ pill_max_pct }}%;
+    padding: 22px 44px 26px;
+    background: var(--pill-bg, var(--cream));
+    border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+    border-radius: var(--pill-radius, 12px);
+    box-shadow:
+      0 1px 3px color-mix(in srgb, var(--ink) 8%, transparent),
+      0 4px 16px color-mix(in srgb, var(--ink) 4%, transparent);
+  }
+  .caption-line {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.04em 0.14em;
+    font-family: var(--cap-font, "Inter"), system-ui, sans-serif;
+    font-weight: 700;
+    font-size: {{ cap_font_px }}px;
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+  }
+  .caption-word {
+    display: inline-block;
+    padding: 0 0.02em 0.06em;
+    color: color-mix(in srgb, var(--ink) 40%, var(--cream));
+    border-bottom: 3px solid transparent;
+  }
+  .caption-word.is-active {
+    color: var(--ink);
+    border-bottom: 3px solid var(--coral);
+  }
+  .caption-word.is-spoken {
+    color: var(--ink);
+    border-bottom: 3px solid transparent;
+  }
+</style>
+
+<div id="captions-root"
+  data-composition-id="captions"
+  data-timeline-locked
+  data-start="0"
+  data-duration="{{ '%.3f' | format(total_duration) }}"
+  data-fps="30"
+  data-width="{{ width }}"
+  data-height="{{ height }}"
+>
+  <div class="caption-layer" aria-hidden="true">
+    <div id="caption-stage" class="caption-stage"></div>
+  </div>
+</div>
+
+<script>
+  // 由 pipeline 注入：词级分组（绝对时间，已含场景偏移）
+  var GROUPS = {{ groups_json }};
+  var DURATION = {{ '%.3f' | format(total_duration) }};
+  var LAST_END = {{ '%.3f' | format(last_end_s) }};
+
+  (function () {
+    var stage = document.getElementById("caption-stage");
+
+    GROUPS.forEach(function (group, g) {
+      var groupEl = document.createElement("div");
+      groupEl.className = "caption-group";
+      groupEl.id = "caption-group-" + g;
+      var pill = document.createElement("div");
+      pill.className = "caption-pill";
+      var line = document.createElement("div");
+      line.className = "caption-line";
+      (group.words || []).forEach(function (w, i) {
+        var span = document.createElement("span");
+        span.className = "caption-word";
+        span.id = "caption-word-" + g + "-" + i;
+        span.textContent = String(w.text);
+        line.appendChild(span);
+      });
+      pill.appendChild(line);
+      groupEl.appendChild(pill);
+      stage.appendChild(groupEl);
+    });
+
+    window.__timelines = window.__timelines || {};
+    var tl = gsap.timeline({ paused: true });
+
+    GROUPS.forEach(function (group, g) {
+      var groupEl = document.getElementById("caption-group-" + g);
+      var words = group.words || [];
+      var next = GROUPS[g + 1];
+      var isLast = g === GROUPS.length - 1;
+      var start = Math.max(0, Number(group.start));
+      var end = isLast ? LAST_END : Math.min(Number(next.start), Number(group.end) + 0.3);
+      if (end <= start) end = start + 0.01;
+
+      // 组的显/隐 —— 同一时间只显示一组
+      tl.set(groupEl, { opacity: 1 }, start);
+      tl.set(groupEl, { opacity: 0 }, end);
+
+      // 3 态卡拉OK：全部用 className SET（逐帧 seek 安全）
+      words.forEach(function (w, i) {
+        var el = document.getElementById("caption-word-" + g + "-" + i);
+        var at = Math.max(start, Number(w.start));
+        tl.set(el, { className: "caption-word" }, start);
+        tl.set(el, { className: "caption-word is-active" }, at);
+        tl.fromTo(el, { scale: 0.98 }, { scale: 1, duration: 0.16, ease: "power1.out" }, at);
+        if (i + 1 < words.length) {
+          var nextAt = Math.max(start, Number(words[i + 1].start));
+          tl.set(el, { className: "caption-word is-spoken" }, nextAt);
+        }
+      });
+      if (words.length) {
+        var lastEl = document.getElementById("caption-word-" + g + "-" + (words.length - 1));
+        var lastSpoken = Math.min(end, Number(words[words.length - 1].end) + 0.1);
+        tl.set(lastEl, { className: "caption-word is-spoken" }, lastSpoken);
+      }
+    });
+
+    tl.to({}, { duration: DURATION }, 0); // 全跨度锚点
+    window.__timelines["captions"] = tl;
+  })();
+</script>
+</template>

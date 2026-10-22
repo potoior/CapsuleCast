@@ -1,0 +1,11 @@
+{
+  "id": "chart-line", "name": "折线趋势图", "role": "body",
+  "description": "时序趋势折线：坐标轴 + 折线生长 + 数据点弹出，峰值高亮。适合「逐年上升/下滑/波动」的时间序列数据。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "line-grow",
+  "min_duration_s": 6, "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "series_label", "points", "note"],
+  "example": {"kicker": "十年房价", "headline": "一线城市均价走势",
+              "series_label": "元/㎡",
+              "points": ["2015|1.5万", "2017|2.4万", "2019|3.1万", "2021|4.2万", "2023|5.0万"],
+              "note": "八年翻了三倍"}
+}

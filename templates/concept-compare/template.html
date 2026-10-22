@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ scene_id }}</title>
+  </head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline {
+          font-family: var(--font-display);
+          font-size: 6.4cqmin;
+          text-align: center;
+          letter-spacing: 0.06em;
+        }
+        #f-{{ scene_id }} .duel {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 4cqw;
+          min-height: 0;
+        }
+        #f-{{ scene_id }} .side {
+          width: 38cqw;
+          max-height: 52cqh;
+          padding: 3.2cqh 2.8cqw;
+          display: flex;
+          flex-direction: column;
+          gap: 1.8cqh;
+        }
+        #f-{{ scene_id }} .side .name {
+          font-family: var(--font-display);
+          font-size: 4.6cqmin;
+          line-height: 1.1;
+        }
+        #f-{{ scene_id }} .side .pt {
+          display: flex;
+          align-items: baseline;
+          gap: 1.2cqw;
+          font-family: var(--font-body);
+          font-size: 2.6cqmin;
+          color: var(--ink-soft);
+          line-height: 1.4;
+        }
+        #f-{{ scene_id }} .side .pt::before {
+          content: "—";
+          color: var(--ink-faint);
+          font-family: var(--font-mono);
+        }
+        #f-{{ scene_id }} .side.win .pt::before { color: var(--coral); }
+        #f-{{ scene_id }} .vs {
+          font-family: var(--font-mono);
+          font-size: 2.6cqmin;
+          letter-spacing: 0.2em;
+          color: var(--cream);
+          background: var(--navy);
+          border-radius: 50%;
+          width: 8cqmin;
+          height: 8cqmin;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex: none;
+        }
+        #f-{{ scene_id }} .verdict {
+          align-self: center;
+          display: flex;
+          align-items: center;
+          gap: 1.4cqw;
+          padding: 1.6cqh 3cqw;
+          font-family: var(--font-mono);
+          font-size: 2.6cqmin;
+          letter-spacing: 0.1em;
+          background: var(--tile);
+          border: 1px solid var(--hairline);
+          border-radius: 0.8cqmin;
+          opacity: 0;
+        }
+        #f-{{ scene_id }} .verdict .dot { color: var(--coral); }
+
+        /* 竖屏：上下堆叠，VS 变横向分隔 */
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .duel { flex-direction: column; gap: 2cqh; }
+          #f-{{ scene_id }} .side { width: 80cqw; max-height: 30cqh; padding: 2.2cqh 5cqw; }
+          #f-{{ scene_id }} .vs { width: 9cqmin; height: 3.6cqmin; border-radius: 2cqmin; }
+        }
+      </style>
+
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+
+        <div class="hf-safe" style="gap: 4cqh;">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker">
+            <span class="hf-spike"></span> {{ fields.kicker }}
+          </div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+
+          <div class="duel">
+            <div class="hf-card side" id="s-{{ scene_id }}-left">
+              <div class="name">{{ fields.left_title }}</div>
+              {% for p in fields.left_points %}
+              <div class="pt">{{ p }}</div>
+              {% endfor %}
+            </div>
+            <div class="vs" id="s-{{ scene_id }}-vs">VS</div>
+            <div class="hf-card side win" id="s-{{ scene_id }}-right">
+              <div class="name">{{ fields.right_title }}</div>
+              {% for p in fields.right_points %}
+              <div class="pt">{{ p }}</div>
+              {% endfor %}
+              <div class="hf-rule" id="s-{{ scene_id }}-rule" style="margin-top:auto; width:100%;"></div>
+            </div>
+          </div>
+
+          <div class="verdict" id="s-{{ scene_id }}-verdict">
+            <span class="dot">✱</span> {{ fields.verdict }}
+          </div>
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var tl = gsap.timeline({ paused: true });
+          var portrait = document.getElementById("f-{{ scene_id }}").offsetHeight >
+                         document.getElementById("f-{{ scene_id }}").offsetWidth;
+
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 22 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.25);
+
+          var off = portrait ? { x: 0, y: 90 } : { x: -120, y: 0 };
+          tl.fromTo("#" + SID + "-left", { opacity: 0, x: off.x, y: off.y },
+            { opacity: 1, x: 0, y: 0, duration: 0.75, ease: "power3.out" },
+            Math.min(0.6, D * 0.18));
+
+          var off2 = portrait ? { x: 0, y: 90 } : { x: 120, y: 0 };
+          tl.fromTo("#" + SID + "-right", { opacity: 0, x: off2.x, y: off2.y },
+            { opacity: 1, x: 0, y: 0, duration: 0.75, ease: "power3.out" },
+            Math.min(0.85, D * 0.26));
+
+          tl.fromTo("#" + SID + "-vs", { scale: 0, opacity: 0 },
+            { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.6)" },
+            Math.min(1.15, D * 0.34));
+          tl.to("#" + SID + "-rule", { scaleX: 1, duration: 0.8, ease: "power3.inOut" },
+            Math.min(1.5, D * 0.45));
+          tl.to("#" + SID + "-verdict", { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
+            Math.min(1.9, D * 0.58));
+          tl.fromTo("#" + SID + "-verdict", { y: 16 }, { y: 0, duration: 0.6, ease: "power3.out" },
+            Math.min(1.9, D * 0.58));
+
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": { "type": "string", "minLength": 2, "maxLength": 16, "description": "左上角标签" },
+    "headline": { "type": "string", "minLength": 2, "maxLength": 16, "description": "标题" },
+    "tiers": {
+      "type": "array", "minItems": 2, "maxItems": 3,
+      "items": { "type": "string", "minLength": 4, "maxLength": 60 },
+      "description": "档位，格式「档名|价格|特性1；特性2；特性3」"
+    },
+    "hot_index": { "type": "integer", "minimum": 0, "maximum": 2,
+      "labels": ["无推荐档", "第一档推荐", "第二档推荐", "第三档推荐"],
+      "description": "推荐档位（可留空，缺省中间档）"},
+    "note": { "type": "string", "minLength": 0, "maxLength": 22, "description": "注解（可留空）" }
+  },
+  "required": ["kicker", "headline", "tiers"],
+  "additionalProperties": false
+}

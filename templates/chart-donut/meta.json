@@ -1,0 +1,11 @@
+{
+  "id": "chart-donut", "name": "占比环图", "role": "body",
+  "description": "环形占比图：弧段依次扫开 + 右侧图例逐行浮现 + 中心大字。适合「成分构成、百分比分布、市场占比」。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "arcs-sweep",
+  "min_duration_s": 6, "max_duration_s": 18,
+  "field_order": ["kicker", "headline", "center_label", "parts", "note"],
+  "example": {"kicker": "钱去哪了", "headline": "一杯奶茶的定价构成",
+              "center_label": "30元",
+              "parts": ["原料|40%", "房租|25%", "人工|20%", "品牌|15%"],
+              "note": "你喝的是房租"}
+}

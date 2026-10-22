@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .bio { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 2.4cqh; min-height: 0; width: 84cqw; }
+        #f-{{ scene_id }} .name {
+          font-family: var(--font-display); font-weight: 700;
+          font-size: 12cqmin; line-height: 1.05; letter-spacing: 0.06em;
+          color: var(--ink);
+        }
+        #f-{{ scene_id }} .title {
+          font-family: var(--font-mono); font-size: 2.6cqmin;
+          color: var(--coral-deep); letter-spacing: 0.16em;
+        }
+        #f-{{ scene_id }} .tags { display: flex; gap: 1.2cqw; flex-wrap: wrap; }
+        #f-{{ scene_id }} .tag {
+          font-family: var(--font-body); font-weight: 600; font-size: 2.3cqmin;
+          padding: 0.8cqh 1.6cqw; border-radius: var(--pill-radius, 8px);
+          background: var(--pill-bg, var(--tile)); color: var(--ink);
+        }
+        #f-{{ scene_id }} .quote {
+          border-left: 0.8cqmin solid var(--coral);
+          padding-left: 2cqw; font-family: var(--font-display);
+          font-size: 3.6cqmin; line-height: 1.45; color: var(--ink-soft);
+          max-width: 72cqw;
+        }
+        #f-{{ scene_id }} .note { margin-top: 1cqh; font-family: var(--font-mono); font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em; }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .bio { width: 92cqw; }
+          #f-{{ scene_id }} .name { font-size: 15cqmin; }
+        }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="bio">
+            <div class="name" id="s-{{ scene_id }}-name">{{ fields.name }}</div>
+            <div class="title" id="s-{{ scene_id }}-title">{{ fields.title }}</div>
+            <div class="tags">
+              {%- for tg in fields.tags %}
+              <span class="tag" id="s-{{ scene_id }}-tag-{{ loop.index0 }}">{{ tg }}</span>
+              {%- endfor %}
+            </div>
+            <div class="quote" id="s-{{ scene_id }}-quote">“{{ fields.quote }}”</div>
+          </div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}", D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-name", { opacity: 0, y: 60 },
+            { opacity: 1, y: 0, duration: 0.8 * AD.pace, ease: "power3.out" }, D * 0.22);
+          tl.fromTo("#" + SID + "-title", { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.45, ease: "power3.out" }, D * 0.40);
+          var n = {{ fields.tags | length }};
+          for (var i = 0; i < n; i++) {
+            tl.fromTo("#" + SID + "-tag-" + i, { opacity: 0, scale: 0.7, transformOrigin: "50% 50%" },
+              { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)" }, D * (0.46 + 0.05 * i));
+          }
+          tl.fromTo("#" + SID + "-quote", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, D * 0.60);
+          if (document.getElementById(SID + "-note")) {
+            tl.fromTo("#" + SID + "-note", { opacity: 0 }, { opacity: 1, duration: 0.6 }, D * 0.72);
+          }
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

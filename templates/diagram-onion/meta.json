@@ -1,0 +1,11 @@
+{
+  "id": "diagram-onion", "name": "洋葱剥层", "role": "body",
+  "description": "同心圆层层向内：表象一层层剥开，核心是真相。适合「X的本质其实是Y」「别被表象骗了」的层层递进话题。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "peel-core",
+  "min_duration_s": 6, "max_duration_s": 16,
+  "field_order": ["kicker", "headline", "layers", "core", "note"],
+  "example": {"kicker": "本质思考", "headline": "「自律」剥开看是什么",
+              "layers": ["看到的行为|每天五点起床", "支撑的习惯|睡前放好跑鞋", "背后的动机|不想再被生活拖着走"],
+              "core": "核心其实是：把选择变少",
+              "note": "别学动作，学结构"}
+}

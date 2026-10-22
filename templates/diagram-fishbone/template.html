@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6.2cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .fb-zone { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 0; }
+        #f-{{ scene_id }} svg.fb { width: 100%; height: 100%; }
+        #f-{{ scene_id }} .f-spine { stroke: var(--ink); stroke-width: 5; stroke-linecap: round; }
+        #f-{{ scene_id }} .f-bone { stroke: var(--hairline-strong); stroke-width: 3.5; stroke-linecap: round; }
+        #f-{{ scene_id }} .f-head {
+          fill: var(--ink); rx: 10;
+        }
+        #f-{{ scene_id }} .f-head-t { font-family: var(--font-display); font-weight: 700; font-size: 3.8cqmin; fill: var(--cream); text-anchor: middle; }
+        #f-{{ scene_id }} .f-cat { font-family: var(--font-body); font-weight: 700; font-size: 2.7cqmin; fill: var(--ink); text-anchor: middle; }
+        #f-{{ scene_id }} .f-why { font-family: var(--font-mono); font-size: 2.3cqmin; fill: var(--ink-faint); text-anchor: middle; }
+        #f-{{ scene_id }} .note { margin-top: 1cqh; font-family: var(--font-mono); font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em; }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="fb-zone">
+            <svg class="fb" viewBox="0 0 1600 720" preserveAspectRatio="xMidYMid meet">
+              <line class="f-spine" id="s-{{ scene_id }}-spine" x1="140" y1="400" x2="1180" y2="400" />
+              <polygon id="s-{{ scene_id }}-arrow" points="1180,382 1180,418 1230,400" fill="var(--ink)" />
+              <rect class="f-head" id="s-{{ scene_id }}-head" x="1250" y="352" width="290" height="96" rx="12" />
+              <text class="f-head-t" id="s-{{ scene_id }}-headt" x="1395" y="412">{{ fields.problem }}</text>
+              {%- set NB = fields.bones | length %}
+              {%- for raw in fields.bones %}
+              {%- set parts = raw.split("|") %}
+              {%- set up = (loop.index0 % 2 == 0) %}
+              {%- set bx = 260 + loop.index0 * (880 // NB) %}
+              {%- set ty = 210 if up else 590 %}
+              <line class="f-bone" id="s-{{ scene_id }}-bn-{{ loop.index0 }}"
+                x1="{{ bx }}" y1="400" x2="{{ bx + 150 }}" y2="{{ ty + (60 if up else -60) }}" />
+              <text class="f-cat" id="s-{{ scene_id }}-c-{{ loop.index0 }}" x="{{ bx + 130 }}" y="{{ ty + (30 if up else -10) }}" opacity="0">{{ parts[0] }}</text>
+              {% if parts|length > 1 and parts[1] %}
+              <text class="f-why" id="s-{{ scene_id }}-w-{{ loop.index0 }}" x="{{ bx + 130 }}" y="{{ ty + (64 if up else 22) }}" opacity="0">{{ parts[1] }}</text>
+              {% endif %}
+              {%- endfor %}
+            </svg>
+          </div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}", D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.26);
+          // 主骨生长 → 鱼头
+          tl.fromTo("#" + SID + "-spine", { attr: { x2: 140 } }, { attr: { x2: 1180 }, duration: 0.55, ease: "power2.inOut" }, D * 0.24);
+          tl.fromTo("#" + SID + "-arrow", { opacity: 0 }, { opacity: 1, duration: 0.2 }, D * 0.36);
+          tl.fromTo("#" + SID + "-head", { opacity: 0, x: 30 }, { opacity: 1, x: 0, duration: 0.45, ease: "power3.out" }, D * 0.36);
+          tl.fromTo("#" + SID + "-headt", { opacity: 0 }, { opacity: 1, duration: 0.35 }, D * 0.44);
+          // 分刺逐根 + 标签
+          var n = {{ fields.bones | length }};
+          var start = D * 0.46, span = D * 0.26;
+          for (var j = 0; j < n; j++) {
+            var at2 = start + (span * j) / n;
+            tl.fromTo("#" + SID + "-bn-" + j, { opacity: 0 }, { opacity: 1, duration: 0.3 }, at2);
+            tl.to("#" + SID + "-c-" + j, { opacity: 1, duration: 0.3 }, at2 + 0.08);
+            tl.to("#" + SID + "-w-" + j, { opacity: 1, duration: 0.3 }, at2 + 0.14);
+          }
+          if (document.getElementById(SID + "-note")) {
+            tl.fromTo("#" + SID + "-note", { opacity: 0 }, { opacity: 1, duration: 0.6 }, D * 0.72);
+          }
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

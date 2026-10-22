@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "左上角标签"
+    },
+    "headline": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 18,
+      "description": "标题"
+    },
+    "layout": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 3,
+      "labels": [
+        "左题右块",
+        "右题左块",
+        "顶部横幅",
+        "居中焦点"
+      ],
+      "description": "布局（缺省自动分配）"
+    },
+    "blocks": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 4,
+      "items": {
+        "type": "string",
+        "minLength": 3,
+        "maxLength": 80,
+        "description": "内容块「类型|内容」：list|要点1；要点2；要点3（≤3条）· stat|数字|标签 · quote|金句 · tag|标签词 · bar|标签 值；标签 值（迷你条形） · img|media:引用（图片块） · chapter|02|章节名"
+      },
+      "description": "内容块，格式「类型|内容」：list|要点1；要点2；要点3（≤3条）· stat|数字|标签 · quote|金句 · tag|标签词"
+    },
+    "note": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 22,
+      "description": "注解（可留空）"
+    }
+  },
+  "required": [
+    "kicker",
+    "headline",
+    "blocks"
+  ],
+  "additionalProperties": false
+}

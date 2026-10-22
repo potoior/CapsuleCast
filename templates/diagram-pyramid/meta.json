@@ -1,0 +1,10 @@
+{
+  "id": "diagram-pyramid", "name": "金字塔图", "role": "body",
+  "description": "层级金字塔：从底到顶逐层堆叠，顶层高亮。适合需求层次、知识体系、优先级构成。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "stack-up",
+  "min_duration_s": 6, "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "levels", "note"],
+  "example": {"kicker": "需求层次", "headline": "人到底要什么",
+              "levels": ["生理需求|吃饱穿暖", "安全需求|稳定与保障", "社交需求|归属与爱", "自我实现|成为自己"],
+              "note": "下层不满足，上层谈不上"}
+}

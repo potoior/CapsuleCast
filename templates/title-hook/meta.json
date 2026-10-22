@@ -1,0 +1,25 @@
+{
+  "id": "title-hook",
+  "name": "开场钩子",
+  "description": "大标题逐字上浮 + 角标 + 副题，背景有缓慢漂移的 token 流。用于视频第一镜，抛出反直觉的问题或结论。",
+  "role": "hook",
+  "aspects": [
+    "16:9",
+    "9:16",
+    "1:1"
+  ],
+  "motion": "word-stagger-rise",
+  "min_duration_s": 4,
+  "max_duration_s": 18,
+  "field_order": [
+    "kicker",
+    "headline",
+    "subline",
+    "variant"
+  ],
+  "example": {
+    "kicker": "TOKEN 计费",
+    "headline": "第二次调用",
+    "subline": "同样的提示词，价格却不一样"
+  }
+}

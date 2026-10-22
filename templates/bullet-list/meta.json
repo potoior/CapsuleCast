@@ -1,0 +1,31 @@
+{
+  "id": "bullet-list",
+  "name": "要点清单",
+  "description": "标题 + 3-5 条编号要点，逐条滑入，重点行有珊瑚色下划线。适合列举型内容。",
+  "role": "body",
+  "aspects": [
+    "16:9",
+    "9:16",
+    "1:1"
+  ],
+  "motion": "list-cascade",
+  "min_duration_s": 5,
+  "max_duration_s": 22,
+  "field_order": [
+    "kicker",
+    "headline",
+    "bullets",
+    "highlight_index",
+    "variant"
+  ],
+  "example": {
+    "kicker": "提高命中率",
+    "headline": "三个摆放原则",
+    "bullets": [
+      "系统提示放最前",
+      "工具定义保持稳定",
+      "时间戳放最后"
+    ],
+    "highlight_index": 1
+  }
+}

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6.2cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .duel { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 3cqw; align-content: center; min-height: 0; width: 88cqw; }
+        #f-{{ scene_id }} .side { display: flex; flex-direction: column; gap: 1.4cqh; min-width: 0; }
+        #f-{{ scene_id }} .who { display: flex; align-items: baseline; gap: 1cqw; }
+        #f-{{ scene_id }} .who .nm { font-family: var(--font-body); font-weight: 700; font-size: 3cqmin; color: var(--ink); }
+        #f-{{ scene_id }} .who .rl { font-family: var(--font-mono); font-size: 1.9cqmin; color: var(--ink-faint); }
+        #f-{{ scene_id }} .bubble {
+          position: relative; padding: 2.4cqh 2cqw; border-radius: var(--tile-radius);
+          font-family: var(--font-body); font-size: 2.9cqmin; line-height: 1.5; color: var(--ink);
+        }
+        #f-{{ scene_id }} .bubble.l {
+          background: var(--tile); border: 1px solid var(--hairline-strong);
+          border-bottom-left-radius: 0.4cqmin;
+        }
+        #f-{{ scene_id }} .bubble.r {
+          background: color-mix(in srgb, var(--coral) 10%, var(--cream));
+          border: 1px solid var(--coral);
+          border-bottom-right-radius: 0.4cqmin;
+        }
+        #f-{{ scene_id }} .verdict {
+          grid-column: 1 / -1; justify-self: center;
+          font-family: var(--font-display); font-weight: 700; font-size: 3.4cqmin;
+          color: var(--coral-deep); padding: 1cqh 3cqw;
+          border-top: 3px solid var(--coral);
+        }
+        #f-{{ scene_id }} .note { margin-top: 1.2cqh; font-family: var(--font-mono); font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em; text-align: center; }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .duel { grid-template-columns: 1fr; width: 92cqw; }
+        }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="duel">
+            <div class="side">
+              {%- set ls = fields.left_speaker.split("|") %}
+              <div class="who" id="s-{{ scene_id }}-lw"><span class="nm">{{ ls[0] }}</span>{% if ls|length > 1 %}<span class="rl">{{ ls[1] }}</span>{% endif %}</div>
+              <div class="bubble l" id="s-{{ scene_id }}-lb">{{ fields.left_quote }}</div>
+            </div>
+            <div class="side">
+              {%- set rs = fields.right_speaker.split("|") %}
+              <div class="who" id="s-{{ scene_id }}-rw"><span class="nm">{{ rs[0] }}</span>{% if rs|length > 1 %}<span class="rl">{{ rs[1] }}</span>{% endif %}</div>
+              <div class="bubble r" id="s-{{ scene_id }}-rb">{{ fields.right_quote }}</div>
+            </div>
+            {% if fields.get('verdict') %}<div class="verdict" id="s-{{ scene_id }}-vd" style="opacity: 0">{{ fields.get('verdict') }}</div>{% endif %}
+          </div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}", D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.26);
+          tl.fromTo("#" + SID + "-lw", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, D * 0.28);
+          tl.fromTo("#" + SID + "-lb", { opacity: 0, x: -36 * AD.flip, scale: 0.96, transformOrigin: "0% 100%" },
+            { opacity: 1, x: 0, scale: 1, duration: 0.5 * AD.pace, ease: "back.out(1.4)" }, D * 0.32);
+          tl.fromTo("#" + SID + "-rw", { opacity: 0, x: 20 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, D * 0.44);
+          tl.fromTo("#" + SID + "-rb", { opacity: 0, x: 36 * AD.flip, scale: 0.96, transformOrigin: "100% 100%" },
+            { opacity: 1, x: 0, scale: 1, duration: 0.5 * AD.pace, ease: "back.out(1.4)" }, D * 0.48);
+          if (document.getElementById(SID + "-vd")) {
+            tl.fromTo("#" + SID + "-vd", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, D * 0.64);
+          }
+          if (document.getElementById(SID + "-note")) {
+            tl.fromTo("#" + SID + "-note", { opacity: 0 }, { opacity: 1, duration: 0.6 }, D * 0.72);
+          }
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

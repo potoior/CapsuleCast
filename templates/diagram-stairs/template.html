@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6.2cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .stairs {
+          flex: 1; width: 88cqw; margin-top: 2cqh;
+          display: flex; align-items: flex-end; gap: 1.6cqw;
+          min-height: 0; padding-bottom: 1cqh;
+          border-bottom: 3px solid var(--hairline-strong);
+        }
+        {%- set NS = fields.steps | length %}
+        {%- for i in range(NS) %}
+        #f-{{ scene_id }} .st-{{ i }} {
+          flex: 1;
+          height: {{ 34 + i * (52 // NS) }}cqh;
+          background: var(--tile);
+          border: 1px solid var(--hairline-strong);
+          border-bottom: none;
+          border-radius: var(--tile-radius) var(--tile-radius) 0 0;
+          display: flex; flex-direction: column; justify-content: flex-start;
+          align-items: flex-start; gap: 0.8cqh;
+          padding: 1.6cqh 1.4cqw;
+          min-width: 0;
+        }
+        {%- endfor %}
+        #f-{{ scene_id }} .st-hot {
+          background: color-mix(in srgb, var(--coral) 14%, var(--cream)) !important;
+          border-color: var(--coral) !important;
+        }
+        #f-{{ scene_id }} .st-name { font-family: var(--font-body); font-weight: 700; font-size: 2.9cqmin; color: var(--ink); line-height: 1.25; }
+        #f-{{ scene_id }} .st-sub { font-family: var(--font-mono); font-size: 1.9cqmin; color: var(--ink-faint); }
+        #f-{{ scene_id }} .st-hot .st-name { color: var(--coral-deep); }
+        #f-{{ scene_id }} .note { margin-top: 1.4cqh; font-family: var(--font-mono); font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em; }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .stairs { flex-direction: column; align-items: stretch; border-bottom: none; border-left: 3px solid var(--hairline-strong); padding: 0 0 0 2cqw; }
+          #f-{{ scene_id }} .st-0, #f-{{ scene_id }} .st-1, #f-{{ scene_id }} .st-2, #f-{{ scene_id }} .st-3 { height: auto; border-bottom: 1px solid var(--hairline-strong); border-left: none; border-radius: 0 var(--tile-radius) var(--tile-radius) 0; }
+        }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="stairs">
+            {%- set hot = (fields.steps | length) - 1 %}
+            {%- for raw in fields.steps %}
+            {%- set parts = raw.split("|") %}
+            <div class="st-{{ loop.index0 }}{% if loop.index0 == hot %} st-hot{% endif %}" id="s-{{ scene_id }}-st-{{ loop.index0 }}">
+              <span class="chip{% if loop.index0 == hot %} hot{% endif %}">0{{ loop.index }}</span>
+              <span class="st-name">{{ parts[0] }}</span>
+              {% if parts|length > 1 and parts[1] %}<span class="st-sub">{{ parts[1] }}</span>{% endif %}
+            </div>
+            {%- endfor %}
+          </div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}", D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.26);
+          var n = {{ fields.steps | length }};
+          var start = D * 0.28, span = D * 0.38;
+          for (var i = 0; i < n; i++) {
+            tl.fromTo("#" + SID + "-st-" + i,
+              { opacity: 0, y: 40 * AD.flip, scaleY: 0.85, transformOrigin: "50% 100%" },
+              { opacity: 1, y: 0, scaleY: 1, duration: 0.5 * AD.pace, ease: "back.out(1.3)" },
+              start + (span * i) / n);
+          }
+          if (document.getElementById(SID + "-note")) {
+            tl.fromTo("#" + SID + "-note", { opacity: 0 }, { opacity: 1, duration: 0.6 }, D * 0.72);
+          }
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ scene_id }}</title>
+  </head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline {
+          font-family: var(--font-display);
+          font-size: 6.2cqmin;
+          margin-top: 3cqh;
+        }
+        #f-{{ scene_id }} .venn-zone {
+          flex: 1; width: 92cqw; margin-top: 1cqh;
+          display: flex; align-items: center; justify-content: center;
+          min-height: 0;
+        }
+        #f-{{ scene_id }} svg.venn { width: 100%; height: 100%; }
+        #f-{{ scene_id }} .v-c-l {
+          fill: color-mix(in srgb, var(--coral) 14%, var(--cream));
+          stroke: var(--hairline-strong); stroke-width: 2.5;
+        }
+        #f-{{ scene_id }} .v-c-r {
+          fill: color-mix(in srgb, var(--ink) 8%, var(--cream));
+          stroke: var(--hairline-strong); stroke-width: 2.5;
+        }
+        #f-{{ scene_id }} .v-lens {
+          fill: var(--coral); opacity: 0.9;
+        }
+        #f-{{ scene_id }} .v-side {
+          font-family: var(--font-body); font-weight: 700;
+          font-size: 3.6cqmin; fill: var(--ink);
+        }
+        #f-{{ scene_id }} .v-side-sub {
+          font-family: var(--font-mono); font-size: 2cqmin;
+          fill: var(--ink-faint); letter-spacing: 0.06em;
+        }
+        #f-{{ scene_id }} .v-both {
+          font-family: var(--font-display); font-weight: 700;
+          font-size: 2.6cqmin; fill: var(--cream);
+        }
+        #f-{{ scene_id }} .note {
+          margin-top: 1cqh; font-family: var(--font-mono);
+          font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em;
+        }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .v-side { font-size: 4.2cqmin; }
+        }
+      </style>
+
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker">
+            <span class="hf-spike"></span> {{ fields.kicker }}
+          </div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="venn-zone">
+            <svg class="venn" viewBox="0 0 1920 760" preserveAspectRatio="xMidYMid meet">
+              <defs>
+                <clipPath id="{{ scene_id }}-cr">
+                  <circle cx="1060" cy="330" r="200" />
+                </clipPath>
+              </defs>
+              <g id="s-{{ scene_id }}-gl">
+                <circle class="v-c-l" cx="860" cy="330" r="200" />
+              </g>
+              <g id="s-{{ scene_id }}-gr">
+                <circle class="v-c-r" cx="1060" cy="330" r="200" />
+              </g>
+              <circle class="v-lens" id="s-{{ scene_id }}-lens"
+                cx="860" cy="330" r="200" clip-path="url(#{{ scene_id }}-cr)" opacity="0" />
+              <text class="v-side" id="s-{{ scene_id }}-lt" x="640" y="620"
+                text-anchor="middle" opacity="0">{{ fields.left_label }}</text>
+              {% if fields.get('left_sub') %}
+              <text class="v-side-sub" id="s-{{ scene_id }}-ls" x="640" y="662"
+                text-anchor="middle" opacity="0">{{ fields.get('left_sub') }}</text>
+              {% endif %}
+              <text class="v-side" id="s-{{ scene_id }}-rt" x="1280" y="620"
+                text-anchor="middle" opacity="0">{{ fields.right_label }}</text>
+              {% if fields.get('right_sub') %}
+              <text class="v-side-sub" id="s-{{ scene_id }}-rs" x="1280" y="662"
+                text-anchor="middle" opacity="0">{{ fields.get('right_sub') }}</text>
+              {% endif %}
+              <text class="v-both" id="s-{{ scene_id }}-bt" x="960" y="342"
+                text-anchor="middle" opacity="0">{{ fields.both_label }}</text>
+            </svg>
+          </div>
+          {% if fields.get('note') %}
+          <div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var tl = gsap.timeline({ paused: true });
+
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.26);
+
+          // 两圆从两侧滑入相遇
+          tl.fromTo("#" + SID + "-gl", { x: -160, opacity: 0 },
+            { x: 0, opacity: 1, duration: 0.8, ease: "power3.out" }, D * 0.26);
+          tl.fromTo("#" + SID + "-gr", { x: 160, opacity: 0 },
+            { x: 0, opacity: 1, duration: 0.8, ease: "power3.out" }, D * 0.26);
+
+          // 交集点亮 + 结论浮现
+          tl.to("#" + SID + "-lens", { opacity: 0.92, duration: 0.45, ease: "power2.out" }, D * 0.52);
+          tl.fromTo("#" + SID + "-bt", { opacity: 0, scale: 0.8, transformOrigin: "50% 50%" },
+            { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.6)" }, D * 0.58);
+
+          // 外侧标签
+          tl.fromTo("#" + SID + "-lt", { opacity: 0, y: 14 },
+            { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, D * 0.40);
+          tl.fromTo("#" + SID + "-rt", { opacity: 0, y: 14 },
+            { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, D * 0.40);
+          var els = ["ls", "rs"];
+          for (var i = 0; i < els.length; i++) {
+            if (document.getElementById(SID + "-" + els[i])) {
+              tl.fromTo("#" + SID + "-" + els[i], { opacity: 0 },
+                { opacity: 1, duration: 0.4 }, D * 0.48);
+            }
+          }
+          if (document.getElementById(SID + "-note")) {
+            tl.fromTo("#" + SID + "-note", { opacity: 0 },
+              { opacity: 1, duration: 0.6 }, D * 0.72);
+          }
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

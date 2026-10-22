@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": { "type": "string", "minLength": 2, "maxLength": 16, "description": "左上角标签" },
+    "headline": { "type": "string", "minLength": 2, "maxLength": 16, "description": "标题" },
+    "items": {
+      "type": "array", "minItems": 3, "maxItems": 5,
+      "items": { "type": "string", "minLength": 2, "maxLength": 20 },
+      "description": "清单项，格式「动作|方法/小注」"
+    },
+    "note": { "type": "string", "minLength": 0, "maxLength": 22, "description": "注解（可留空）" }
+  },
+  "required": ["kicker", "headline", "items"],
+  "additionalProperties": false
+}

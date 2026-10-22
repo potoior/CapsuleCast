@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ scene_id }}</title>
+  </head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline {
+          font-family: var(--font-display);
+          font-size: 6.2cqmin;
+          margin-top: 2.5cqh;
+        }
+        #f-{{ scene_id }} .spine-area {
+          flex: 1;
+          position: relative;
+          margin-top: 3cqh;
+          min-height: 0;
+        }
+        #f-{{ scene_id }} .spine {
+          position: absolute;
+          left: 11cqw;
+          top: 1cqh;
+          bottom: 1cqh;
+          width: 3px;
+          background: color-mix(in srgb, var(--ink) 14%, transparent);
+        }
+        #f-{{ scene_id }} .spine-fill {
+          position: absolute;
+          left: 11cqw;
+          top: 1cqh;
+          bottom: 1cqh;
+          width: 3px;
+          background: var(--coral);
+          transform-origin: top center;
+          transform: scaleY(0);
+        }
+        #f-{{ scene_id }} .rows {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-around;
+          gap: 1cqh;
+        }
+        #f-{{ scene_id }} .evt {
+          display: flex;
+          align-items: center;
+          gap: 3cqw;
+        }
+        #f-{{ scene_id }} .dot {
+          width: 2.4cqmin;
+          height: 2.4cqmin;
+          border-radius: 50%;
+          background: var(--cream);
+          border: 3px solid var(--ink);
+          margin-left: 10.05cqw;
+          flex: none;
+        }
+        #f-{{ scene_id }} .evt.hot .dot {
+          background: var(--coral);
+          border-color: var(--coral);
+        }
+        #f-{{ scene_id }} .lb {
+          font-family: var(--font-mono);
+          font-size: 2.3cqmin;
+          letter-spacing: 0.1em;
+          color: var(--ink);
+          flex: none;
+          width: 12cqw;
+        }
+        #f-{{ scene_id }} .tx {
+          font-family: var(--font-body);
+          font-size: 3cqmin;
+          color: var(--ink-soft);
+          line-height: 1.45;
+        }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .spine { left: 8cqw; }
+          #f-{{ scene_id }} .spine-fill { left: 8cqw; }
+          #f-{{ scene_id }} .dot { margin-left: 7.05cqw; }
+          #f-{{ scene_id }} .lb { width: 16cqw; }
+          #f-{{ scene_id }} .tx { font-size: 3.5cqmin; }
+        }
+      </style>
+
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker">
+            <span class="hf-spike"></span> {{ fields.kicker }}
+          </div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+
+          <div class="spine-area">
+            <div class="spine"></div>
+            <div class="spine-fill" id="s-{{ scene_id }}-fill"></div>
+            <div class="rows">
+              {% for e in fields.events %}
+              <div class="evt{% if loop.last %} hot{% endif %}" id="s-{{ scene_id }}-evt-{{ loop.index0 }}">
+                <div class="dot"></div>
+                <div class="lb">{{ e.label }}</div>
+                <div class="tx">{{ e.text }}</div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var N = {{ fields.events | length }};
+          var tl = gsap.timeline({ paused: true });
+
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 20 },
+            { opacity: 1, y: 0, duration: 0.65, ease: "power3.out" }, 0.26);
+
+          // 脊柱生长 + 事件依次弹出
+          var span = D * 0.6 - D * 0.18;
+          tl.to("#" + SID + "-fill", { scaleY: 1, duration: span + 0.3, ease: "power1.inOut" },
+            D * 0.18);
+          for (var i = 0; i < N; i++) {
+            var at = D * 0.18 + (span * i) / Math.max(1, N - 1);
+            tl.fromTo("#" + SID + "-evt-" + i, { opacity: 0, x: -26 },
+              { opacity: 1, x: 0, duration: 0.55, ease: "power3.out" }, at);
+          }
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

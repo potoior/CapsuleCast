@@ -1,0 +1,10 @@
+{
+  "id": "rank-list", "name": "排行榜", "role": "body",
+  "description": "TOP N 排行榜：巨大名次数字 + 条目，冠军行高亮放大。适合「涨粉最快的三个动作」「年度十大」。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "champion-first",
+  "min_duration_s": 5, "max_duration_s": 18,
+  "field_order": ["kicker", "headline", "items", "note"],
+  "example": {"kicker": "涨粉研究", "headline": "涨粉最快的三个动作",
+              "items": ["开头三秒换钩子|完播率翻倍", "把结论前置|留存提升", "每层只讲一件事|信息密度"],
+              "note": "第一名效果最猛"}
+}

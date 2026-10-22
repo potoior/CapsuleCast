@@ -1,0 +1,27 @@
+{
+  "id": "quote-cta",
+  "name": "金句收尾",
+  "description": "大引号金句居中浮现 + 珊瑚色 CTA 行 + 底部脚注。用于最后一镜：点题 + 行动号召。",
+  "role": "outro",
+  "aspects": [
+    "16:9",
+    "9:16",
+    "1:1"
+  ],
+  "motion": "slow-settle",
+  "min_duration_s": 4,
+  "max_duration_s": 16,
+  "field_order": [
+    "kicker",
+    "quote",
+    "cta",
+    "footnote",
+    "variant"
+  ],
+  "example": {
+    "kicker": "一句话记住",
+    "quote": "缓存是前缀的精确匹配",
+    "cta": "把稳定的内容放前面",
+    "footnote": "下期见"
+  }
+}

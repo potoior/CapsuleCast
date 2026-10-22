@@ -1,0 +1,20 @@
+{
+  "id": "timeline-events",
+  "name": "时间线",
+  "description": "竖直脊柱时间线，3-4 个事件节点依次弹出（阶段/年份 + 描述）。适合演进过程、里程碑、阶段划分。",
+  "role": "body",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "motion": "spine-grow",
+  "min_duration_s": 5,
+  "max_duration_s": 22,
+  "field_order": ["kicker", "headline", "events"],
+  "example": {
+    "kicker": "回本账",
+    "headline": "缓存的三个阶段",
+    "events": [
+      { "label": "首次", "text": "写入溢价，比不缓存更贵" },
+      { "label": "第 2 次", "text": "命中抵消写入成本" },
+      { "label": "第 3 次", "text": "开始净赚差价" }
+    ]
+  }
+}

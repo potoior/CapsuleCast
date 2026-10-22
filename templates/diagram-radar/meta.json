@@ -1,0 +1,10 @@
+{
+  "id": "diagram-radar", "name": "雷达图", "role": "body",
+  "description": "多维能力雷达：3-5 个维度的数值对比，多边形生长动画。适合评测打分、多维对比、优劣势分析。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "polygon-grow",
+  "min_duration_s": 6, "max_duration_s": 18,
+  "field_order": ["kicker", "headline", "axes", "note"],
+  "example": {"kicker": "城市对比", "headline": "两座城市生活质感",
+              "axes": ["通勤|70", "房价|45", "医疗|85", "教育|90", "美食|60"],
+              "note": "没有全能冠军"}
+}

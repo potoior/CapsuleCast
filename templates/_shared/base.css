@@ -1,0 +1,237 @@
+/* ══════════════════════════════════════════════════════════════
+   HyperFrames 模板共享设计系统
+   · 三画幅: 16:9 (1920×1080) / 9:16 (1080×1920) / 1:1 (1080×1080)
+   · 尺寸体系: container query units (cqmin/cqw/cqh) —— 同一份 CSS
+     在三种画幅下等比缩放（1080p 下 1cqmin = 10.8px）
+   · 字幕安全带: 底部 18% 高度，内容全部限制在 .safe-zone 内
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── 字体：拉丁用打包 woff2；CJK 依赖系统 fontconfig 回退到 Noto Sans/Serif CJK SC
+     （与参考项目一致——显式 CJK 家族名会触发 lint 的 font_family_without_font_face） ── */
+@font-face {
+  font-family: "EB Garamond"; src: url("assets/fonts/EBGaramond-400.woff2") format("woff2");
+  font-weight: 400; font-style: normal; font-display: block;
+}
+@font-face {
+  font-family: "EB Garamond"; src: url("assets/fonts/EBGaramond-700.woff2") format("woff2");
+  font-weight: 700; font-style: normal; font-display: block;
+}
+@font-face {
+  font-family: "Inter"; src: url("assets/fonts/Inter-400.woff2") format("woff2");
+  font-weight: 400; font-style: normal; font-display: block;
+}
+@font-face {
+  font-family: "Inter"; src: url("assets/fonts/Inter-700.woff2") format("woff2");
+  font-weight: 700; font-style: normal; font-display: block;
+}
+@font-face {
+  font-family: "JetBrains Mono"; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2");
+  font-weight: 400; font-style: normal; font-display: block;
+}
+@font-face {
+  font-family: "JetBrains Mono"; src: url("assets/fonts/JetBrainsMono-700.woff2") format("woff2");
+  font-weight: 700; font-style: normal; font-display: block;
+}
+
+@font-face {
+  font-family: "CJK Serif SC";
+  src: local("Noto Serif CJK SC"), local("Noto Serif SC");
+  font-weight: 400 900; font-style: normal; font-display: block;
+}
+@font-face {
+  font-family: "LXGW WenKai";
+  src: local("LXGW WenKai"), local("LXGWWenKai"), local("霞鹜文楷");
+  font-weight: 400; font-style: normal; font-display: block;
+}
+@font-face {
+  font-family: "LXGW WenKai";
+  src: local("LXGW WenKai Medium"), local("LXGWWenKai Medium"), local("霞鹜文楷 Medium");
+  font-weight: 700; font-style: normal; font-display: block;
+}
+
+/* ── 设计令牌 ──（ROOT_SEL 由模板引擎替换为 #f-<scene_id>：子合成根必须按 ID 定样式） ── */
+ROOT_SEL {
+  --ink: #141413;
+  --cream: #FAF9F5;
+  --tile: #EFE9DE;
+  --tile-strong: #ECE3D4;
+  --coral: #CC785C;
+  --coral-deep: #A0523A;
+  --navy: #181715;
+  --hairline: color-mix(in srgb, var(--ink) 12%, transparent);
+  --hairline-strong: color-mix(in srgb, var(--ink) 20%, transparent);
+  --ink-soft: color-mix(in srgb, var(--ink) 68%, var(--cream));
+  --ink-faint: color-mix(in srgb, var(--ink) 40%, var(--cream));
+  --font-display: "EB Garamond", Georgia, serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  /* 字幕带：底部 18% */
+  --cap-band-top: 82;
+  --cap-band-height: 18;
+  /* 风格包扩展令牌（默认 = 暖光杂志风） */
+  --spike-char: "✱";
+  --tile-radius: 1.2cqmin;
+  /* D 层装饰词汇：角标 plate mark + 纸纹颗粒（风格包可覆写） */
+  --corner-mark: "";
+  --corner-opacity: 0;
+  --grain-alpha: 0;
+  --ground-image:
+    linear-gradient(to right, color-mix(in srgb, var(--ink) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--ink) 6%, transparent) 1px, transparent 1px);
+  --ground-size: 8cqw 8cqw;
+}
+
+/* ── 画布容器：container-type:size 让子元素可用 cqmin/cqw/cqh ── */
+ROOT_SEL {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body);
+  container-type: size;
+  container-name: frame;
+}
+ROOT_SEL, ROOT_SEL *, ROOT_SEL *::before, ROOT_SEL *::after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+/* ── 网格纸底纹（每个模板可关） ── */
+.hf-ground {
+  position: absolute;
+  inset: 0;
+  background-color: var(--cream);
+  background-image: var(--ground-image);
+  background-size: var(--ground-size);
+}
+
+/* ── 安全区：内容绝不下探字幕带 ── */
+.hf-safe {
+  position: absolute;
+  inset: 0;
+  padding: 7cqh var(--pad-x, 6cqw) calc(var(--cap-band-height) * 1cqh);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── 排版基元 ── */
+.hf-kicker {
+  display: flex;
+  align-items: center;
+  gap: 1.3cqw;
+  font-family: var(--font-mono);
+  font-size: 2.3cqmin;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.hf-kicker .hf-spike {
+  color: var(--coral);
+  font-size: 3.1cqmin;
+  line-height: 1;
+}
+.hf-kicker .hf-spike::before { content: var(--spike-char); }
+.hf-display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+}
+.hf-display span { display: inline-block; }
+.hf-body {
+  font-family: var(--font-body);
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+.hf-mono {
+  font-family: var(--font-mono);
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+}
+
+/* ── 卡片与描边 ── */
+.hf-card {
+  background: var(--cream);
+  border: 1px solid var(--hairline);
+  border-radius: var(--tile-radius);
+  box-shadow:
+    0 1px 3px color-mix(in srgb, var(--ink) 7%, transparent),
+    0 4px 16px color-mix(in srgb, var(--ink) 4%, transparent);
+}
+.hf-tile {
+  background: var(--tile);
+  border: 1px solid var(--hairline);
+  border-radius: var(--tile-radius);
+}
+.hf-rule {
+  height: 3px;
+  background: var(--coral);
+  transform-origin: left center;
+}
+.hf-num {
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-display);
+  letter-spacing: -0.03em;
+}
+
+/* ── 序号徽章：步骤/分支/象限的编号圆片 ── */
+.chip {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 3.6cqmin; height: 3.6cqmin; flex: none;
+  border: 1px solid var(--hairline-strong); border-radius: 50%;
+  font-family: var(--font-mono); font-size: 1.9cqmin; line-height: 1;
+  color: var(--coral-deep); background: var(--cream);
+}
+.chip.hot {
+  background: var(--coral); color: var(--cream); border-color: var(--coral);
+}
+
+/* ── 权重条：因素的强弱可视化（内层 <i> 按百分比宽） ── */
+.wbar {
+  width: 100%; height: 0.8cqmin; flex: none;
+  background: color-mix(in srgb, var(--ink) 10%, transparent);
+  border-radius: 99cqmin; overflow: hidden;
+}
+.wbar > i {
+  display: block; height: 100%; border-radius: inherit;
+  background: var(--coral); transform-origin: left center;
+}
+
+/* ── D 层装饰：纸纹颗粒（覆盖全画幅，极低透明度） ── */
+ROOT_SEL::before {
+  content: ""; position: absolute; inset: 0; z-index: 59; pointer-events: none;
+  opacity: var(--grain-alpha, 0);
+  background-image:
+    radial-gradient(color-mix(in srgb, var(--ink) 45%, transparent) 0.5px, transparent 0.9px),
+    radial-gradient(color-mix(in srgb, var(--cream) 55%, transparent) 0.5px, transparent 0.9px);
+  background-size: 5px 5px, 7px 7px;
+  background-position: 0 0, 2px 3px;
+}
+
+/* ── D 层装饰：右上角 plate mark（栏目/系列角标；左上被 kicker 占用） ── */
+ROOT_SEL::after {
+  content: var(--corner-mark, "");
+  position: absolute; right: 3.6cqw; top: 4.4cqh; z-index: 60;
+  pointer-events: none; opacity: var(--corner-opacity, 0);
+  font-family: var(--font-mono); font-size: 1.7cqmin; letter-spacing: 0.22em;
+  color: var(--ink-faint); white-space: nowrap;
+}
+@container frame (max-aspect-ratio: 10/16) {
+  ROOT_SEL::after { font-size: 2.1cqmin; }
+}
+
+/* ── 画幅自适应 ────────────────────────────────────────────
+   横屏: 信息可以横向铺开；竖屏: 字号相对更大、堆叠布局。  */
+@container frame (max-aspect-ratio: 10/16) {
+  .hf-safe { --pad-x: 8cqw; }
+  .hf-kicker { font-size: 2.8cqmin; }
+}
+@container frame (min-aspect-ratio: 16/10) {
+  .hf-safe { --pad-x: 5cqw; }
+}
+
+/* ── 竖屏时正文可稍大（参照参考项目 captions 的做法） ── */
+@container frame (max-aspect-ratio: 10/16) {
+  .hf-body { font-size: 2.9cqmin; }
+}

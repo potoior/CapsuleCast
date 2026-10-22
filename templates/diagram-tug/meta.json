@@ -1,0 +1,12 @@
+{
+  "id": "diagram-tug", "name": "拔河对抗", "role": "body",
+  "description": "绳结中点的拔河：两种力量往两边拉，绳结偏向哪边。适合「X和Y在拉扯」「身体里两个小人打架」的对抗类话题。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "rope-pull",
+  "min_duration_s": 6, "max_duration_s": 16,
+  "field_order": ["kicker", "headline", "left_force", "left_points", "right_force", "right_points", "verdict", "note"],
+  "example": {"kicker": "深夜大脑", "headline": "睡意和刷瘾的拔河",
+              "left_force": "睡意", "left_points": ["腺苷堆积|越熬越困", "褪黑素上岗|该睡了"],
+              "right_force": "再刷亿点", "right_points": ["多巴胺劫持|下一条更精彩", "报复性清醒|白天不属于自己"],
+              "verdict": "短期的瘾，赢过长期的困",
+              "note": "赢的从来不是意志力，是环境设计"}
+}

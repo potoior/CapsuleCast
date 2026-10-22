@@ -1,0 +1,18 @@
+{
+  "id": "term-explainer",
+  "name": "术语解释",
+  "description": "一张居中术语卡：大术语 + 定义 + 等宽英文注解，卡片升起后珊瑚下划线绘出。适合“X 是指 / 叫做”类定义句。",
+  "role": "body",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "motion": "card-lift",
+  "min_duration_s": 4,
+  "max_duration_s": 18,
+  "field_order": ["kicker", "term", "term_en", "definition", "tag"],
+  "example": {
+    "kicker": "核心概念",
+    "term": "KV Cache",
+    "term_en": "KEY · VALUE CACHE",
+    "definition": "模型把算过的每个 token 存成键值对，下次直接复用。",
+    "tag": "PREFIX MATCH"
+  }
+}

@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6.2cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .qa-zone { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 2.4cqh; min-height: 0; width: 84cqw; }
+        #f-{{ scene_id }} .qa {
+          position: relative; padding: 2.6cqh 2.6cqw 2.6cqh 9cqw;
+          border-radius: var(--tile-radius);
+        }
+        #f-{{ scene_id }} .qa .glyph {
+          position: absolute; left: 2.2cqw; top: 1.8cqh;
+          font-family: var(--font-display); font-weight: 700; font-size: 5cqmin; line-height: 1;
+        }
+        #f-{{ scene_id }} .qa .txt { font-family: var(--font-body); font-size: 3.4cqmin; line-height: 1.45; color: var(--ink); }
+        #f-{{ scene_id }} .qa.q { border: 1px solid var(--hairline-strong); background: var(--cream); }
+        #f-{{ scene_id }} .qa.q .glyph { color: var(--ink); }
+        #f-{{ scene_id }} .qa.a { border: 1px solid var(--coral); background: color-mix(in srgb, var(--coral) 9%, var(--cream)); border-left: 0.8cqmin solid var(--coral); }
+        #f-{{ scene_id }} .qa.a .glyph { color: var(--coral); }
+        #f-{{ scene_id }} .note { margin-top: 1.2cqh; font-family: var(--font-mono); font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em; }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .qa-zone { width: 92cqw; }
+          #f-{{ scene_id }} .qa .txt { font-size: 4cqmin; }
+        }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="qa-zone">
+            <div class="qa q" id="s-{{ scene_id }}-q">
+              <span class="glyph">Q</span>
+              <span class="txt">{{ fields.question }}</span>
+            </div>
+            <div class="qa a" id="s-{{ scene_id }}-a">
+              <span class="glyph">A</span>
+              <span class="txt">{{ fields.answer }}</span>
+            </div>
+          </div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}", D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.26);
+          // Q 压场
+          tl.fromTo("#" + SID + "-q", { opacity: 0, x: -36 * AD.flip }, { opacity: 1, x: 0, duration: 0.55 * AD.pace, ease: "power3.out" }, D * 0.28);
+          // A 揭示
+          tl.fromTo("#" + SID + "-a", { opacity: 0, y: 40 * AD.flip, scale: 0.97 }, { opacity: 1, y: 0, scale: 1, duration: 0.6 * AD.pace, ease: "back.out(1.3)" }, D * 0.56);
+          if (document.getElementById(SID + "-note")) {
+            tl.fromTo("#" + SID + "-note", { opacity: 0 }, { opacity: 1, duration: 0.6 }, D * 0.72);
+          }
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

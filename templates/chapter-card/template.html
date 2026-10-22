@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ scene_id }}</title>
+  </head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .zone {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          gap: 4cqw;
+          min-height: 0;
+        }
+        #f-{{ scene_id }} .numeral {
+          font-family: var(--font-display);
+          font-size: 26cqmin;
+          line-height: 0.9;
+          letter-spacing: -0.04em;
+          color: var(--coral);
+          font-variant-numeric: tabular-nums;
+          flex: none;
+        }
+        #f-{{ scene_id }} .num-sub {
+          font-family: var(--font-mono);
+          font-size: 3cqmin;
+          color: var(--ink-faint);
+          letter-spacing: 0.15em;
+        }
+        #f-{{ scene_id }} .divider {
+          width: 2px;
+          align-self: stretch;
+          margin: 8cqh 0;
+          background: var(--hairline-strong);
+        }
+        #f-{{ scene_id }} .ch-right {
+          display: flex;
+          flex-direction: column;
+          gap: 1.8cqh;
+        }
+        #f-{{ scene_id }} .ch-title {
+          font-family: var(--font-display);
+          font-size: 7.4cqmin;
+          line-height: 1.15;
+          color: var(--ink);
+        }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .numeral { font-size: 30cqmin; }
+          #f-{{ scene_id }} .ch-title { font-size: 9cqmin; }
+        }
+      </style>
+
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker">
+            <span class="hf-spike"></span> {{ fields.kicker }}
+          </div>
+          <div class="zone">
+            <div>
+              <div class="numeral" id="s-{{ scene_id }}-num">{{ fields.part_no }}</div>
+              <div class="num-sub" id="s-{{ scene_id }}-ntotal">/ {{ fields.part_total }}</div>
+            </div>
+            <div class="divider" id="s-{{ scene_id }}-div"></div>
+            <div class="ch-right">
+              <div class="ch-title" id="s-{{ scene_id }}-title">{{ fields.chapter_title }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 0.08);
+          tl.fromTo("#" + SID + "-num",
+            { opacity: 0, x: 60 * AD.flip, scale: 1.25 },
+            { opacity: 1, x: 0, scale: 1, duration: 0.55 * AD.pace, ease: "power4.out" }, 0.16);
+          tl.fromTo("#" + SID + "-ntotal", { opacity: 0 },
+            { opacity: 1, duration: 0.4 }, 0.45);
+          tl.fromTo("#" + SID + "-div", { scaleY: 0, transformOrigin: "50% 0%" },
+            { scaleY: 1, duration: 0.5, ease: "power3.out" }, 0.3);
+          tl.fromTo("#" + SID + "-title",
+            { opacity: 0, y: 30 * AD.flip },
+            { opacity: 1, y: 0, duration: 0.55 * AD.pace, ease: "power3.out" }, 0.42);
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

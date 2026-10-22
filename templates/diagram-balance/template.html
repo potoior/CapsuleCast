@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6.2cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .bal-zone { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 0; }
+        #f-{{ scene_id }} svg.bal { width: 92cqw; max-height: 50cqh; }
+        #f-{{ scene_id }} .b-part { stroke: var(--ink); stroke-width: 5; stroke-linecap: round; fill: none; }
+        #f-{{ scene_id }} .b-pan { fill: color-mix(in srgb, var(--coral) 10%, var(--cream)); stroke: var(--ink); stroke-width: 4; }
+        #f-{{ scene_id }} .b-lab { font-family: var(--font-body); font-weight: 700; font-size: 3.4cqmin; fill: var(--ink); text-anchor: middle; }
+        #f-{{ scene_id }} .b-sub { font-family: var(--font-mono); font-size: 2cqmin; fill: var(--ink-faint); text-anchor: middle; }
+        #f-{{ scene_id }} .verdict {
+          margin-top: 0.8cqh; text-align: center;
+          font-family: var(--font-display); font-weight: 700; font-size: 3.6cqmin;
+          color: var(--coral-deep);
+        }
+        #f-{{ scene_id }} .note { margin-top: 1cqh; font-family: var(--font-mono); font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em; }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="bal-zone">
+            <svg class="bal" viewBox="0 0 1600 620" preserveAspectRatio="xMidYMid meet">
+              <g id="s-{{ scene_id }}-beam" style="transform-origin: 800px 200px;">
+                <line class="b-part" x1="480" y1="200" x2="1120" y2="200" />
+                <line class="b-part" x1="480" y1="200" x2="480" y2="268" />
+                <line class="b-part" x1="1120" y1="200" x2="1120" y2="268" />
+                <path class="b-pan" id="s-{{ scene_id }}-pan-l" d="M 380 268 A 100 60 0 0 0 580 268 Z" />
+                <path class="b-pan" id="s-{{ scene_id }}-pan-r" d="M 1020 268 A 100 60 0 0 0 1220 268 Z" />
+              </g>
+              <line class="b-part" id="s-{{ scene_id }}-post" x1="800" y1="200" x2="800" y2="520" />
+              <line class="b-part" id="s-{{ scene_id }}-base" x1="680" y1="524" x2="920" y2="524" />
+              <circle class="b-part" id="s-{{ scene_id }}-pivot" cx="800" cy="200" r="12" fill="var(--ink)" />
+              <text class="b-lab" id="s-{{ scene_id }}-lt" x="480" y="380" opacity="0">{{ fields.left_label }}</text>
+              <text class="b-sub" id="s-{{ scene_id }}-ls" x="480" y="416" opacity="0">{{ fields.get('left_sub', '') }}</text>
+              <text class="b-lab" id="s-{{ scene_id }}-rt" x="1120" y="380" opacity="0">{{ fields.right_label }}</text>
+              <text class="b-sub" id="s-{{ scene_id }}-rs" x="1120" y="416" opacity="0">{{ fields.get('right_sub', '') }}</text>
+            </svg>
+          </div>
+          <div class="verdict" id="s-{{ scene_id }}-vd" style="opacity: 0">{{ fields.verdict }}</div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}", D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.26);
+          // 底座立起
+          tl.fromTo("#" + SID + "-post", { attr: { y2: 200 } }, { attr: { y2: 520 }, duration: 0.4 }, D * 0.24);
+          tl.fromTo("#" + SID + "-base", { attr: { x1: 800, x2: 800 } }, { attr: { x1: 680, x2: 920 }, duration: 0.35 }, D * 0.30);
+          tl.fromTo("#" + SID + "-pivot", { attr: { r: 0 } }, { attr: { r: 12 }, duration: 0.3 }, D * 0.34);
+          // 横梁落下（带轻微弹性）
+          tl.fromTo("#" + SID + "-beam", { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, D * 0.32);
+          // 双方落座
+          tl.fromTo("#" + SID + "-lt", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4 }, D * 0.44);
+          tl.fromTo("#" + SID + "-rt", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4 }, D * 0.47);
+          var subs = ["ls", "rs"];
+          for (var i = 0; i < subs.length; i++) {
+            if (document.getElementById(SID + "-" + subs[i])) {
+              tl.fromTo("#" + SID + "-" + subs[i], { opacity: 0 }, { opacity: 1, duration: 0.35 }, D * 0.5 + i * 0.05);
+            }
+          }
+          // 称量：横梁倾斜（重方下沉——这里右倾示意）
+          tl.to("#" + SID + "-beam", { rotation: 5 * AD.flip, duration: D * 0.12, ease: "power2.inOut" }, D * 0.56);
+          tl.to("#" + SID + "-beam", { rotation: -3 * AD.flip, duration: D * 0.08, ease: "power1.inOut" }, D * 0.68);
+          tl.to("#" + SID + "-beam", { rotation: 0, duration: D * 0.07, ease: "power1.out" }, D * 0.76);
+          tl.fromTo("#" + SID + "-vd", { opacity: 0, scale: 0.85, transformOrigin: "50% 50%" },
+            { opacity: 1, scale: 1, duration: 0.5 * AD.pace, ease: "back.out(1.5)" }, D * 0.62);
+          if (document.getElementById(SID + "-note")) {
+            tl.fromTo("#" + SID + "-note", { opacity: 0 }, { opacity: 1, duration: 0.6 }, D * 0.72);
+          }
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

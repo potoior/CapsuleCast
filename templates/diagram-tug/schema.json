@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": { "type": "string", "minLength": 2, "maxLength": 16, "description": "左上角标签" },
+    "headline": { "type": "string", "minLength": 2, "maxLength": 16, "description": "标题" },
+    "left_force": { "type": "string", "minLength": 1, "maxLength": 8, "description": "左边力量名" },
+    "left_points": {
+      "type": "array", "minItems": 1, "maxItems": 3,
+      "items": { "type": "string", "minLength": 2, "maxLength": 16 },
+      "description": "左边论据，格式「要点|小注」"
+    },
+    "right_force": { "type": "string", "minLength": 1, "maxLength": 8, "description": "右边力量名" },
+    "right_points": {
+      "type": "array", "minItems": 1, "maxItems": 3,
+      "items": { "type": "string", "minLength": 2, "maxLength": 16 },
+      "description": "右边论据，格式「要点|小注」"
+    },
+    "verdict": { "type": "string", "minLength": 2, "maxLength": 18, "description": "一句话裁决（谁赢/为什么）" },
+    "note": { "type": "string", "minLength": 0, "maxLength": 22, "description": "注解（可留空）" }
+  },
+  "required": ["kicker", "headline", "left_force", "left_points", "right_force", "right_points", "verdict"],
+  "additionalProperties": false
+}

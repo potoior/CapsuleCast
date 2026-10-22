@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": { "type": "string", "minLength": 2, "maxLength": 16, "description": "左上角标签" },
+    "headline": { "type": "string", "minLength": 2, "maxLength": 16, "description": "标题" },
+    "value_text": { "type": "string", "minLength": 1, "maxLength": 10, "description": "中心大数字/文字（如 82、7.5分）" },
+    "value_pct": { "type": "integer", "minimum": 0, "maximum": 100, "description": "指针位置 0-100" },
+    "low_label": { "type": "string", "minLength": 0, "maxLength": 6, "description": "左端刻度名（可留空）" },
+    "high_label": { "type": "string", "minLength": 0, "maxLength": 6, "description": "右端刻度名（可留空）" },
+    "note": { "type": "string", "minLength": 0, "maxLength": 22, "description": "注解（可留空）" }
+  },
+  "required": ["kicker", "headline", "value_text", "value_pct"],
+  "additionalProperties": false
+}

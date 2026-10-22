@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": { "type": "string", "minLength": 2, "maxLength": 16, "description": "左上角标签" },
+    "headline": { "type": "string", "minLength": 2, "maxLength": 16, "description": "标题" },
+    "bars": {
+      "type": "array", "minItems": 3, "maxItems": 4,
+      "items": { "type": "string", "minLength": 3, "maxLength": 18 },
+      "description": "条目，格式「标签|数值文本」（竖线分隔），如「直接对话|68%」「开会|3.2小时」"
+    },
+    "note": { "type": "string", "minLength": 0, "maxLength": 24, "description": "脚注/数据说明（可留空）" }
+  },
+  "required": ["kicker", "headline", "bars"],
+  "additionalProperties": false
+}

@@ -1,0 +1,22 @@
+# 环境与密钥
+.env
+*.key
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Node
+node_modules/
+.next/
+apps/web/out/
+
+# 参考项目（第三方内容，不随仓库分发）
+reference/
+
+# 本地运行产物
+*.log
+*.mp4
+.DS_Store

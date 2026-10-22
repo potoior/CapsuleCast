@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": { "type": "string", "minLength": 2, "maxLength": 16, "description": "左上角标签" },
+    "headline": { "type": "string", "minLength": 2, "maxLength": 16, "description": "标题" },
+    "cards": {
+      "type": "array", "minItems": 2, "maxItems": 4,
+      "items": { "type": "string", "minLength": 3, "maxLength": 24 },
+      "description": "数据卡，格式「数值|标签|涨跌角标」或「数值|标签」，首卡高亮"
+    },
+    "note": { "type": "string", "minLength": 0, "maxLength": 22, "description": "注解（可留空）" }
+  },
+  "required": ["kicker", "headline", "cards"],
+  "additionalProperties": false
+}

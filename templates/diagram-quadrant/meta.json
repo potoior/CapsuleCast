@@ -1,0 +1,11 @@
+{
+  "id": "diagram-quadrant", "name": "象限图", "role": "body",
+  "description": "2×2 象限矩阵：坐标轴 + 四格，重点格高亮。适合四象限法则、矩阵分析、权衡取舍。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "axes-then-cells",
+  "min_duration_s": 6, "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "x_label", "y_label", "quadrants", "note"],
+  "example": {"kicker": "时间管理", "headline": "重要紧急四象限",
+              "x_label": "紧急 →", "y_label": "重要 ↑",
+              "quadrants": ["马上做|危机与截止", "排计划|长期价值", "少碰|琐事干扰", "交给别人|可委托的"],
+              "note": "高手把时间花在右上"}
+}

@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6.4cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .trio {
+          flex: 1; display: grid; grid-template-columns: repeat(3, 1fr);
+          gap: 2cqw; align-content: center; min-height: 0; width: 92cqw;
+        }
+        #f-{{ scene_id }} .fact {
+          border: 1px solid var(--hairline-strong); border-radius: var(--tile-radius);
+          background: var(--cream); padding: 2.8cqh 1.6cqw;
+          display: flex; flex-direction: column; gap: 1.3cqh; min-width: 0;
+        }
+        #f-{{ scene_id }} .fact.hot {
+          border-color: var(--coral);
+          background: color-mix(in srgb, var(--coral) 9%, var(--cream));
+        }
+        #f-{{ scene_id }} .fact .big {
+          font-family: var(--font-mono); font-weight: 700; font-size: 5.2cqmin;
+          color: color-mix(in srgb, var(--ink) 22%, transparent); line-height: 1;
+        }
+        #f-{{ scene_id }} .fact .claim { font-size: 3.1cqmin; font-weight: 600; color: var(--ink); line-height: 1.4; }
+        #f-{{ scene_id }} .fact .truth {
+          display: flex; gap: 0.6cqw; align-items: baseline;
+          font-size: 2.3cqmin; color: var(--ink-faint); line-height: 1.45;
+        }
+        #f-{{ scene_id }} .fact .truth .tick { color: var(--coral-deep); font-weight: 700; flex: none; }
+        #f-{{ scene_id }} .note { margin-top: 1.6cqh; font-family: var(--font-mono); font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em; text-align: center; }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .trio { grid-template-columns: 1fr; width: 92cqw; }
+          #f-{{ scene_id }} .fact { flex-direction: row; align-items: center; gap: 3cqw; padding: 2cqh 4cqw; }
+        }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="trio">
+            {%- for raw in fields.facts %}
+            {%- set parts = raw.split("|") %}
+            <div class="fact{% if loop.index0 == 2 %} hot{% endif %}" id="s-{{ scene_id }}-fact-{{ loop.index0 }}">
+              <span class="big">0{{ loop.index }}</span>
+              <span class="claim">{{ parts[0] }}</span>
+              {% if parts|length > 1 and parts[1] %}
+              <span class="truth"><span class="tick">✓</span>{{ parts[1] }}</span>
+              {% endif %}
+            </div>
+            {%- endfor %}
+          </div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+
+          // 三连击：卡片依次弹入带微旋转，压轴卡呼吸强调
+          var t0 = Math.min(0.9, D * 0.16);
+          var gap = Math.min(0.55, D * 0.13);
+          for (var i = 0; i < 3; i++) {
+            tl.fromTo("#" + SID + "-fact-" + i,
+              { opacity: 0, y: 34, rotation: 2.5 * AD.flip },
+              { opacity: 1, y: 0, rotation: 0, duration: 0.55, ease: "back.out(1.8)" },
+              t0 + gap * i);
+          }
+          AM.pulse(tl, "#" + SID + "-fact-2", t0 + gap * 2 + 0.7);
+          if (document.getElementById(SID + "-note")) {
+            AM.wipe(tl, "#" + SID + "-note", Math.min(t0 + gap * 3 + 0.5, D * 0.78), 0.6, "bottom");
+          }
+
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, [id^='" + SID + "-fact-']", D);{% endif %}
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

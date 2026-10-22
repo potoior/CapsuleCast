@@ -1,0 +1,10 @@
+{
+  "id": "diagram-swimlane", "name": "泳道协作", "role": "body",
+  "description": "多角色泳道并行：每条道一个角色，步骤块沿道流动，虚线是交接。适合「X和Y怎么配合」「一件事经过谁的手」的流程协作话题。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "lane-flow",
+  "min_duration_s": 6, "max_duration_s": 18,
+  "field_order": ["kicker", "headline", "lanes", "note"],
+  "example": {"kicker": "点外卖", "headline": "一份外卖的手拉手接力",
+              "lanes": ["你|下单付钱|催单", "商家|接单爆炒|打包", "骑手|取餐狂奔|准时送达"],
+              "note": "每一步交接，都是一次等待"}
+}

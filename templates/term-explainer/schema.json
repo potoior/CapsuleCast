@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": { "type": "string", "minLength": 2, "maxLength": 16, "description": "左上角标签" },
+    "term": { "type": "string", "minLength": 1, "maxLength": 10, "description": "术语（大字）" },
+    "term_en": { "type": "string", "minLength": 2, "maxLength": 18, "description": "英文注解（等宽小字）" },
+    "definition": { "type": "string", "minLength": 6, "maxLength": 44, "description": "一句定义" },
+    "tag": { "type": "string", "minLength": 2, "maxLength": 12, "description": "右上角代码风标签" }
+  },
+  "required": ["kicker", "term", "term_en", "definition", "tag"],
+  "additionalProperties": false
+}

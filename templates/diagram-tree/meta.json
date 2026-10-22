@@ -1,0 +1,11 @@
+{
+  "id": "diagram-tree", "name": "树状展开", "role": "body",
+  "description": "左根右枝的分类树：一个概念拆成 3-5 个分支，连接线生长、分支带序号徽章、首支高亮。适合分类学、拆解结构、「一分为N」。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "root-then-branches",
+  "min_duration_s": 6, "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "root", "branches", "note"],
+  "example": {"kicker": "知识分类", "headline": "人工智能的三大学派",
+              "root": "人工智能",
+              "branches": ["符号主义|逻辑规则", "连接主义|神经网络", "行为主义|感知行动"],
+              "note": "三条路都在回答同一问题"}
+}

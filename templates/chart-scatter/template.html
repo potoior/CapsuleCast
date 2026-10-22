@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6.2cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .sc-zone { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 0; }
+        #f-{{ scene_id }} svg.sc { width: 100%; height: 100%; }
+        #f-{{ scene_id }} .s-axis { stroke: var(--hairline-strong); stroke-width: 2.5; }
+        #f-{{ scene_id }} .s-grid { stroke: var(--hairline); stroke-width: 1.5; stroke-dasharray: 6 8; }
+        #f-{{ scene_id }} .s-dot { fill: var(--tile-strong); stroke: var(--ink); stroke-width: 3; }
+        #f-{{ scene_id }} .s-dot.hot { fill: var(--coral); stroke: var(--coral); }
+        #f-{{ scene_id }} .s-lab { font-family: var(--font-body); font-weight: 700; font-size: 2.6cqmin; fill: var(--ink); }
+        #f-{{ scene_id }} .s-lab.hot { fill: var(--coral-deep); }
+        #f-{{ scene_id }} .s-axlab { font-family: var(--font-mono); font-size: 2.1cqmin; fill: var(--ink-faint); letter-spacing: 0.12em; }
+        #f-{{ scene_id }} .note { margin-top: 1cqh; font-family: var(--font-mono); font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em; }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .s-lab { font-size: 3.2cqmin; }
+        }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="sc-zone">
+            <svg class="sc" id="s-{{ scene_id }}-svg" viewBox="0 0 1600 700" preserveAspectRatio="xMidYMid meet"></svg>
+          </div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}", D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var NS = "http://www.w3.org/2000/svg";
+          var svg = document.getElementById(SID + "-svg");
+          var pts = [];
+          {% for raw in fields.points -%}
+          {%- set p = raw.split("|") -%}
+          pts.push({ n: {{ p[0] | tojson }},
+            x: Math.min(100, Math.max(0, parseFloat({{ (p[1] if p|length > 1 else "50") | tojson }}) || 0)),
+            y: Math.min(100, Math.max(0, parseFloat({{ (p[2] if p|length > 2 else "50") | tojson }}) || 0)) });
+          {% endfor -%}
+          var L = 120, R = 1480, T = 70, B = 590;
+          function PX(x) { return L + (R - L) * x / 100; }
+          function PY(y) { return B - (B - T) * y / 100; }
+          function el(tag, attrs, text) {
+            var e = document.createElementNS(NS, tag);
+            for (var k in attrs) { e.setAttribute(k, attrs[k]); }
+            if (text != null) { e.textContent = text; }
+            svg.appendChild(e); return e;
+          }
+          // 轴 + 网格
+          var axV = el("line", { class: "s-axis", x1: L, y1: T - 16, x2: L, y2: B, id: SID + "-axv" });
+          var axH = el("line", { class: "s-axis", x1: L, y1: B, x2: R + 16, y2: B, id: SID + "-axh" });
+          var grids = [];
+          for (var g = 1; g <= 2; g++) {
+            var gx = el("line", { class: "s-grid", x1: L + (R - L) * g / 3, y1: T, x2: L + (R - L) * g / 3, y2: B, id: SID + "-gx" + g, opacity: 0 });
+            var gy = el("line", { class: "s-grid", x1: L, y1: B - (B - T) * g / 3, x2: R, y2: B - (B - T) * g / 3, id: SID + "-gy" + g, opacity: 0 });
+          }
+          el("text", { class: "s-axlab", x: R + 10, y: B + 40, id: SID + "-xl", opacity: 0 }, "{{ fields.x_label }}");
+          el("text", { class: "s-axlab", x: L - 8, y: T - 32, "text-anchor": "start", id: SID + "-yl", opacity: 0 }, "{{ fields.y_label }}");
+          // 点 + 标签
+          var dots = [], labs = [];
+          for (var i = 0; i < pts.length; i++) {
+            var cx = PX(pts[i].x), cy = PY(pts[i].y);
+            var d = el("circle", { class: "s-dot" + (i === 0 ? " hot" : ""),
+              cx: cx, cy: cy, r: i === 0 ? 16 : 12, id: SID + "-d" + i, opacity: 0 });
+            dots.push(d);
+            var side = (pts[i].x > 62) ? "end" : "start";
+            var off = (pts[i].x > 62) ? -26 : 26;
+            var lt = el("text", { class: "s-lab" + (i === 0 ? " hot" : ""),
+              x: cx + off, y: cy + 10, "text-anchor": side, id: SID + "-t" + i, opacity: 0 }, pts[i].n);
+            labs.push(lt);
+          }
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.26);
+          tl.fromTo(axV, { attr: { y2: T - 16 } }, { attr: { y2: B }, duration: 0.4 }, D * 0.24);
+          tl.fromTo(axH, { attr: { x2: L } }, { attr: { x2: R + 16 }, duration: 0.5 }, D * 0.24);
+          for (var g2 = 1; g2 <= 2; g2++) {
+            tl.fromTo("#" + SID + "-gx" + g2, { opacity: 0 }, { opacity: 1, duration: 0.3 }, D * 0.28 + g2 * 0.06);
+            tl.fromTo("#" + SID + "-gy" + g2, { opacity: 0 }, { opacity: 1, duration: 0.3 }, D * 0.28 + g2 * 0.06);
+          }
+          tl.fromTo("#" + SID + "-xl", { opacity: 0 }, { opacity: 1, duration: 0.4 }, D * 0.34);
+          tl.fromTo("#" + SID + "-yl", { opacity: 0 }, { opacity: 1, duration: 0.4 }, D * 0.34);
+          var n = pts.length;
+          for (var m = 0; m < n; m++) {
+            var at = D * (0.36 + 0.26 * (m / Math.max(1, n - 0.5)));
+            tl.fromTo(dots[m], { opacity: 0, scale: 0.2, transformOrigin: "50% 50%" },
+              { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2.2)" }, at);
+            tl.fromTo(labs[m], { opacity: 0, x: 14 }, { opacity: 1, x: 0, duration: 0.3 }, at + 0.1);
+          }
+          if (document.getElementById(SID + "-note")) {
+            tl.fromTo("#" + SID + "-note", { opacity: 0 }, { opacity: 1, duration: 0.6 }, D * 0.72);
+          }
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

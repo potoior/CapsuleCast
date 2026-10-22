@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": { "type": "string", "minLength": 2, "maxLength": 16, "description": "左上角标签" },
+    "headline": { "type": "string", "minLength": 2, "maxLength": 16, "description": "标题" },
+    "bad_label": { "type": "string", "minLength": 1, "maxLength": 8, "description": "左环标签，如「恶性循环」" },
+    "bad_loop": {
+      "type": "array", "minItems": 3, "maxItems": 4,
+      "items": { "type": "string", "minLength": 2, "maxLength": 14 },
+      "description": "左环步骤，首尾相接成环"
+    },
+    "good_label": { "type": "string", "minLength": 1, "maxLength": 8, "description": "右环标签，如「良性循环」" },
+    "good_loop": {
+      "type": "array", "minItems": 3, "maxItems": 4,
+      "items": { "type": "string", "minLength": 2, "maxLength": 14 },
+      "description": "右环步骤，首尾相接成环"
+    },
+    "note": { "type": "string", "minLength": 0, "maxLength": 22, "description": "注解（可留空）" }
+  },
+  "required": ["kicker", "headline", "bad_label", "bad_loop", "good_label", "good_loop"],
+  "additionalProperties": false
+}

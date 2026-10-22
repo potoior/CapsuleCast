@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6.4cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .track {
+          flex: 1; display: flex; align-items: flex-end; justify-content: center;
+          gap: 0.6cqw; min-height: 0; width: 94cqw; padding-bottom: 4cqh;
+        }
+        #f-{{ scene_id }} .tile {
+          width: 13cqw; max-width: 13cqw; min-width: 9cqw;
+          border: 1.5px solid var(--hairline-strong); border-radius: var(--tile-radius);
+          background: var(--cream); padding: 2cqh 1cqw;
+          display: flex; flex-direction: column; gap: 0.5cqh; align-items: center; text-align: center;
+          transform-origin: 50% 100%;
+        }
+        #f-{{ scene_id }} .tile.last {
+          border-color: var(--coral);
+          background: color-mix(in srgb, var(--coral) 10%, var(--cream));
+        }
+        #f-{{ scene_id }} .tile .n {
+          font-family: var(--font-mono); font-size: 1.9cqmin; font-weight: 700;
+          color: var(--ink-faint); letter-spacing: 0.1em;
+        }
+        #f-{{ scene_id }} .tile.last .n { color: var(--coral-deep); }
+        #f-{{ scene_id }} .tile b { font-size: 2.7cqmin; font-weight: 600; color: var(--ink); line-height: 1.3; }
+        #f-{{ scene_id }} .tile i { font-family: var(--font-mono); font-style: normal; font-size: 1.7cqmin; color: var(--ink-faint); }
+        #f-{{ scene_id }} .base {
+          position: absolute; left: 3cqw; right: 3cqw; bottom: 12cqh;
+          height: 1px; background: var(--hairline-strong);
+        }
+        #f-{{ scene_id }} .note { margin-top: 1.4cqh; font-family: var(--font-mono); font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em; text-align: center; }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .track { flex-wrap: wrap; align-content: flex-end; gap: 1.2cqw 2cqw; padding-bottom: 2cqh; }
+          #f-{{ scene_id }} .tile { width: 42cqw; max-width: 42cqw; }
+        }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="track" id="s-{{ scene_id }}-track">
+            {%- for raw in fields.tiles %}
+            {%- set parts = raw.split("|") %}
+            <div class="tile{% if loop.last %} last{% endif %}" id="s-{{ scene_id }}-tile-{{ loop.index0 }}">
+              <span class="n">{{ "%02d" | format(loop.index + 1) }}</span>
+              <b>{{ parts[0] }}</b>
+              {% if parts|length > 1 and parts[1] %}<i>{{ parts[1] }}</i>{% endif %}
+            </div>
+            {%- endfor %}
+          </div>
+          <div class="base" id="s-{{ scene_id }}-base"></div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          var N = {{ fields.tiles | length }};
+
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+
+          // 骨牌级联：站立弹出 → 逐块倒下（倾角逐块递增），底线画出
+          var t0 = Math.min(1.0, D * 0.18);
+          var span = Math.max(0.5, D * 0.42 - t0);
+          tl.fromTo("#" + SID + "-base", { scaleX: 0 },
+            { scaleX: 1, duration: 0.7, ease: "power2.out", transformOrigin: "0% 50%" }, t0);
+          for (var i = 0; i < N; i++) {
+            var at = t0 + 0.15 + (span * i) / Math.max(1, N - 1);
+            tl.fromTo("#" + SID + "-tile-" + i, { opacity: 0, y: 22, rotation: 0 },
+              { opacity: 1, y: 0, rotation: 0, duration: 0.45, ease: "back.out(1.8)" }, at);
+            if (i > 0) {
+              var tilt = Math.min(26, 5 + i * 4);
+              tl.fromTo("#" + SID + "-tile-" + i, { rotation: 0 },
+                { rotation: tilt * AD.flip, duration: 0.4, ease: "power2.in" },
+                at + 0.22 + (0.16 * (N - 1 - i)) / Math.max(1, N - 1));
+            }
+          }
+          AM.pulse(tl, "#" + SID + "-tile-" + (N - 1), t0 + 0.15 + span + 0.5);
+          if (document.getElementById(SID + "-note")) {
+            AM.wipe(tl, "#" + SID + "-note", Math.min(t0 + span + 0.9, D * 0.78), 0.6, "bottom");
+          }
+
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, #" + SID + "-base, [id^='" + SID + "-tile-']", D);{% endif %}
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

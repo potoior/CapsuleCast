@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ scene_id }}</title>
+  </head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline {
+          font-family: var(--font-display);
+          font-size: 6.4cqmin;
+          margin-top: 3cqh;
+        }
+        #f-{{ scene_id }} .net-wrap {
+          margin-top: 3.5cqh;
+          width: 88cqw;
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 0;
+        }
+        #f-{{ scene_id }} svg.net {
+          width: 100%;
+          height: auto;
+          max-height: 52cqh;
+          display: block;
+        }
+        #f-{{ scene_id }} .edge {
+          stroke: color-mix(in srgb, var(--ink) 26%, transparent);
+          stroke-width: 2.4;
+        }
+        #f-{{ scene_id }} .edge.hot {
+          stroke: var(--coral);
+          stroke-width: 4;
+          stroke-dasharray: 14 8;
+        }
+        #f-{{ scene_id }} .cell {
+          fill: var(--cream);
+          stroke: var(--ink);
+          stroke-width: 2.6;
+        }
+        #f-{{ scene_id }} .cell.hot { fill: var(--coral); stroke: var(--coral-deep); }
+        #f-{{ scene_id }} .layer-label {
+          font-family: var(--font-body);
+          font-size: 34px;
+          font-weight: 700;
+          fill: var(--ink);
+          text-anchor: middle;
+        }
+        #f-{{ scene_id }} .flow-note {
+          margin-top: 1.6cqh;
+          font-family: var(--font-mono);
+          font-size: 2.1cqmin;
+          color: var(--coral-deep);
+          letter-spacing: 0.05em;
+        }
+        #f-{{ scene_id }} .note {
+          margin-top: 1.2cqh;
+          font-family: var(--font-mono);
+          font-size: 2cqmin;
+          color: var(--ink-faint);
+        }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} svg.net { max-height: 44cqh; }
+          #f-{{ scene_id }} .layer-label { font-size: 44px; }
+        }
+      </style>
+
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker">
+            <span class="hf-spike"></span> {{ fields.kicker }}
+          </div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="net-wrap">
+            {#- Jinja 里确定性计算节点坐标：每列 3-4 个节点 #}
+            {%- set L = fields.layer_labels | length %}
+            {%- set col_counts = [4, 5, 5, 3] %}
+            <svg class="net" viewBox="0 0 1600 640" id="s-{{ scene_id }}-svg">
+              {%- set xs = [200, 640, 1080, 1460] %}
+              {%- for li in range(L) %}
+              {%- set cx = xs[li] if li < 4 else 1460 %}
+              {%- set cnt = col_counts[li] if li < 4 else 3 %}
+              {%- for ni in range(cnt) %}
+              {%- set cy = 90 + ni * (430 / (cnt - 1 if cnt > 1 else 1)) if cnt > 1 else 300 %}
+              <circle class="cell" r="30" cx="{{ cx }}" cy="{{ cy }}"
+                id="s-{{ scene_id }}-c-{{ li }}-{{ ni }}"
+                opacity="0"></circle>
+              {%- endfor %}
+              {%- endfor %}
+              {#- 连线：相邻列每节点连下一列最近 2 个 #}
+              {%- set ys_cache = {} %}
+              {%- for li in range(L - 1) %}
+              {%- set cnt_a = col_counts[li] if li < 4 else 3 %}
+              {%- set cnt_b = col_counts[li + 1] if li + 1 < 4 else 3 %}
+              {%- set cx_a = xs[li] if li < 4 else 1460 %}
+              {%- set cx_b = xs[li + 1] if li + 1 < 4 else 1460 %}
+              {%- for ai in range(cnt_a) %}
+              {%- set ya = 90 + ai * (430 / (cnt_a - 1 if cnt_a > 1 else 1)) if cnt_a > 1 else 300 %}
+              {%- for bi in range(cnt_b) %}
+              {%- set yb = 90 + bi * (430 / (cnt_b - 1 if cnt_b > 1 else 1)) if cnt_b > 1 else 300 %}
+              {%- if (ya - yb) | abs < 260 %}
+              <line class="edge" x1="{{ cx_a }}" y1="{{ ya }}" x2="{{ cx_b }}" y2="{{ yb }}"
+                id="s-{{ scene_id }}-e-{{ li }}-{{ ai }}-{{ bi }}"
+                opacity="0"></line>
+              {%- endif %}
+              {%- endfor %}
+              {%- endfor %}
+              {%- endfor %}
+              {#- 高亮数据流：每列中间节点连线（珊瑚色）#}
+              {%- for li in range(L - 1) %}
+              {%- set cnt_a = col_counts[li] if li < 4 else 3 %}
+              {%- set cnt_b = col_counts[li + 1] if li + 1 < 4 else 3 %}
+              {%- set cx_a = xs[li] if li < 4 else 1460 %}
+              {%- set cx_b = xs[li + 1] if li + 1 < 4 else 1460 %}
+              {%- set ai = (cnt_a / 2) | int %}
+              {%- set bi = (cnt_b / 2) | int %}
+              {%- set ya = 90 + ai * (430 / (cnt_a - 1 if cnt_a > 1 else 1)) if cnt_a > 1 else 300 %}
+              {%- set yb = 90 + bi * (430 / (cnt_b - 1 if cnt_b > 1 else 1)) if cnt_b > 1 else 300 %}
+              <line class="edge hot" x1="{{ cx_a }}" y1="{{ ya }}" x2="{{ cx_b }}" y2="{{ yb }}"
+                id="s-{{ scene_id }}-h-{{ li }}" opacity="0"></line>
+              {%- endfor %}
+              {#- 层标签 #}
+              {%- for li in range(L) %}
+              {%- set cx = xs[li] if li < 4 else 1460 %}
+              <text class="layer-label" x="{{ cx }}" y="600"
+                id="s-{{ scene_id }}-l-{{ li }}" opacity="0">{{ fields.layer_labels[li] }}</text>
+              {%- endfor %}
+            </svg>
+          </div>
+          {% if fields.get('flow_note') %}
+          <div class="flow-note" id="s-{{ scene_id }}-fn">▸ {{ fields.get('flow_note') }}</div>
+          {% endif %}
+          {% if fields.get('note') %}
+          <div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var L = {{ fields.layer_labels | length }};
+          var tl = gsap.timeline({ paused: true });
+
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.26);
+
+          // 逐列点亮：连线先出现 → 节点弹出 → 标签浮现
+          var counts = [4, 5, 5, 3];
+          for (var li = 0; li < L; li++) {
+            var at = D * 0.2 + (D * 0.42) * li / Math.max(1, L - 1);
+            var cnt = li < 4 ? counts[li] : 3;
+            for (var ni = 0; ni < cnt; ni++) {
+              tl.fromTo("#" + SID + "-c-" + li + "-" + ni,
+                { opacity: 0, scale: 0.4, transformOrigin: "center" },
+                { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, at + ni * 0.06);
+            }
+            tl.fromTo("#" + SID + "-l-" + li, { opacity: 0, y: 14 },
+              { opacity: 1, y: 0, duration: 0.4 }, at + 0.24);
+            if (li > 0) {
+              var edges = document.querySelectorAll(
+                '[id^="' + SID + "-e-" + (li - 1) + '-"]');
+              edges.forEach(function (el, k) {
+                tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.3 }, at - 0.18 + k * 0.02);
+              });
+            }
+          }
+          // 数据流高亮：节点全亮后，珊瑚路径流动显现
+          var flowAt = D * 0.66;
+          for (var li = 0; li < L - 1; li++) {
+            tl.fromTo("#" + SID + "-h-" + li, { opacity: 0 },
+              { opacity: 1, duration: 0.35, ease: "power2.out" }, flowAt + li * 0.22);
+          }
+          tl.fromTo("#" + SID + "-fn", { opacity: 0 },
+            { opacity: 1, duration: 0.5 }, flowAt + 0.2);
+          if (document.getElementById(SID + "-note")) {
+            tl.fromTo("#" + SID + "-note", { opacity: 0 },
+              { opacity: 1, duration: 0.6 }, D * 0.78);
+          }
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

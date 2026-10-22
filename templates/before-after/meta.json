@@ -1,0 +1,11 @@
+{
+  "id": "before-after", "name": "改造前后", "role": "body",
+  "description": "左「之前」右「之后」大卡对撞：改造/优化/转变类叙事的视觉判决书。适合「用了X之后怎么样」「改造前后」。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "split-clash",
+  "min_duration_s": 6, "max_duration_s": 16,
+  "field_order": ["kicker", "headline", "before_label", "before_items", "after_label", "after_items", "note"],
+  "example": {"kicker": "房间改造", "headline": "出租屋爆改前后",
+              "before_label": "改造前", "before_items": ["白墙裸灯泡|冷清得像仓库"],
+              "after_label": "改造后", "after_items": ["暖光+木色|花300块就有了家味", "一墙书架|房东还夸了两句"],
+              "note": "低成本也能翻盘"}
+}

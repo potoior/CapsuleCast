@@ -1,0 +1,15 @@
+{
+  "name": "llm2video-web",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "next dev -p 3300",
+    "build": "next build",
+    "start": "next start -p 3300"
+  },
+  "dependencies": {
+    "next": "15.5.*",
+    "react": "19.*",
+    "react-dom": "19.*"
+  }
+}

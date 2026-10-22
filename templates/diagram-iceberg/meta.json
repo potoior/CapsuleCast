@@ -1,0 +1,12 @@
+{
+  "id": "diagram-iceberg", "name": "冰山图", "role": "body",
+  "description": "水面上下两界：可见的表象在水面之上，看不见的代价/机制在水面之下依次点亮。适合「你看到的X vs 背后的Y」。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "waterline-split",
+  "min_duration_s": 6, "max_duration_s": 18,
+  "field_order": ["kicker", "headline", "water_label", "above_items", "below_items", "note"],
+  "example": {"kicker": "自由职业", "headline": "你看到的和真实发生的",
+              "water_label": "你看到的",
+              "above_items": ["时间自由|不用打卡"],
+              "below_items": ["收入不稳|接单看运气", "社保自理|没人兜底", "边界感差|活儿追着人"],
+              "note": "自由是有价格的"}
+}

@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ scene_id }}</title>
+  </head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline {
+          font-family: var(--font-display);
+          font-size: 5.8cqmin;
+          margin-top: 3cqh;
+          line-height: 1.12;
+        }
+        /* ── 布局骨架 ── */
+        #f-{{ scene_id }} .zone {
+          flex: 1; margin-top: 1.6cqh;
+          display: grid; gap: 2cqh 3cqw;
+          min-height: 0;
+          align-content: center;
+        }
+        /* L0/L1 左右分栏 */
+        #f-{{ scene_id }} .zone.split-2 {
+          grid-template-columns: 38cqw 1fr;
+          align-items: center;
+        }
+        #f-{{ scene_id }} .zone.split-2 .side { display: flex; flex-direction: column; gap: 1.4cqh; }
+        #f-{{ scene_id }} .zone.split-2 .side-title {
+          display: flex; flex-direction: column; gap: 1.6cqh;
+          align-self: center; min-width: 0;
+        }
+        #f-{{ scene_id }} .zone.split-2 .side-title .headline { margin-top: 0; font-size: 5.2cqmin; }
+        #f-{{ scene_id }} .zone.split-2 .side-title .side-note {
+          font-family: var(--font-mono); font-size: 2cqmin;
+          color: var(--ink-faint); letter-spacing: 0.06em;
+        }
+        /* L2 顶部横幅 */
+        #f-{{ scene_id }} .zone.banner {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto 1fr;
+        }
+        #f-{{ scene_id }} .zone.banner .band {
+          background: var(--ink); color: var(--cream);
+          padding: 2cqh 2.4cqw; border-radius: var(--tile-radius);
+          font-family: var(--font-display); font-size: 4.2cqmin;
+          align-self: stretch;
+        }
+        #f-{{ scene_id }} .zone.banner .blocks-row {
+          display: grid; gap: 1.6cqh 1.8cqw;
+          grid-template-columns: repeat({{ fields.blocks | length }}, 1fr);
+          align-content: center;
+        }
+        /* L3 居中焦点 */
+        #f-{{ scene_id }} .zone.focus {
+          grid-template-columns: repeat({{ fields.blocks | length }}, 1fr);
+          align-items: stretch; align-content: center;
+          max-width: 92cqw; margin-left: auto; margin-right: auto;
+        }
+        #f-{{ scene_id }} .zone.focus .headline-full {
+          grid-column: 1 / -1; text-align: center; font-size: 5.2cqmin;
+        }
+        /* ── 内容块 ── */
+        #f-{{ scene_id }} .blk {
+          border: 1px solid var(--hairline-strong);
+          border-radius: var(--tile-radius);
+          background: var(--cream);
+          padding: 2.2cqh 1.8cqw;
+          min-width: 0;
+        }
+        #f-{{ scene_id }} .blk.blk-stat {
+          display: flex; flex-direction: column; gap: 0.8cqh;
+          border-color: var(--coral);
+          background: color-mix(in srgb, var(--coral) 8%, var(--cream));
+        }
+        #f-{{ scene_id }} .blk .b-num {
+          font-family: var(--font-display); font-weight: 700;
+          font-size: 6.4cqmin; line-height: 1; color: var(--coral-deep);
+          font-variant-numeric: tabular-nums;
+        }
+        #f-{{ scene_id }} .blk .b-lab {
+          font-family: var(--font-mono); font-size: 2cqmin;
+          color: var(--ink-faint); letter-spacing: 0.08em;
+        }
+        #f-{{ scene_id }} .blk.blk-quote {
+          font-family: var(--font-display);
+          font-size: 3.6cqmin; line-height: 1.4; color: var(--ink);
+          border-left: 0.8cqmin solid var(--coral);
+          border-top: none; border-right: none; border-bottom: none;
+          background: transparent; border-radius: 0;
+          padding: 0.6cqh 0 0.6cqh 1.6cqw;
+        }
+        #f-{{ scene_id }} .blk.blk-tag {
+          border: none; background: transparent;
+          display: flex; flex-wrap: wrap; gap: 1cqw; align-content: center;
+        }
+        #f-{{ scene_id }} .blk.blk-tag span {
+          font-family: var(--font-mono); font-size: 2.2cqmin;
+          padding: 0.9cqh 1.6cqw; border-radius: var(--pill-radius, 8px);
+          background: var(--pill-bg, var(--tile)); color: var(--ink);
+          letter-spacing: 0.06em;
+        }
+        #f-{{ scene_id }} .blk.blk-bar {
+          display: flex; flex-direction: column; gap: 1.4cqh;
+        }
+        #f-{{ scene_id }} .blk.blk-bar .brow {
+          display: grid; grid-template-columns: 8cqw 1fr auto;
+          align-items: center; gap: 1cqw;
+          font-family: var(--font-mono); font-size: 2.1cqmin;
+        }
+        #f-{{ scene_id }} .blk.blk-bar .btrack {
+          height: 0.9cqmin; border-radius: 99cqmin;
+          background: color-mix(in srgb, var(--ink) 10%, transparent);
+          overflow: hidden;
+        }
+        #f-{{ scene_id }} .blk.blk-bar .btrack > i {
+          display: block; height: 100%; border-radius: inherit;
+          background: var(--coral);
+          transform-origin: left center;
+        }
+        #f-{{ scene_id }} .blk.blk-bar .bval { color: var(--coral-deep); font-weight: 700; }
+        #f-{{ scene_id }} .blk.blk-img img {
+          width: 100%; height: auto; max-height: 30cqh; object-fit: cover;
+          border-radius: var(--tile-radius); display: block;
+        }
+        #f-{{ scene_id }} .blk.blk-chapter {
+          border: none; background: transparent;
+          display: flex; align-items: baseline; gap: 1.2cqw; padding: 0;
+        }
+        #f-{{ scene_id }} .blk.blk-chapter .cnum {
+          font-family: var(--font-display); font-weight: 700;
+          font-size: 5.4cqmin; color: var(--coral); line-height: 1;
+        }
+        #f-{{ scene_id }} .blk.blk-chapter .clab {
+          font-family: var(--font-mono); font-size: 2.2cqmin;
+          color: var(--ink-faint); letter-spacing: 0.1em;
+        }
+        #f-{{ scene_id }} .blk.blk-list {
+          display: flex; flex-direction: column; gap: 1.2cqh;
+        }
+        #f-{{ scene_id }} .blk.blk-list .li {
+          display: flex; gap: 1.2cqw; align-items: baseline;
+          font-family: var(--font-body); font-size: 2.7cqmin;
+          color: var(--ink); line-height: 1.35;
+        }
+        #f-{{ scene_id }} .blk.blk-list .li::before {
+          content: "—\\00a0"; color: var(--coral); font-weight: 700;
+        }
+        #f-{{ scene_id }} .note {
+          margin-top: 1.4cqh; font-family: var(--font-mono);
+          font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em;
+        }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .zone.split-2 { grid-template-columns: 1fr; }
+          #f-{{ scene_id }} .zone.banner .blocks-row,
+          #f-{{ scene_id }} .zone.focus { grid-template-columns: 1fr; }
+          #f-{{ scene_id }} .blk .b-num { font-size: 8cqmin; }
+          #f-{{ scene_id }} .blk.blk-list .li { font-size: 3.2cqmin; }
+        }
+      </style>
+
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+
+        {%- set L = fields.get('layout', 0) %}
+        <div class="hf-safe">
+          {%- if L == 2 %}
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker">
+            <span class="hf-spike"></span> {{ fields.kicker }}
+          </div>
+          {%- endif %}
+          <div class="zone{% if L <= 1 %} split-2{% elif L == 2 %} banner{% else %} focus{% endif %}"
+            {% if L == 1 %}style="grid-template-columns: 1fr 38cqw"{% endif %}>
+            {%- if L <= 1 %}
+            <div class="side-title" {% if L == 1 %}style="order: 2; padding-left: 1cqw"{% endif %}>
+              <div class="hf-kicker" id="s-{{ scene_id }}-kicker">
+                <span class="hf-spike"></span> {{ fields.kicker }}
+              </div>
+              <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+              {% if fields.get('note') %}
+              <div class="side-note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>
+              {% endif %}
+            </div>
+            <div class="side" id="s-{{ scene_id }}-blocks">
+            {%- elif L == 2 %}
+            <div class="band" id="s-{{ scene_id }}-band">{{ fields.headline }}</div>
+            <div class="blocks-row" id="s-{{ scene_id }}-blocks">
+            {%- else %}
+            <div class="headline-full headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+            <div class="hf-kicker" id="s-{{ scene_id }}-kicker" style="grid-column: 1 / -1; justify-content: center; margin-top: -1cqh">
+              <span class="hf-spike"></span> {{ fields.kicker }}
+            </div>
+            <div id="s-{{ scene_id }}-blocks" style="display: contents">
+            {%- endif %}
+              {%- for raw in fields.blocks %}
+              {%- set parts = raw.split("|") %}
+              {%- if parts[0] == 'list' %}
+              <div class="blk blk-list" id="s-{{ scene_id }}-blk-{{ loop.index0 }}">
+                {%- for li in parts[1].split("；") if li.strip() %}
+                <div class="li">{{ li.strip() }}</div>
+                {%- endfor %}
+              </div>
+              {%- elif parts[0] == 'stat' %}
+              <div class="blk blk-stat" id="s-{{ scene_id }}-blk-{{ loop.index0 }}">
+                <div class="b-num">{{ parts[1] }}</div>
+                <div class="b-lab">{{ parts[2] if parts|length > 2 else "" }}</div>
+              </div>
+              {%- elif parts[0] == 'quote' %}
+              <div class="blk blk-quote" id="s-{{ scene_id }}-blk-{{ loop.index0 }}">{{ parts[1] }}</div>
+              {%- elif parts[0] == 'bar' %}
+              <div class="blk blk-bar" id="s-{{ scene_id }}-blk-{{ loop.index0 }}">
+                {%- set items = parts[1].split("；") %}
+                {%- for it in items if it.strip() %}
+                {%- set kv = it.strip().rsplit(" ", 1) %}
+                {%- if kv | length == 2 %}
+                <div class="brow">
+                  <span>{{ kv[0] }}</span>
+                  <span class="btrack"><i id="s-{{ scene_id }}-bf-{{ loop.index0 }}"></i></span>
+                  <span class="bval">{{ kv[1] }}</span>
+                </div>
+                {%- endif %}
+                {%- endfor %}
+              </div>
+              {%- elif parts[0] == 'img' %}
+              <div class="blk blk-img" id="s-{{ scene_id }}-blk-{{ loop.index0 }}">
+                <img src="{{ parts[1] }}" alt="">
+              </div>
+              {%- elif parts[0] == 'chapter' %}
+              <div class="blk blk-chapter" id="s-{{ scene_id }}-blk-{{ loop.index0 }}">
+                <span class="cnum">{{ parts[1] }}</span>
+                <span class="clab">{{ parts[2] if parts|length > 2 else "" }}</span>
+              </div>
+              {%- else %}
+              <div class="blk blk-tag" id="s-{{ scene_id }}-blk-{{ loop.index0 }}">
+                {%- for tg in parts[1].split("；") if tg.strip() %}
+                <span>{{ tg.strip() }}</span>
+                {%- endfor %}
+              </div>
+              {%- endif %}
+              {%- endfor %}
+            </div>
+          </div>
+          {%- if fields.get('note') and L >= 2 %}
+          <div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>
+          {%- endif %}
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var L = {{ fields.get('layout', 0) }};
+          var tl = gsap.timeline({ paused: true });
+
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          if (document.getElementById(SID + "-headline")) {
+            tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+              { opacity: 1, y: 0, duration: 0.7 * AD.pace, ease: "power3.out" }, 0.26);
+          }
+          if (document.getElementById(SID + "-note") && L <= 1) {
+            tl.fromTo("#" + SID + "-note", { opacity: 0 },
+              { opacity: 1, duration: 0.6 }, D * 0.7);
+          }
+          var band = document.getElementById(SID + "-band");
+          if (band) {
+            tl.fromTo(band, { opacity: 0, scaleX: 0.96, transformOrigin: "50% 50%" },
+              { opacity: 1, scaleX: 1, duration: 0.6 * AD.pace, ease: "power3.out" }, 0.24);
+          }
+
+          var n = {{ fields.blocks | length }};
+          var start = D * 0.30, span = D * 0.34;
+          for (var i = 0; i < n; i++) {
+            var at = start + (span * i) / n;
+            tl.fromTo("#" + SID + "-blk-" + i,
+              { opacity: 0, y: 30 * AD.flip },
+              { opacity: 1, y: 0, duration: 0.5 * AD.pace, ease: "power3.out" }, at);
+            var rows = document.querySelectorAll("#" + SID + "-blk-" + i + " .brow");
+            if (rows.length) {
+              var vals = [];
+              for (var q = 0; q < rows.length; q++) {
+                var tv = rows[q].querySelector(".bval");
+                var num = parseFloat(String(tv ? tv.textContent : "").replace(/[^\d.]/g, "")) || 0;
+                vals.push(num);
+              }
+              var bmx = Math.max.apply(null, vals.length ? vals : [1]) || 1;
+              for (var q2 = 0; q2 < rows.length; q2++) {
+                var bar = rows[q2].querySelector(".btrack > i");
+                if (bar) {
+                  tl.fromTo(bar, { scaleX: 0 },
+                    { scaleX: vals[q2] / bmx, duration: 0.5 * AD.pace, ease: "power3.out" },
+                    at + 0.12 + q2 * 0.08);
+                }
+              }
+            }
+            var liEls = document.querySelectorAll("#" + SID + "-blk-" + i + " .li");
+            for (var j = 0; j < liEls.length; j++) {
+              tl.fromTo(liEls[j], { opacity: 0, x: 18 * AD.flip },
+                { opacity: 1, x: 0, duration: 0.32 * AD.pace, ease: "power2.out" },
+                at + 0.1 + j * 0.07);
+            }
+          }
+          if (document.getElementById(SID + "-note")) {
+            tl.fromTo("#" + SID + "-note", { opacity: 0 },
+              { opacity: 1, duration: 0.6 }, D * 0.72);
+          }
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

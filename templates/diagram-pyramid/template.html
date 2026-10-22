@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ scene_id }}</title>
+  </head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline {
+          font-family: var(--font-display);
+          font-size: 6.2cqmin;
+          margin-top: 3cqh;
+        }
+        #f-{{ scene_id }} .pyr {
+          margin-top: 4cqh;
+          display: flex;
+          flex-direction: column-reverse;   /* levels[0] = 底层，DOM 顺序即数组顺序 */
+          align-items: center;
+          gap: 0.9cqh;
+          width: 76cqw;
+          flex: 1;
+          justify-content: center;
+          min-height: 0;
+        }
+        #f-{{ scene_id }} .lv {
+          display: flex; align-items: center; justify-content: center;
+          gap: 1.6cqw;
+          height: 8.6cqh;
+          background: var(--tile-strong);
+          border: 2px solid var(--hairline-strong);
+          border-bottom-width: 4px;
+        }
+        #f-{{ scene_id }} .lv.top {
+          background: var(--coral); border-color: var(--coral-deep);
+        }
+        #f-{{ scene_id }} .lv .lv-name {
+          font-family: var(--font-body); font-weight: 700;
+          font-size: 3cqmin; color: var(--ink); white-space: nowrap;
+        }
+        #f-{{ scene_id }} .lv.top .lv-name { color: var(--cream); }
+        #f-{{ scene_id }} .lv .lv-sub {
+          font-family: var(--font-mono); font-size: 1.9cqmin;
+          color: var(--ink-faint); white-space: nowrap;
+        }
+        #f-{{ scene_id }} .lv.top .lv-sub { color: color-mix(in srgb, var(--cream) 75%, var(--coral)); }
+        #f-{{ scene_id }} .note {
+          margin-top: 2.2cqh; font-family: var(--font-mono);
+          font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em;
+        }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .pyr { width: 88cqw; }
+          #f-{{ scene_id }} .lv { height: 7.6cqh; }
+          #f-{{ scene_id }} .lv .lv-name { font-size: 3.6cqmin; }
+        }
+      </style>
+
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker">
+            <span class="hf-spike"></span> {{ fields.kicker }}
+          </div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="pyr">
+            {%- set N = fields.levels | length %}
+            {%- for raw in fields.levels %}
+            {%- set parts = raw.split("|") %}
+            {%- set w = 100 - (N - 1 - loop.index0) * 16 %}
+            <div class="lv{% if loop.index == N %} top{% endif %}"
+              style="width: {{ w }}cqw;
+                     clip-path: polygon({{ (100 - w) / 2 + 3 }}% 0, {{ (100 + w) / 2 - 3 }}% 0, 100% 100%, 0 100%);"
+              id="s-{{ scene_id }}-lv-{{ loop.index0 }}">
+              <span class="lv-name">{{ parts[0] }}</span>
+              {% if parts|length > 1 and parts[1] %}<span class="lv-sub">{{ parts[1] }}</span>{% endif %}
+            </div>
+            {%- endfor %}
+          </div>
+          {% if fields.get('note') %}
+          <div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var N = {{ fields.levels | length }};
+          var tl = gsap.timeline({ paused: true });
+
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.26);
+
+          // 从底到顶逐层垒起来
+          var start = D * 0.22, span = D * 0.44;
+          for (var i = 0; i < N; i++) {
+            var at = start + (span * i) / Math.max(1, N - 1);
+            tl.fromTo("#" + SID + "-lv-" + i,
+              { opacity: 0, y: 40, scale: 0.96 },
+              { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: "back.out(1.4)" }, at);
+          }
+          if (document.getElementById(SID + "-note")) {
+            tl.fromTo("#" + SID + "-note", { opacity: 0 },
+              { opacity: 1, duration: 0.6 }, D * 0.74);
+          }
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

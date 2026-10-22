@@ -1,0 +1,11 @@
+{
+  "id": "diagram-spectrum", "name": "光谱轴", "role": "body",
+  "description": "一维两极光谱：左极 ↔ 右极的横轴，2-5 个概念按位置落点，首点高亮。适合立场光谱、产品定位、程度分布。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "axis-then-dots",
+  "min_duration_s": 6, "max_duration_s": 18,
+  "field_order": ["kicker", "headline", "left_label", "right_label", "items", "note"],
+  "example": {"kicker": "咖啡图谱", "headline": "从清淡到浓郁",
+              "left_label": "清淡", "right_label": "浓郁",
+              "items": ["拿铁|18", "美式|45", "澳白|62", "意式浓缩|90"],
+              "note": "你站在哪一格"}
+}

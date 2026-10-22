@@ -1,0 +1,11 @@
+{
+  "id": "dialogue-quotes", "name": "对话卡", "role": "body",
+  "description": "两方声音对撞：左右对话气泡各持立场，底部裁决。适合观点冲突、甲乙方、支持反对派。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "bubbles-clash",
+  "min_duration_s": 6, "max_duration_s": 18,
+  "field_order": ["kicker", "headline", "left_speaker", "left_quote", "right_speaker", "right_quote", "verdict", "note"],
+  "example": {"kicker": "职场观察", "headline": "关于加班，两边怎么说",
+              "left_speaker": "老板|成本视角", "left_quote": "年轻人就该拼，加班是福报。",
+              "right_speaker": "员工|生活视角", "right_quote": "效率够了就走，加班是管理失败的遮羞布。",
+              "verdict": "看产出，不看时长", "note": "你站哪边"}
+}

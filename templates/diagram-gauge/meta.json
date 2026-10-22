@@ -1,0 +1,10 @@
+{
+  "id": "diagram-gauge", "name": "仪表盘", "role": "body",
+  "description": "半环仪表 + 指针扫动 + 大数字：单指标的程度/得分/完成度。适合评分、指数、健康度。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "needle-sweep",
+  "min_duration_s": 5, "max_duration_s": 16,
+  "field_order": ["kicker", "headline", "value_text", "value_pct", "low_label", "high_label", "note"],
+  "example": {"kicker": "体验打分", "headline": "这台车的智能座舱几分",
+              "value_text": "82", "value_pct": 82, "low_label": "及格", "high_label": "优秀",
+              "note": "屏幕拖后腿"}
+}

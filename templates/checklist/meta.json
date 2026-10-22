@@ -1,0 +1,10 @@
+{
+  "id": "checklist", "name": "打勾清单", "role": "body",
+  "description": "行动清单逐项打勾：✓ 圆章依次盖下，末项高亮。适合自查动作、行动指南、照着做系列。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "tick-stamp",
+  "min_duration_s": 6, "max_duration_s": 18,
+  "field_order": ["kicker", "headline", "items", "note"],
+  "example": {"kicker": "自查清单", "headline": "买二手房前查三样",
+              "items": ["查抵押|裁判文书网", "查违建|规划公示", "查户籍|派出所"],
+              "note": "三样都过再交定金"}
+}

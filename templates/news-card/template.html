@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6.2cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .feed { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 2cqh; min-height: 0; width: 84cqw; }
+        #f-{{ scene_id }} .row {
+          display: flex; align-items: center; gap: 1.8cqw;
+          padding: 2cqh 2cqw; border-radius: var(--tile-radius);
+          background: var(--cream); border: 1px solid var(--hairline);
+        }
+        #f-{{ scene_id }} .row .ix {
+          font-family: var(--font-mono); font-weight: 700; font-size: 2.6cqmin;
+          color: var(--coral); flex: none; letter-spacing: 0.08em;
+        }
+        #f-{{ scene_id }} .row .tx { font-family: var(--font-body); font-weight: 600; font-size: 2.8cqmin; color: var(--ink); line-height: 1.35; min-width: 0; }
+        #f-{{ scene_id }} .row .meta { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 0.4cqh; flex: none; }
+        #f-{{ scene_id }} .row .src {
+          font-family: var(--font-mono); font-size: 1.8cqmin;
+          padding: 0.3cqh 1cqw; border-radius: var(--pill-radius, 8px);
+          background: var(--pill-bg, var(--tile)); color: var(--ink-soft); white-space: nowrap;
+        }
+        #f-{{ scene_id }} .row .dt { font-family: var(--font-mono); font-size: 1.7cqmin; color: var(--ink-faint); }
+        #f-{{ scene_id }} .note { margin-top: 1.2cqh; font-family: var(--font-mono); font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em; }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .feed { width: 92cqw; }
+          #f-{{ scene_id }} .row .tx { font-size: 3.2cqmin; }
+        }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="feed">
+            {%- for raw in fields.get('items') %}
+            {%- set parts = raw.split("|") %}
+            <div class="row" id="s-{{ scene_id }}-row-{{ loop.index0 }}">
+              <span class="ix">0{{ loop.index }}</span>
+              <span class="tx">{{ parts[0] }}</span>
+              <span class="meta">
+                {% if parts|length > 1 and parts[1] %}<span class="src">{{ parts[1] }}</span>{% endif %}
+                {% if parts|length > 2 and parts[2] %}<span class="dt">{{ parts[2] }}</span>{% endif %}
+              </span>
+            </div>
+            {%- endfor %}
+          </div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}", D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.26);
+          var n = {{ fields.get('items') | length }};
+          var start = D * 0.28, span = D * 0.36;
+          for (var i = 0; i < n; i++) {
+            tl.fromTo("#" + SID + "-row-" + i,
+              { opacity: 0, x: -42 * AD.flip },
+              { opacity: 1, x: 0, duration: 0.48 * AD.pace, ease: "power3.out" },
+              start + (span * i) / n);
+          }
+          if (document.getElementById(SID + "-note")) {
+            tl.fromTo("#" + SID + "-note", { opacity: 0 }, { opacity: 1, duration: 0.6 }, D * 0.72);
+          }
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

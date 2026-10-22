@@ -1,0 +1,17 @@
+{
+  "id": "chart-bars",
+  "name": "数据条形图",
+  "description": "标题 + 3-4 条横向条形，从左生长并逐条点亮，最大值高亮珊瑚色。适合占比/对比/调研数据。",
+  "role": "body",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "motion": "bars-rise",
+  "min_duration_s": 6,
+  "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "bars", "note"],
+  "example": {
+    "kicker": "2025 团队调研",
+    "headline": "时间都去哪了",
+    "bars": ["写代码|52%", "开会|28%", "沟通|13%", "其他|7%"],
+    "note": "样本 200 人 · 自填周报"
+  }
+}

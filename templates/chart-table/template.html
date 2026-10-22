@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ scene_id }}</title>
+  </head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline {
+          font-family: var(--font-display);
+          font-size: 6.2cqmin;
+          margin-top: 3cqh;
+        }
+        {%- set NC = fields.columns | length %}
+        #f-{{ scene_id }} .tbl {
+          flex: 1; width: 84cqw; margin-top: 2.4cqh;
+          display: flex; flex-direction: column;
+          justify-content: center; min-height: 0;
+          border: 2px solid var(--ink);
+          border-radius: var(--tile-radius);
+          overflow: hidden;
+        }
+        #f-{{ scene_id }} .t-head {
+          display: grid;
+          grid-template-columns: {% for _ in fields.columns %}1fr {% endfor %};
+          background: var(--ink); color: var(--cream);
+          padding: 1.6cqh 2cqw;
+        }
+        #f-{{ scene_id }} .t-head span {
+          font-family: var(--font-body); font-weight: 700;
+          font-size: 2.6cqmin; letter-spacing: 0.06em;
+        }
+        #f-{{ scene_id }} .t-row {
+          display: grid;
+          grid-template-columns: {% for _ in fields.columns %}1fr {% endfor %};
+          padding: 1.5cqh 2cqw;
+          border-top: 1px solid var(--hairline-strong);
+          align-items: center;
+        }
+        #f-{{ scene_id }} .t-row:nth-child(odd) { background: var(--cream); }
+        #f-{{ scene_id }} .t-row:nth-child(even) { background: var(--tile); }
+        #f-{{ scene_id }} .t-row .c0 {
+          font-family: var(--font-body); font-weight: 700;
+          font-size: 2.7cqmin; color: var(--ink);
+        }
+        #f-{{ scene_id }} .t-row .cn {
+          font-family: var(--font-mono);
+          font-size: 2.4cqmin; color: var(--ink-soft);
+          font-variant-numeric: tabular-nums;
+        }
+        #f-{{ scene_id }} .t-row.hot {
+          background: color-mix(in srgb, var(--coral) 16%, var(--cream)) !important;
+          border-left: 0.8cqmin solid var(--coral);
+        }
+        #f-{{ scene_id }} .t-row.hot .cn { color: var(--coral-deep); font-weight: 700; }
+        #f-{{ scene_id }} .note {
+          margin-top: 1.4cqh; font-family: var(--font-mono);
+          font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em;
+        }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .tbl { width: 92cqw; }
+          #f-{{ scene_id }} .t-head span { font-size: 3cqmin; }
+          #f-{{ scene_id }} .t-row .c0 { font-size: 3.1cqmin; }
+          #f-{{ scene_id }} .t-row .cn { font-size: 2.8cqmin; }
+        }
+      </style>
+
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker">
+            <span class="hf-spike"></span> {{ fields.kicker }}
+          </div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="tbl">
+            <div class="t-head" id="s-{{ scene_id }}-head">
+              {%- for col in fields.columns %}
+              <span>{{ col }}</span>
+              {%- endfor %}
+            </div>
+            {%- set hot = (fields.rows | length) - 1 %}
+            {%- for raw in fields.rows %}
+            {%- set cells = raw.split("|") %}
+            <div class="t-row{% if loop.index0 == hot %} hot{% endif %}"
+              id="s-{{ scene_id }}-row-{{ loop.index0 }}">
+              <span class="c0">{{ cells[0] }}</span>
+              {% for ci in range(1, NC) %}
+              <span class="cn">{{ cells[ci] if cells|length > ci else "" }}</span>
+              {% endfor %}
+            </div>
+            {%- endfor %}
+          </div>
+          {% if fields.get('note') %}
+          <div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var tl = gsap.timeline({ paused: true });
+
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.26);
+          tl.fromTo("#" + SID + "-head", { opacity: 0, y: -18 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, D * 0.24);
+
+          var n = {{ fields.rows | length }};
+          var start = D * 0.30, span = D * 0.36;
+          for (var i = 0; i < n; i++) {
+            var at = start + (span * i) / n;
+            tl.fromTo("#" + SID + "-row-" + i, { opacity: 0, x: -24 },
+              { opacity: 1, x: 0, duration: 0.42, ease: "power3.out" }, at);
+          }
+          if (document.getElementById(SID + "-note")) {
+            tl.fromTo("#" + SID + "-note", { opacity: 0 },
+              { opacity: 1, duration: 0.6 }, D * 0.72);
+          }
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ scene_id }}</title>
+  </head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline {
+          font-family: var(--font-display);
+          font-size: 6.2cqmin;
+          margin-top: 3cqh;
+        }
+        #f-{{ scene_id }} .donut-zone {
+          flex: 1; width: 88cqw; margin-top: 1.6cqh;
+          display: grid;
+          grid-template-columns: 34cqw 1fr;
+          align-items: center; gap: 4cqw;
+          min-height: 0;
+        }
+        #f-{{ scene_id }} svg.donut { width: 100%; max-height: 52cqh; }
+        #f-{{ scene_id }} .arc-0 { stroke: var(--coral); }
+        {%- for i in [1, 2, 3, 4] %}
+        #f-{{ scene_id }} .arc-{{ i }} {
+          stroke: color-mix(in srgb, var(--coral) {{ 100 - i * 19 }}%, var(--tile-strong));
+        }
+        {%- endfor %}
+        #f-{{ scene_id }} .d-ring {
+          fill: none; stroke-width: 88;
+          stroke-linecap: butt;
+        }
+        #f-{{ scene_id }} .d-track {
+          fill: none; stroke: color-mix(in srgb, var(--ink) 8%, transparent);
+          stroke-width: 88;
+        }
+        #f-{{ scene_id }} .d-center {
+          font-family: var(--font-display); font-weight: 700;
+          font-size: 4.4cqmin; fill: var(--ink); text-anchor: middle;
+        }
+        #f-{{ scene_id }} .legend {
+          display: flex; flex-direction: column;
+          justify-content: center; gap: 1.6cqh;
+        }
+        #f-{{ scene_id }} .lg-row {
+          display: flex; align-items: baseline; gap: 1.2cqw;
+          padding-bottom: 1cqh;
+          border-bottom: 1px solid var(--hairline);
+        }
+        #f-{{ scene_id }} .lg-sw {
+          width: 2.2cqmin; height: 2.2cqmin; flex: none;
+          border-radius: 3px; align-self: center;
+        }
+        #f-{{ scene_id }} .lg-name {
+          font-family: var(--font-body); font-weight: 600;
+          font-size: 2.8cqmin; color: var(--ink);
+        }
+        #f-{{ scene_id }} .lg-pct {
+          margin-left: auto;
+          font-family: var(--font-mono); font-weight: 700;
+          font-size: 2.6cqmin; color: var(--coral-deep);
+          font-variant-numeric: tabular-nums;
+        }
+        #f-{{ scene_id }} .note {
+          margin-top: 1.2cqh; font-family: var(--font-mono);
+          font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em;
+        }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .donut-zone { grid-template-columns: 1fr; gap: 1.6cqh; }
+          #f-{{ scene_id }} svg.donut { max-height: 34cqh; margin: 0 auto; }
+          #f-{{ scene_id }} .d-center { font-size: 3.2cqmin; }
+        }
+      </style>
+
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker">
+            <span class="hf-spike"></span> {{ fields.kicker }}
+          </div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="donut-zone">
+            <svg class="donut" viewBox="0 0 560 560" preserveAspectRatio="xMidYMid meet">
+              <circle class="d-track" id="s-{{ scene_id }}-track" cx="280" cy="280" r="216" />
+              <g id="s-{{ scene_id }}-arcs"></g>
+              {% if fields.get('center_label') %}
+              <text class="d-center" id="s-{{ scene_id }}-cl" x="280" y="298" opacity="0">
+                {{ fields.get('center_label') }}
+              </text>
+              {% endif %}
+            </svg>
+            <div class="legend">
+              {%- for raw in fields.parts %}
+              {%- set parts = raw.split("|") %}
+              <div class="lg-row" id="s-{{ scene_id }}-lg-{{ loop.index0 }}">
+                <span class="lg-sw arc-bg-{{ loop.index0 }}"></span>
+                <span class="lg-name">{{ parts[0] }}</span>
+                <span class="lg-pct">{{ parts[1] if parts|length > 1 else "" }}</span>
+              </div>
+              {%- endfor %}
+            </div>
+          </div>
+          {% if fields.get('note') %}
+          <div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <style>
+        {%- for i in [0, 1, 2, 3, 4] %}
+        #f-{{ scene_id }} .arc-bg-{{ i }} {
+          background: {% if i == 0 %}var(--coral){% else %}color-mix(in srgb, var(--coral) {{ 100 - i * 19 }}%, var(--tile-strong)){% endif %};
+        }
+        {%- endfor %}
+      </style>
+
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var SVGNS = "http://www.w3.org/2000/svg";
+          var g = document.getElementById(SID + "-arcs");
+
+          var parts = [];
+          {% for raw in fields.parts -%}
+          {%- set p = raw.split("|") -%}
+          parts.push({ name: {{ p[0] | tojson }},
+            pct: parseFloat(String({{ (p[1] if p|length > 1 else "0") | tojson }}).replace("%", "")) || 0 });
+          {% endfor -%}
+          var total = parts.reduce(function (s, p) { return s + p.pct; }, 0) || 100;
+
+          var cum = 0;
+          for (var i = 0; i < parts.length; i++) {
+            var frac = parts[i].pct / total;
+            var c = document.createElementNS(SVGNS, "circle");
+            c.setAttribute("class", "d-ring arc-" + i);
+            c.setAttribute("cx", 280); c.setAttribute("cy", 280); c.setAttribute("r", 216);
+            c.setAttribute("pathLength", 100);
+            c.setAttribute("stroke-dasharray", (frac * 100) + " " + (100 - frac * 100));
+            c.setAttribute("transform", "rotate(" + (-90 + cum * 3.6) + " 280 280)");
+            c.style.strokeDashoffset = frac * 100;
+            c.id = SID + "-arc-" + i;
+            g.appendChild(c);
+            cum += parts[i].pct;
+          }
+
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.26);
+          tl.fromTo("#" + SID + "-track", { opacity: 0 },
+            { opacity: 1, duration: 0.5 }, D * 0.22);
+
+          // 弧段依次扫开
+          var n = parts.length;
+          for (var j = 0; j < n; j++) {
+            var arc = document.getElementById(SID + "-arc-" + j);
+            var fracJ = parts[j].pct / total;
+            tl.to(arc, { strokeDashoffset: 0, duration: D * 0.09, ease: "power2.out" },
+              D * 0.26 + D * 0.36 * (j / n));
+            tl.fromTo("#" + SID + "-lg-" + j, { opacity: 0, x: 26 },
+              { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" },
+              D * 0.26 + D * 0.36 * (j / n) + 0.05);
+          }
+          if (document.getElementById(SID + "-cl")) {
+            tl.fromTo("#" + SID + "-cl", { opacity: 0, scale: 0.8, transformOrigin: "50% 50%" },
+              { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.6)" }, D * 0.64);
+          }
+          if (document.getElementById(SID + "-note")) {
+            tl.fromTo("#" + SID + "-note", { opacity: 0 },
+              { opacity: 1, duration: 0.6 }, D * 0.72);
+          }
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

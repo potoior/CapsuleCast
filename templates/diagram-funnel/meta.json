@@ -1,0 +1,10 @@
+{
+  "id": "diagram-funnel", "name": "漏斗图", "role": "body",
+  "description": "层层收窄的转化漏斗：3-4 层梯形逐层下落，末层高亮为「幸存者」。适合转化率、筛选过程、层层淘汰。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "tiers-drop",
+  "min_duration_s": 6, "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "stages", "note"],
+  "example": {"kicker": "转化漏斗", "headline": "100 个人看到最后剩几个",
+              "stages": ["100人|刷到视频", "20人|看完开头", "5人|点进主页", "1人|下单购买"],
+              "note": "每一步都在筛人"}
+}

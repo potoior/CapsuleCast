@@ -1,0 +1,10 @@
+{
+  "id": "myth-buster", "name": "误区粉碎", "role": "body",
+  "description": "先立误区再粉碎：✗ 误区卡被划掉，✓ 真相卡接管。适合辟谣、「你以为…其实…」类反常识内容。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "strike-then-reveal",
+  "min_duration_s": 6, "max_duration_s": 18,
+  "field_order": ["kicker", "headline", "myth", "truth", "note"],
+  "example": {"kicker": "辟谣时间", "headline": "隔夜水能喝吗",
+              "myth": "隔夜水有毒致癌", "truth": "盖好的隔夜水，细菌几乎不超标",
+              "note": "真正要小心的是开口放了一夜"}
+}

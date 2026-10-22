@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": { "type": "string", "minLength": 2, "maxLength": 16, "description": "左上角标签" },
+    "headline": { "type": "string", "minLength": 2, "maxLength": 16, "description": "标题" },
+    "left_label": { "type": "string", "minLength": 1, "maxLength": 8, "description": "左极名称" },
+    "right_label": { "type": "string", "minLength": 1, "maxLength": 8, "description": "右极名称" },
+    "items": {
+      "type": "array", "minItems": 2, "maxItems": 5,
+      "items": { "type": "string", "minLength": 2, "maxLength": 16 },
+      "description": "落点，格式「概念|0-100 位置」，0=最左 100=最右，首点高亮"
+    },
+    "note": { "type": "string", "minLength": 0, "maxLength": 22, "description": "注解（可留空）" }
+  },
+  "required": ["kicker", "headline", "left_label", "right_label", "items"],
+  "additionalProperties": false
+}

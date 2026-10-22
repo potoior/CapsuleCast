@@ -1,0 +1,31 @@
+{
+  "id": "big-stat",
+  "name": "大数字",
+  "description": "巨型数字从 0 或对照值滚动到目标值，配结论与注释行。适合“倍数 / 百分比 / 价格”类冲击性数据。",
+  "role": "body",
+  "aspects": [
+    "16:9",
+    "9:16",
+    "1:1"
+  ],
+  "motion": "count-up",
+  "min_duration_s": 4,
+  "max_duration_s": 16,
+  "field_order": [
+    "kicker",
+    "stat_value",
+    "stat_unit",
+    "stat_from",
+    "headline",
+    "note",
+    "variant"
+  ],
+  "example": {
+    "kicker": "输入价格",
+    "stat_value": "0.1×",
+    "stat_unit": "INPUT PRICE",
+    "stat_from": "1.00",
+    "headline": "命中后只付十分之一",
+    "note": "对比未命中的整段重算"
+  }
+}

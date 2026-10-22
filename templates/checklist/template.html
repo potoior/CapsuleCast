@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6.2cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .list { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 2cqh; min-height: 0; width: 80cqw; }
+        #f-{{ scene_id }} .row {
+          display: flex; align-items: center; gap: 1.8cqw;
+          padding: 1.8cqh 2cqw; border-radius: var(--tile-radius);
+          border: 1px solid var(--hairline);
+        }
+        #f-{{ scene_id }} .row .tick {
+          width: 3.8cqmin; height: 3.8cqmin; flex: none;
+          border-radius: 50%; border: 2px solid var(--ink);
+          display: flex; align-items: center; justify-content: center;
+          font-size: 2.2cqmin; font-weight: 700; font-family: var(--font-body);
+          color: transparent;
+        }
+        #f-{{ scene_id }} .row.on { border-color: var(--hairline-strong); background: var(--cream); }
+        #f-{{ scene_id }} .row.on .tick { background: var(--coral); border-color: var(--coral); color: var(--cream); }
+        #f-{{ scene_id }} .row.hot.on { border-color: var(--coral); background: color-mix(in srgb, var(--coral) 9%, var(--cream)); }
+        #f-{{ scene_id }} .row .act { font-family: var(--font-body); font-weight: 700; font-size: 3cqmin; color: var(--ink); }
+        #f-{{ scene_id }} .row .how { margin-left: auto; font-family: var(--font-mono); font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.04em; }
+        #f-{{ scene_id }} .note { margin-top: 1.2cqh; font-family: var(--font-mono); font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em; }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .list { width: 92cqw; }
+          #f-{{ scene_id }} .row .act { font-size: 3.6cqmin; }
+        }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="list">
+            {%- set hot = (fields.get('items') | length) - 1 %}
+            {%- for raw in fields.get('items') %}
+            {%- set parts = raw.split("|") %}
+            <div class="row{% if loop.index0 == hot %} hot{% endif %}" id="s-{{ scene_id }}-row-{{ loop.index0 }}">
+              <span class="tick" id="s-{{ scene_id }}-tick-{{ loop.index0 }}">✓</span>
+              <span class="act">{{ parts[0] }}</span>
+              {% if parts|length > 1 and parts[1] %}<span class="how">{{ parts[1] }}</span>{% endif %}
+            </div>
+            {%- endfor %}
+          </div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}", D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.26);
+          var n = {{ fields.get('items') | length }};
+          var start = D * 0.28, span = D * 0.40;
+          for (var i = 0; i < n; i++) {
+            var at = start + (span * i) / n;
+            tl.fromTo("#" + SID + "-row-" + i, { opacity: 0, x: -30 * AD.flip },
+              { opacity: 1, x: 0, duration: 0.42 * AD.pace, ease: "power3.out" }, at);
+            tl.set("#" + SID + "-row-" + i, { className: "+=on" }, at + 0.28);
+            tl.fromTo("#" + SID + "-tick-" + i,
+              { scale: 0, rotation: -30, transformOrigin: "50% 50%" },
+              { scale: 1, rotation: 0, duration: 0.3, ease: "back.out(2.5)" }, at + 0.30);
+          }
+          if (document.getElementById(SID + "-note")) {
+            tl.fromTo("#" + SID + "-note", { opacity: 0 }, { opacity: 1, duration: 0.6 }, D * 0.72);
+          }
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

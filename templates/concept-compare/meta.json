@@ -1,0 +1,20 @@
+{
+  "id": "concept-compare",
+  "name": "概念对比",
+  "description": "左右两卡片对比两个概念（竖屏自动上下堆叠），中缝 VS 徽章，底部结论条。适合“而 / 相比 / 但是”类对比句。",
+  "role": "body",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "motion": "split-reveal",
+  "min_duration_s": 5,
+  "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "left_title", "left_points", "right_title", "right_points", "verdict"],
+  "example": {
+    "kicker": "成本对比",
+    "headline": "读 与 算",
+    "left_title": "重新计算",
+    "left_points": ["整段前缀重算", "GPU 矩阵乘法", "最贵的路径"],
+    "right_title": "缓存命中",
+    "right_points": ["只算新增 token", "读取显存", "便宜一个量级"],
+    "verdict": "读，比算便宜得多"
+  }
+}

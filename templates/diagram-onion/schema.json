@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": { "type": "string", "minLength": 2, "maxLength": 16, "description": "左上角标签" },
+    "headline": { "type": "string", "minLength": 2, "maxLength": 16, "description": "标题" },
+    "layers": {
+      "type": "array", "minItems": 2, "maxItems": 4,
+      "items": { "type": "string", "minLength": 2, "maxLength": 16 },
+      "description": "从外到内的层，格式「层名|一句说明」，第一层是表象，越往内越本质"
+    },
+    "core": { "type": "string", "minLength": 2, "maxLength": 18, "description": "最核心的真相" },
+    "note": { "type": "string", "minLength": 0, "maxLength": 22, "description": "注解（可留空）" }
+  },
+  "required": ["kicker", "headline", "layers", "core"],
+  "additionalProperties": false
+}

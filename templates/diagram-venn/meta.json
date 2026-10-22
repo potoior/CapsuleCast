@@ -1,0 +1,11 @@
+{
+  "id": "diagram-venn", "name": "交集图", "role": "body",
+  "description": "两圆交叠的韦恩图：左侧概念、右侧概念、交集处高亮。适合「既是…又是…」「共同点」「重合地带」类内容。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "circles-merge",
+  "min_duration_s": 6, "max_duration_s": 18,
+  "field_order": ["kicker", "headline", "left_label", "left_sub", "right_label", "right_sub", "both_label", "note"],
+  "example": {"kicker": "理想工作", "headline": "喜欢 × 擅长 × 有需求",
+              "left_label": "喜欢", "left_sub": "做得下去",
+              "right_label": "擅长", "right_sub": "做得比人好",
+              "both_label": "理想工作", "note": "交集才是答案"}
+}

@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6.2cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .spec-zone { flex: 1; position: relative; min-height: 0; width: 86cqw; }
+        #f-{{ scene_id }} .axis {
+          position: absolute; left: 0; right: 0; top: 50%; height: 3px;
+          background: var(--hairline-strong); transform: scaleX(0); transform-origin: left center;
+        }
+        #f-{{ scene_id }} .pole {
+          position: absolute; top: 50%; transform: translateY(-50%);
+          font-family: var(--font-mono); font-size: 2.2cqmin; letter-spacing: 0.14em;
+          color: var(--ink-faint); white-space: nowrap;
+        }
+        #f-{{ scene_id }} .dot-wrap { position: absolute; top: 50%; transform: translate(-50%, -50%); text-align: center; }
+        #f-{{ scene_id }} .dot {
+          width: 2.6cqmin; height: 2.6cqmin; border-radius: 50%;
+          background: var(--tile-strong); border: 2px solid var(--ink);
+          margin: 0 auto;
+        }
+        #f-{{ scene_id }} .dot-wrap.hot .dot { background: var(--coral); border-color: var(--coral); transform: scale(1.35); }
+        #f-{{ scene_id }} .dot-lab {
+          margin-top: 1cqh; font-family: var(--font-body); font-weight: 600;
+          font-size: 2.6cqmin; color: var(--ink); white-space: nowrap;
+        }
+        #f-{{ scene_id }} .dot-wrap.hot .dot-lab { color: var(--coral-deep); font-weight: 700; }
+        #f-{{ scene_id }} .up .dot-lab { margin-top: 0; margin-bottom: 1cqh; order: -1; }
+        #f-{{ scene_id }} .note { margin-top: 1.2cqh; font-family: var(--font-mono); font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em; }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .spec-zone { width: 94cqw; }
+          #f-{{ scene_id }} .pole { font-size: 2.6cqmin; }
+        }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="spec-zone">
+            <div class="axis" id="s-{{ scene_id }}-axis"></div>
+            <div class="pole" id="s-{{ scene_id }}-lp" style="left: -1cqw; transform: translateY(-50%)">{{ fields.left_label }}</div>
+            <div class="pole" id="s-{{ scene_id }}-rp" style="right: -1cqw; transform: translateY(-50%)">{{ fields.right_label }}</div>
+            {%- set NC = fields.get('items') | length %}
+            {%- for raw in fields.get('items') %}
+            {%- set parts = raw.split("|") %}
+            {%- set pos = (parts[1] | float) if parts|length > 1 else (loop.index * (100 / (NC + 1))) %}
+            {%- if pos > 92 %}{% set pos = 92 %}{% endif %}
+            {%- if pos < 8 %}{% set pos = 8 %}{% endif %}
+            <div class="dot-wrap{% if loop.index0 == 0 %} hot{% endif %}{% if loop.index0 % 2 == 1 %} up{% endif %}"
+              style="left: {{ pos }}%"
+              id="s-{{ scene_id }}-dot-{{ loop.index0 }}">
+              <div class="dot"></div>
+              <div class="dot-lab">{{ parts[0] }}</div>
+            </div>
+            {%- endfor %}
+          </div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}", D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.26);
+          tl.to("#" + SID + "-axis", { scaleX: 1, duration: D * 0.16, ease: "power2.inOut" }, D * 0.24);
+          tl.fromTo("#" + SID + "-lp", { opacity: 0, x: 14 }, { opacity: 1, x: 0, duration: 0.4 }, D * 0.36);
+          tl.fromTo("#" + SID + "-rp", { opacity: 0, x: -14 }, { opacity: 1, x: 0, duration: 0.4 }, D * 0.36);
+          var n = {{ fields.get('items') | length }};
+          var start = D * 0.40, span = D * 0.28;
+          for (var i = 0; i < n; i++) {
+            tl.fromTo("#" + SID + "-dot-" + i,
+              { opacity: 0, scale: 0.3, transformOrigin: "50% 50%" },
+              { opacity: 1, scale: 1, duration: 0.42 * AD.pace, ease: "back.out(2)" },
+              start + (span * i) / n);
+          }
+          if (document.getElementById(SID + "-note")) {
+            tl.fromTo("#" + SID + "-note", { opacity: 0 }, { opacity: 1, duration: 0.6 }, D * 0.72);
+          }
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

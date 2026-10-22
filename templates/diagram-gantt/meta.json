@@ -1,0 +1,11 @@
+{
+  "id": "diagram-gantt", "name": "甘特图", "role": "body",
+  "description": "多轨道时间分配：横向时间轴 + 每轨一条按起止定位的条。适合排期、日程、多角色分工。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "bars-grow",
+  "min_duration_s": 6, "max_duration_s": 18,
+  "field_order": ["kicker", "headline", "time_labels", "tracks", "note"],
+  "example": {"kicker": "我的一天", "headline": "自由职业者的作息真相",
+              "time_labels": ["8点", "12点", "16点", "20点"],
+              "tracks": ["写稿|0|30", "开会|32|14", "改稿|48|22", "复盘|74|20"],
+              "note": "第四条轨道叫焦虑"}
+}

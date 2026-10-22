@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ scene_id }}</title>
+  </head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline {
+          font-family: var(--font-display);
+          font-size: 6.4cqmin;
+          margin-top: 3cqh;
+        }
+        #f-{{ scene_id }} .flow {
+          margin-top: 5cqh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0;
+          width: 88cqw;
+        }
+        #f-{{ scene_id }} .node {
+          flex: 0 1 auto;
+          min-width: 13cqw;
+          max-width: 20cqw;
+          background: var(--cream);
+          border: 2px solid var(--hairline-strong);
+          border-radius: var(--tile-radius);
+          padding: 2.6cqh 1.6cqw;
+          text-align: center;
+          box-shadow: 0 0.4cqmin 2cqh color-mix(in srgb, var(--ink) 10%, transparent);
+        }
+        #f-{{ scene_id }} .node.hot {
+          border-color: var(--coral);
+          background: var(--coral-soft);
+        }
+        #f-{{ scene_id }} .node .n-label {
+          font-family: var(--font-body);
+          font-weight: 700;
+          font-size: 3.1cqmin;
+          color: var(--ink);
+          line-height: 1.25;
+        }
+        #f-{{ scene_id }} .node .n-sub {
+          margin-top: 0.9cqh;
+          font-family: var(--font-mono);
+          font-size: 1.85cqmin;
+          color: var(--ink-faint);
+          letter-spacing: 0.04em;
+        }
+        #f-{{ scene_id }} .arrow {
+          flex: 1 1 auto;
+          position: relative;
+          height: 0.5cqmin;
+          margin: 0 0.9cqw;
+          min-width: 4cqw;
+          background: var(--hairline-strong);
+          border-radius: 999px;
+          transform-origin: left center;
+        }
+        #f-{{ scene_id }} .arrow::after {
+          content: "";
+          position: absolute;
+          right: -1.1cqmin;
+          top: 50%;
+          transform: translateY(-50%);
+          border-left: 1.5cqmin solid var(--coral);
+          border-top: 1cqmin solid transparent;
+          border-bottom: 1cqmin solid transparent;
+        }
+        #f-{{ scene_id }} .note {
+          margin-top: 4.5cqh;
+          font-family: var(--font-mono);
+          font-size: 2.1cqmin;
+          letter-spacing: 0.06em;
+          color: var(--ink-faint);
+        }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .flow {
+            flex-direction: column;
+            width: 84cqw;
+            gap: 0;
+          }
+          #f-{{ scene_id }} .node { width: 56cqw; max-width: 56cqw; padding: 2.2cqh 2cqw; }
+          #f-{{ scene_id }} .arrow {
+            width: 0.5cqmin; min-width: 0; height: 3.4cqh;
+            margin: 1cqh 0; transform-origin: top center;
+          }
+          #f-{{ scene_id }} .arrow::after {
+            right: 50%; top: auto; bottom: -0.4cqmin;
+            transform: translateX(50%) rotate(90deg);
+          }
+          #f-{{ scene_id }} .node .n-label { font-size: 3.8cqmin; }
+        }
+      </style>
+
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker">
+            <span class="hf-spike"></span> {{ fields.kicker }}
+          </div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="flow">
+            {%- set ns = namespace(first=true) %}
+            {%- for raw in fields.nodes %}
+            {%- set parts = raw.split("|") %}
+            {%- if not ns.first %}
+            <span class="arrow" id="s-{{ scene_id }}-arrow-{{ loop.index0 }}"></span>
+            {%- endif %}
+            {%- set ns.first = false %}
+            <div class="node{% if loop.index == 2 %} hot{% endif %}" id="s-{{ scene_id }}-node-{{ loop.index0 }}">
+              <div class="n-label">{{ parts[0] }}</div>
+              {% if parts|length > 1 and parts[1] %}
+              <div class="n-sub">{{ parts[1] }}</div>
+              {% endif %}
+            </div>
+            {%- endfor %}
+          </div>
+          {% if fields.get('note') %}
+          <div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var N = {{ fields.nodes | length }};
+          var tl = gsap.timeline({ paused: true });
+
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.26);
+
+          // 节点级联 + 箭头生长：22%–60% 时长窗口
+          var start = D * 0.22, span = D * 0.38;
+          for (var i = 0; i < N; i++) {
+            var at = start + (span * i) / Math.max(1, N - 1);
+            tl.fromTo("#" + SID + "-node-" + i, { opacity: 0, y: 26, scale: 0.55 },
+              { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: "back.out(2)" }, at);
+            if (i > 0) {
+              tl.fromTo("#" + SID + "-arrow-" + i, { scaleX: 0 },
+                { scaleX: 1, duration: 0.34, ease: "power2.out" }, at - 0.3);
+            }
+          }
+          if (document.getElementById(SID + "-note")) {
+            tl.fromTo("#" + SID + "-note", { opacity: 0 },
+              { opacity: 1, duration: 0.6 }, D * 0.68);
+          }
+          if (document.querySelector("#f-{{ scene_id }} .node.hot")) {
+            AM.pulse(tl, "#f-{{ scene_id }} .node.hot", start + span + 0.6);
+          }
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, #" + SID + "-note, [id^='" + SID + "-node-'], [id^='" + SID + "-arrow-']", D);{% endif %}
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

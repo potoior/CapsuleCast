@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6.4cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .duel {
+          flex: 1; display: grid; grid-template-columns: 1fr 5cqw 1fr;
+          align-items: stretch; align-content: center; min-height: 0; width: 90cqw; gap: 0;
+        }
+        #f-{{ scene_id }} .panel {
+          border: 1px solid var(--hairline-strong); border-radius: var(--tile-radius);
+          padding: 3cqh 2cqw; display: flex; flex-direction: column; gap: 1.6cqh;
+          min-width: 0;
+        }
+        #f-{{ scene_id }} .panel.before { background: var(--tile); border-color: color-mix(in srgb, var(--ink) 18%, transparent); }
+        #f-{{ scene_id }} .panel.after {
+          background: color-mix(in srgb, var(--coral) 10%, var(--cream));
+          border-color: var(--coral);
+        }
+        #f-{{ scene_id }} .panel .tag {
+          font-family: var(--font-mono); font-size: 2.2cqmin; font-weight: 700;
+          letter-spacing: 0.14em; color: var(--ink-faint);
+          display: flex; align-items: center; gap: 0.8cqw;
+        }
+        #f-{{ scene_id }} .panel.after .tag { color: var(--coral-deep); }
+        #f-{{ scene_id }} .panel .item { display: flex; flex-direction: column; gap: 0.3cqh; }
+        #f-{{ scene_id }} .panel .item b { font-size: 3.4cqmin; font-weight: 600; color: var(--ink); }
+        #f-{{ scene_id }} .panel .item i { font-family: var(--font-mono); font-style: normal; font-size: 2cqmin; color: var(--ink-faint); }
+        #f-{{ scene_id }} .arrow {
+          align-self: center; justify-self: center;
+          display: flex; align-items: center; justify-content: center;
+          width: 5cqw; height: 5cqw; border-radius: 50%;
+          background: var(--coral); color: var(--cream);
+          font-size: 3cqmin; font-weight: 700;
+        }
+        #f-{{ scene_id }} .note { margin-top: 1.4cqh; font-family: var(--font-mono); font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em; }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .duel { grid-template-columns: 1fr; width: 92cqw; gap: 1.2cqh; }
+          #f-{{ scene_id }} .arrow { width: 8cqw; height: 4cqh; transform: rotate(90deg); }
+        }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="duel">
+            <div class="panel before" id="s-{{ scene_id }}-before">
+              <div class="tag"><span>✕</span>{{ fields.before_label }}</div>
+              {%- for raw in fields.before_items %}
+              {%- set parts = raw.split("|") %}
+              <div class="item" id="s-{{ scene_id }}-bi-{{ loop.index0 }}">
+                <b>{{ parts[0] }}</b>
+                {% if parts|length > 1 and parts[1] %}<i>{{ parts[1] }}</i>{% endif %}
+              </div>
+              {%- endfor %}
+            </div>
+            <div class="arrow" id="s-{{ scene_id }}-arrow">→</div>
+            <div class="panel after" id="s-{{ scene_id }}-after">
+              <div class="tag"><span>✓</span>{{ fields.after_label }}</div>
+              {%- for raw in fields.after_items %}
+              {%- set parts = raw.split("|") %}
+              <div class="item" id="s-{{ scene_id }}-ai-{{ loop.index0 }}">
+                <b>{{ parts[0] }}</b>
+                {% if parts|length > 1 and parts[1] %}<i>{{ parts[1] }}</i>{% endif %}
+              </div>
+              {%- endfor %}
+            </div>
+          </div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+
+          // 左「之前」擦入 → 中间箭头弹出 → 右「之后」模糊聚焦登场
+          var t0 = Math.min(1.0, D * 0.18);
+          AM.wipe(tl, "#" + SID + "-before", t0, 0.7, "left");
+          var bN = document.querySelectorAll('[id^="' + SID + '-bi-"]').length;
+          AM.pop(tl, '[id^="' + SID + '-bi-"]', t0 + 0.35, 0.4);
+          AM.pop(tl, "#" + SID + "-arrow", t0 + 0.6 + bN * 0.06, 0.5);
+          var tA = Math.min(t0 + 1.1, D * 0.42);
+          AM.focus(tl, "#" + SID + "-after", tA, 0.8);
+          AM.pop(tl, '[id^="' + SID + '-ai-"]', tA + 0.35, 0.45);
+          if (document.getElementById(SID + "-note")) {
+            AM.wipe(tl, "#" + SID + "-note", Math.min(tA + 1.0, D * 0.72), 0.6, "bottom");
+          }
+          AM.pulse(tl, "#" + SID + "-after", Math.min(tA + 1.2, D * 0.8));
+
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, #" + SID + "-before, #" + SID + "-arrow, #" + SID + "-after, [id^='" + SID + "-bi-'], [id^='" + SID + "-ai-']" + (document.getElementById(SID + "-note") ? ", #" + SID + "-note" : ""), D);{% endif %}
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

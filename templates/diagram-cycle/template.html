@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ scene_id }}</title>
+  </head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline {
+          font-family: var(--font-display);
+          font-size: 6.2cqmin;
+          margin-top: 3cqh;
+        }
+        #f-{{ scene_id }} .cyc-wrap {
+          flex: 1; margin-top: 2cqh;
+          display: flex; align-items: center; justify-content: center;
+          min-height: 0;
+        }
+        #f-{{ scene_id }} svg.cyc { width: 92cqw; height: auto; max-height: 56cqh; display: block; }
+        #f-{{ scene_id }} .c-node { fill: var(--cream); stroke: var(--ink); stroke-width: 3; }
+        #f-{{ scene_id }} .c-node.hot { fill: var(--coral); stroke: var(--coral-deep); }
+        #f-{{ scene_id }} .c-arc {
+          stroke: var(--coral); stroke-width: 5; fill: none;
+          stroke-linecap: round;
+        }
+        #f-{{ scene_id }} .c-label {
+          font-family: var(--font-body); font-size: 30px; font-weight: 700;
+          fill: var(--ink); text-anchor: middle; dominant-baseline: middle;
+        }
+        #f-{{ scene_id }} .c-sub {
+          font-family: var(--font-mono); font-size: 21px;
+          fill: var(--ink-faint); text-anchor: middle; dominant-baseline: middle;
+        }
+        #f-{{ scene_id }} .c-center {
+          font-family: var(--font-display); font-size: 56px; font-weight: 700;
+          fill: var(--ink-faint); text-anchor: middle; dominant-baseline: middle;
+        }
+        #f-{{ scene_id }} .note {
+          margin-top: 1.4cqh; font-family: var(--font-mono);
+          font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em;
+        }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} svg.cyc { width: 96cqw; max-height: 48cqh; }
+        }
+      </style>
+
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker">
+            <span class="hf-spike"></span> {{ fields.kicker }}
+          </div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="cyc-wrap">
+            <svg class="cyc" viewBox="0 0 1600 760" id="s-{{ scene_id }}-svg"></svg>
+          </div>
+          {% if fields.get('note') %}
+          <div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var STEPS = {{ fields.steps | tojson }};
+          var N = STEPS.length;
+          var svg = document.getElementById(SID + "-svg");
+          var NS = "http://www.w3.org/2000/svg";
+          var CX = 800, CY = 400, R = 270;
+
+          function polar(deg) {
+            var rad = deg * Math.PI / 180;
+            return [CX + R * Math.cos(rad), CY + R * Math.sin(rad)];
+          }
+          function el(tag, attrs, text) {
+            var e = document.createElementNS(NS, tag);
+            for (var k in attrs) e.setAttribute(k, attrs[k]);
+            if (text != null) e.textContent = text;
+            svg.appendChild(e);
+            return e;
+          }
+
+          // 节点 + 文本（扇区自适应：顶节点标签在下、底节点在上、侧节点径向外）
+          var gap = 360 / N;
+          for (var i = 0; i < N; i++) {
+            var parts = String(STEPS[i]).split("|");
+            var ang = -90 + i * gap;
+            var p = polar(ang);
+            var isHot = i === 0;
+            el("circle", { class: "c-node" + (isHot ? " hot" : ""),
+              cx: p[0], cy: p[1], r: 44, id: SID + "-n-" + i, opacity: 0 });
+            var rad = ang * Math.PI / 180;
+            var sv = Math.sin(rad), cv = Math.cos(rad);
+            var nx, ny, sx, sy;
+            if (sv < -0.35) {
+              nx = p[0]; ny = p[1] + 90; sx = p[0]; sy = p[1] + 128;
+            } else if (sv > 0.35) {
+              nx = p[0]; ny = p[1] - 130; sx = p[0]; sy = p[1] - 92;
+            } else {
+              var lx = CX + (R + 118) * cv;
+              var ly = CY + (R + 118) * sv;
+              nx = lx; ny = ly - 12; sx = lx; sy = ly + 26;
+            }
+            el("text", { class: "c-label", x: nx, y: ny,
+              id: SID + "-t-" + i, opacity: 0 }, parts[0]);
+            if (parts.length > 1 && parts[1]) {
+              el("text", { class: "c-sub", x: sx, y: sy,
+                id: SID + "-s-" + i, opacity: 0 }, parts[1]);
+            }
+          }
+          // 中心循环符
+          el("text", { class: "c-center", x: CX, y: CY, id: SID + "-c", opacity: 0 }, "↻");
+          // 弧形箭头（相邻环节之间，留出节点间隙）
+          for (var i = 0; i < N; i++) {
+            var a1 = -90 + i * gap + gap * 0.30;
+            var a2 = -90 + ((i + 1) % N) * gap - gap * 0.30;
+            var p1 = polar(a1), p2 = polar(a2);
+            var arc = el("path", {
+              class: "c-arc", id: SID + "-a-" + i, opacity: 0,
+              d: "M " + p1[0] + " " + p1[1] + " A " + R + " " + R + " 0 0 1 " + p2[0] + " " + p2[1],
+              "marker-end": "url(#" + SID + "-arrow)",
+            });
+          }
+          // 箭头 marker
+          var defs = document.createElementNS(NS, "defs");
+          var mk = document.createElementNS(NS, "marker");
+          mk.setAttribute("id", SID + "-arrow");
+          mk.setAttribute("markerWidth", "9"); mk.setAttribute("markerHeight", "9");
+          mk.setAttribute("refX", "7"); mk.setAttribute("refY", "4.5");
+          mk.setAttribute("orient", "auto");
+          var path = document.createElementNS(NS, "path");
+          path.setAttribute("d", "M0,0 L9,4.5 L0,9 Z");
+          path.setAttribute("fill", "var(--coral)");
+          mk.appendChild(path); defs.appendChild(mk); svg.appendChild(defs);
+
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.26);
+          tl.fromTo("#" + SID + "-c", { opacity: 0, scale: 0.4, transformOrigin: "center" },
+            { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(2)" }, 0.55);
+
+          // 环节顺时针点亮 + 弧线跟进
+          var start = D * 0.24, span = D * 0.42;
+          for (var i = 0; i < N; i++) {
+            var at = start + (span * i) / N;
+            tl.fromTo("#" + SID + "-n-" + i,
+              { opacity: 0, scale: 0.3, transformOrigin: "center" },
+              { opacity: 1, scale: 1, duration: 0.42, ease: "back.out(2)" }, at);
+            tl.fromTo("#" + SID + "-t-" + i, { opacity: 0, y: 10 },
+              { opacity: 1, y: 0, duration: 0.35 }, at + 0.1);
+            var subEl = document.getElementById(SID + "-s-" + i);
+            if (subEl) tl.fromTo(subEl, { opacity: 0 }, { opacity: 1, duration: 0.3 }, at + 0.2);
+            var nextAt = start + (span * ((i + 1) % N)) / N;
+            var arcDur = Math.min(0.5, (nextAt - at) * 0.5);
+            tl.fromTo("#" + SID + "-a-" + i, { opacity: 0 },
+              { opacity: 1, duration: arcDur, ease: "power2.out" }, at + 0.42);
+          }
+          if (document.getElementById(SID + "-note")) {
+            tl.fromTo("#" + SID + "-note", { opacity: 0 },
+              { opacity: 1, duration: 0.6 }, D * 0.74);
+          }
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "id": "diagram-balance", "name": "天平权衡", "role": "body",
+  "description": "天平称量两方：横梁向重方倾斜、吊盘落定、底部裁决。适合利弊权衡、值不值、二选一比较。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "beam-tilt",
+  "min_duration_s": 6, "max_duration_s": 18,
+  "field_order": ["kicker", "headline", "left_label", "left_sub", "right_label", "right_sub", "verdict", "note"],
+  "example": {"kicker": "一笔账", "headline": "租房还是买房",
+              "left_label": "租房", "left_sub": "灵活，月付压力小",
+              "right_label": "买房", "right_sub": "资产，三十年沉淀",
+              "verdict": "看你要流动还是扎根",
+              "note": "别用三十年赌一个城市"}
+}

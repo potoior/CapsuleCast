@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": { "type": "string", "minLength": 2, "maxLength": 16, "description": "左上角标签" },
+    "headline": { "type": "string", "minLength": 2, "maxLength": 16, "description": "标题" },
+    "myth": { "type": "string", "minLength": 4, "maxLength": 30, "description": "误区说法（将被划掉）" },
+    "truth": { "type": "string", "minLength": 4, "maxLength": 34, "description": "真相说法（✓ 高亮）" },
+    "note": { "type": "string", "minLength": 0, "maxLength": 22, "description": "补充注解（可留空）" }
+  },
+  "required": ["kicker", "headline", "myth", "truth"],
+  "additionalProperties": false
+}

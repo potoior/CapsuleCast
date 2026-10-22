@@ -1,0 +1,11 @@
+{
+  "id": "diagram-loop-duo", "name": "双环对比", "role": "body",
+  "description": "恶性循环 vs 良性循环左右并排：两个闭环各自转，一眼看懂为什么越陷越深/越跑越顺。适合行为改变、习惯养成话题。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "dual-spin",
+  "min_duration_s": 6, "max_duration_s": 18,
+  "field_order": ["kicker", "headline", "bad_label", "bad_loop", "good_label", "good_loop", "note"],
+  "example": {"kicker": "习惯科学", "headline": "两个循环，两种人生",
+              "bad_label": "恶性循环", "bad_loop": ["熬夜补不了觉", "白天没精神", "咖啡续命到半夜"],
+              "good_label": "良性循环", "good_loop": ["早睡半小时", "白天状态在线", "晚上自然困得早"],
+              "note": "别靠意志力，换个切入点"}
+}

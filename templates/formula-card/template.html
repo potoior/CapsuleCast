@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6.2cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .eq {
+          flex: 1; display: flex; align-items: center; justify-content: center;
+          gap: 1.6cqw; flex-wrap: wrap; min-height: 0;
+        }
+        #f-{{ scene_id }} .term {
+          border: 2px solid var(--ink); border-radius: var(--tile-radius);
+          background: var(--cream); padding: 2.2cqh 2cqw;
+          display: flex; flex-direction: column; gap: 0.6cqh;
+          min-width: 16cqw; text-align: center;
+        }
+        #f-{{ scene_id }} .term .t-name { font-family: var(--font-display); font-weight: 700; font-size: 4.2cqmin; color: var(--ink); line-height: 1.1; }
+        #f-{{ scene_id }} .term .t-sub { font-family: var(--font-mono); font-size: 1.9cqmin; color: var(--ink-faint); }
+        #f-{{ scene_id }} .op {
+          font-family: var(--font-display); font-weight: 700;
+          font-size: 5.4cqmin; color: var(--coral); line-height: 1;
+        }
+        #f-{{ scene_id }} .term.res {
+          border-color: var(--coral); background: color-mix(in srgb, var(--coral) 12%, var(--cream));
+          min-width: 20cqw;
+        }
+        #f-{{ scene_id }} .term.res .t-name { color: var(--coral-deep); font-size: 4.8cqmin; }
+        #f-{{ scene_id }} .note { margin-top: 1.2cqh; font-family: var(--font-mono); font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em; }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .eq { flex-direction: column; gap: 1.6cqh; }
+          #f-{{ scene_id }} .term { min-width: 60cqw; }
+        }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="eq">
+            {%- set op = fields.get('operator', '×') %}
+            {%- for raw in fields.terms %}
+            {%- set parts = raw.split("|") %}
+            <div class="term" id="s-{{ scene_id }}-term-{{ loop.index0 }}">
+              <span class="t-name">{{ parts[0] }}</span>
+              {% if parts|length > 1 and parts[1] %}<span class="t-sub">{{ parts[1] }}</span>{% endif %}
+            </div>
+            {% if not loop.last %}<span class="op" id="s-{{ scene_id }}-op-{{ loop.index0 }}">{{ op }}</span>{% endif %}
+            {%- endfor %}
+            <span class="op" id="s-{{ scene_id }}-eq">=</span>
+            {%- set rp = fields.result.split("|") %}
+            <div class="term res" id="s-{{ scene_id }}-res">
+              <span class="t-name">{{ rp[0] }}</span>
+              {% if rp|length > 1 and rp[1] %}<span class="t-sub">{{ rp[1] }}</span>{% endif %}
+            </div>
+          </div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}", D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.26);
+          var n = {{ fields.terms | length }};
+          var start = D * 0.26, span = D * 0.34;
+          for (var i = 0; i < n; i++) {
+            var at = start + (span * i) / (n + 1);
+            tl.fromTo("#" + SID + "-term-" + i,
+              { opacity: 0, y: 34 * AD.flip, scale: 0.94 },
+              { opacity: 1, y: 0, scale: 1, duration: 0.45 * AD.pace, ease: "back.out(1.5)" }, at);
+            var opEl = document.getElementById(SID + "-op-" + i);
+            if (opEl) tl.fromTo(opEl, { opacity: 0, scale: 0.4, transformOrigin: "50% 50%" },
+              { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)" }, at + 0.22);
+          }
+          tl.fromTo("#" + SID + "-eq", { opacity: 0, scale: 0.4, transformOrigin: "50% 50%" },
+            { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)" }, start + span * 0.9);
+          tl.fromTo("#" + SID + "-res",
+            { opacity: 0, scale: 0.8, transformOrigin: "50% 50%" },
+            { opacity: 1, scale: 1, duration: 0.55 * AD.pace, ease: "back.out(1.6)" }, D * 0.62);
+          if (document.getElementById(SID + "-note")) {
+            tl.fromTo("#" + SID + "-note", { opacity: 0 }, { opacity: 1, duration: 0.6 }, D * 0.72);
+          }
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

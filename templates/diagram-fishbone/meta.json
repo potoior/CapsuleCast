@@ -1,0 +1,11 @@
+{
+  "id": "diagram-fishbone", "name": "鱼骨图", "role": "body",
+  "description": "归因鱼骨：主骨指向问题头，成因按类别上下分刺。适合「为什么X」的多因分析、问题拆解。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "spine-then-bones",
+  "min_duration_s": 6, "max_duration_s": 18,
+  "field_order": ["kicker", "headline", "problem", "bones", "note"],
+  "example": {"kicker": "涨粉诊断", "headline": "为什么涨粉慢",
+              "problem": "涨粉慢",
+              "bones": ["选题|不够垂直", "开头|钩子太弱", "更新|三天打鱼", "互动|评论区冷清"],
+              "note": "骨头一根根排查"}
+}

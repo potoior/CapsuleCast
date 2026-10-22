@@ -1,0 +1,10 @@
+{
+  "id": "diagram-stairs", "name": "进阶阶梯", "role": "body",
+  "description": "逐级升高的阶梯：3-4 个递进阶段依次点亮，末级高亮为「登顶」。适合进阶路径、成长阶段、难度爬升。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "steps-climb",
+  "min_duration_s": 6, "max_duration_s": 18,
+  "field_order": ["kicker", "headline", "steps", "note"],
+  "example": {"kicker": "学习路径", "headline": "从入门到精通四级台阶",
+              "steps": ["看懂文档|能跑起来", "读源码|知道为什么", "能造轮子|独立实现", "能讲明白|教会别人"],
+              "note": "大多数人卡在第二级"}
+}

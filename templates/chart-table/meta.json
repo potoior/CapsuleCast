@@ -1,0 +1,11 @@
+{
+  "id": "chart-table", "name": "对比表", "role": "body",
+  "description": "结构化数据表：表头行 + 数据行逐行浮现，末行高亮。适合参数对照、费用明细、多维度清单。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "rows-stagger",
+  "min_duration_s": 6, "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "columns", "rows", "note"],
+  "example": {"kicker": "一笔账", "headline": "两种充电方式对比",
+              "columns": ["方式", "时间成本", "单位成本"],
+              "rows": ["家充|8小时|0.3元/度", "快充|1小时|1.6元/度", "换电|5分钟|2.2元/度"],
+              "note": "省的是时间，贵的是钱"}
+}

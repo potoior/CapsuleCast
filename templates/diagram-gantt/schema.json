@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": { "type": "string", "minLength": 2, "maxLength": 16, "description": "左上角标签" },
+    "headline": { "type": "string", "minLength": 2, "maxLength": 16, "description": "标题" },
+    "time_labels": {
+      "type": "array", "minItems": 2, "maxItems": 4,
+      "items": { "type": "string", "minLength": 1, "maxLength": 8 },
+      "description": "时间刻度（从左到右均分）"
+    },
+    "tracks": {
+      "type": "array", "minItems": 2, "maxItems": 5,
+      "items": { "type": "string", "minLength": 4, "maxLength": 20 },
+      "description": "轨道，格式「轨道名|起始 0-100|时长 0-100」，首轨高亮"
+    },
+    "note": { "type": "string", "minLength": 0, "maxLength": 22, "description": "注解（可留空）" }
+  },
+  "required": ["kicker", "headline", "time_labels", "tracks"],
+  "additionalProperties": false
+}

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6.2cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .ice-zone { flex: 1; position: relative; min-height: 0; }
+        #f-{{ scene_id }} svg.ice { width: 100%; height: 100%; }
+        #f-{{ scene_id }} .i-water { fill: color-mix(in srgb, var(--ink) 6%, transparent); }
+        #f-{{ scene_id }} .i-line { stroke: var(--ink); stroke-width: 3; stroke-dasharray: 14 10; }
+        #f-{{ scene_id }} .i-berg {
+          fill: color-mix(in srgb, var(--tile-strong) 92%, var(--ink));
+          stroke: var(--ink); stroke-width: 3;
+        }
+        #f-{{ scene_id }} .i-chip {
+          font-family: var(--font-body); font-weight: 700; font-size: 2.7cqmin; fill: var(--ink);
+        }
+        #f-{{ scene_id }} .i-sub { font-family: var(--font-mono); font-size: 2.2cqmin; fill: var(--ink-faint); }
+        #f-{{ scene_id }} .i-lab { font-family: var(--font-mono); font-size: 2.1cqmin; fill: var(--ink-faint); letter-spacing: 0.14em; }
+        #f-{{ scene_id }} .i-lead { stroke: var(--hairline-strong); stroke-width: 2; stroke-dasharray: 4 6; fill: none; }
+        #f-{{ scene_id }} .note { margin-top: 1cqh; font-family: var(--font-mono); font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em; }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="ice-zone">
+            <svg class="ice" viewBox="0 0 1600 700" preserveAspectRatio="xMidYMid meet">
+              <!-- 水下底色 -->
+              <rect class="i-water" id="s-{{ scene_id }}-water" x="0" y="290" width="1600" height="410" opacity="0" />
+              <!-- 冰山：水上尖 + 水下大身 -->
+              <path class="i-berg" id="s-{{ scene_id }}-berg"
+                d="M 800 90 L 950 285 L 1090 285 L 1250 480 L 1050 660 L 550 660 L 350 480 L 510 285 L 650 285 Z" />
+              <!-- 水线 -->
+              <line class="i-line" id="s-{{ scene_id }}-wl" x1="60" y1="290" x2="1540" y2="290" />
+              <text class="i-lab" id="s-{{ scene_id }}-wlab" x="1540" y="316" text-anchor="end">{{ fields.water_label }}</text>
+              <!-- 水上表象：左侧 -->
+              {%- for raw in fields.above_items %}
+              {%- set parts = raw.split("|") %}
+              <text class="i-chip" id="s-{{ scene_id }}-a-{{ loop.index0 }}" x="120" y="{{ 140 + loop.index0 * 74 }}" opacity="0">{{ parts[0] }}</text>
+              {% if parts|length > 1 and parts[1] %}
+              <text class="i-sub" id="s-{{ scene_id }}-as-{{ loop.index0 }}" x="120" y="{{ 168 + loop.index0 * 74 }}" opacity="0">{{ parts[1] }}</text>
+              {% endif %}
+              <path class="i-lead" id="s-{{ scene_id }}-al-{{ loop.index0 }}" d="M 300 {{ 134 + loop.index0 * 74 }} L 720 200" opacity="0" />
+              {%- endfor %}
+              <!-- 水下真相：右侧 -->
+              {%- set NB = fields.below_items | length %}
+              {%- for raw in fields.below_items %}
+              {%- set parts = raw.split("|") %}
+              <text class="i-chip" id="s-{{ scene_id }}-b-{{ loop.index0 }}" x="1330" y="{{ 380 + loop.index0 * (240 // NB) }}" opacity="0">{{ parts[0] }}</text>
+              {% if parts|length > 1 and parts[1] %}
+              <text class="i-sub" id="s-{{ scene_id }}-bs-{{ loop.index0 }}" x="1330" y="{{ 408 + loop.index0 * (240 // NB) }}" opacity="0">{{ parts[1] }}</text>
+              {% endif %}
+              <path class="i-lead" id="s-{{ scene_id }}-bl-{{ loop.index0 }}" d="M 1300 {{ 374 + loop.index0 * (240 // NB) }} L 1080 {{ 440 + loop.index0 * 60 }}" opacity="0" />
+              {%- endfor %}
+            </svg>
+          </div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}", D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.26);
+          // 冰山浮出 + 水线
+          tl.fromTo("#" + SID + "-berg", { opacity: 0, y: 90 }, { opacity: 1, y: 0, duration: 0.8 * AD.pace, ease: "power2.out" }, D * 0.24);
+          tl.fromTo("#" + SID + "-wl", { attr: { x2: 60 } }, { attr: { x2: 1540 }, duration: 0.5, ease: "power2.inOut" }, D * 0.30);
+          tl.to("#" + SID + "-water", { opacity: 1, duration: 0.5 }, D * 0.34);
+          tl.fromTo("#" + SID + "-wlab", { opacity: 0 }, { opacity: 1, duration: 0.4 }, D * 0.42);
+          // 水上表象
+          var nA = {{ fields.above_items | length }};
+          for (var a = 0; a < nA; a++) {
+            tl.to("#" + SID + "-a-" + a, { opacity: 1, duration: 0.35 }, D * (0.40 + a * 0.06));
+            tl.to("#" + SID + "-as-" + a, { opacity: 1, duration: 0.35 }, D * (0.44 + a * 0.06));
+            tl.to("#" + SID + "-al-" + a, { opacity: 1, duration: 0.3 }, D * (0.46 + a * 0.06));
+          }
+          // 水下真相：逐条点亮
+          var nB = {{ fields.below_items | length }};
+          var start = D * 0.50, span = D * 0.20;
+          for (var b = 0; b < nB; b++) {
+            var at = start + (span * b) / nB;
+            tl.to("#" + SID + "-b-" + b, { opacity: 1, duration: 0.35 }, at);
+            tl.to("#" + SID + "-bs-" + b, { opacity: 1, duration: 0.35 }, at + 0.05);
+            tl.to("#" + SID + "-bl-" + b, { opacity: 1, duration: 0.3 }, at + 0.08);
+          }
+          if (document.getElementById(SID + "-note")) {
+            tl.fromTo("#" + SID + "-note", { opacity: 0 }, { opacity: 1, duration: 0.6 }, D * 0.72);
+          }
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

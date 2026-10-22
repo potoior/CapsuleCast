@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ scene_id }}</title>
+  </head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .stream {
+          position: absolute;
+          left: 0;
+          top: 24cqh;
+          width: 100%;
+          height: 4cqh;
+          overflow: hidden;
+          opacity: 0;
+        }
+        #f-{{ scene_id }} .stream-track {
+          display: flex;
+          gap: 3.2cqw;
+          white-space: nowrap;
+          font-family: var(--font-mono);
+          font-size: 2.1cqmin;
+          color: var(--ink);
+        }
+        #f-{{ scene_id }} .stream-track span {
+          display: inline-block;
+          padding: 0.8cqh 1.4cqw;
+          border: 1px solid var(--hairline);
+          border-radius: 0.6cqmin;
+          background: color-mix(in srgb, var(--tile) 55%, transparent);
+        }
+        #f-{{ scene_id }} .stack {
+          position: absolute;
+          left: var(--pad-x, 6cqw);
+          top: 30cqh;
+          max-width: 88cqw;
+        }
+        #f-{{ scene_id }} .headline {
+          font-family: var(--font-display);
+          font-size: 9cqmin;
+          font-weight: 400;
+          letter-spacing: -0.02em;
+          line-height: 1.06;
+          overflow: hidden;
+          padding-bottom: 0.05em;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0 0.08em;
+        }
+        #f-{{ scene_id }} .headline span { display: inline-block; }
+        #f-{{ scene_id }} .subline {
+          margin-top: 3.4cqh;
+          font-family: var(--font-mono);
+          font-size: 2.6cqmin;
+          letter-spacing: 0.08em;
+          color: var(--ink-soft);
+          opacity: 0;
+        }
+        #f-{{ scene_id }} .rule {
+          margin-top: 3.2cqh;
+          width: 22cqw;
+          transform: scaleX(0);
+        }
+        /* v1 分栏卡片：右列 subline 成卡 */
+        #f-{{ scene_id }} .stack.v-split {
+          display: grid;
+          grid-template-columns: 1fr 36cqw;
+          gap: 3cqw;
+          align-items: end;
+          max-width: 92cqw;
+        }
+        #f-{{ scene_id }} .stack.v-split .subline {
+          border: 1px solid var(--hairline-strong);
+          background: var(--cream);
+          border-radius: var(--tile-radius);
+          padding: 2.6cqh 2cqw;
+          letter-spacing: 0.02em;
+        }
+        /* v2 横幅带：墨底通栏 */
+        #f-{{ scene_id }} .stack.v-band {
+          left: 0; top: 34cqh; max-width: none;
+          padding: 4cqh 6cqw;
+          background: var(--ink);
+        }
+        #f-{{ scene_id }} .stack.v-band .headline { color: var(--cream); }
+        #f-{{ scene_id }} .stack.v-band .subline { color: color-mix(in srgb, var(--cream) 78%, transparent); }
+        #f-{{ scene_id }} .corner {
+          position: absolute;
+          right: var(--pad-x, 6cqw);
+          bottom: calc(var(--cap-band-height) * 1cqh + 4cqh);
+          font-family: var(--font-mono);
+          font-size: 2cqmin;
+          letter-spacing: 0.14em;
+          color: var(--ink-faint);
+        }
+      </style>
+
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="stream">
+          <div class="stream-track" id="s-{{ scene_id }}-track">
+            <span>{{ fields.kicker }}</span><span>PROMPT</span><span>CONTEXT</span><span>KV</span>
+            <span>{{ fields.kicker }}</span><span>PROMPT</span><span>CONTEXT</span><span>KV</span>
+            <span>{{ fields.kicker }}</span><span>PROMPT</span><span>CONTEXT</span><span>KV</span>
+            <span>{{ fields.kicker }}</span><span>PROMPT</span><span>CONTEXT</span><span>KV</span>
+          </div>
+        </div>
+
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker">
+            <span class="hf-spike"></span> {{ fields.kicker }}
+          </div>
+        </div>
+
+        {% set V = fields.get('variant', 0) %}
+        <div class="stack{% if V == 1 %} v-split{% elif V == 2 %} v-band{% endif %}">
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="subline" id="s-{{ scene_id }}-subline">{{ fields.subline }}</div>
+          <div class="hf-rule" id="s-{{ scene_id }}-rule"></div>
+        </div>
+
+        <div class="corner" id="s-{{ scene_id }}-corner">01 / HOOK</div>
+      </div>
+
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var tl = gsap.timeline({ paused: true });
+
+          // 逐字拆分主标题（确定性 DOM 变换，无随机）
+          var head = document.getElementById(SID + "-headline");
+          var text = head.textContent;
+          head.textContent = "";
+          for (var i = 0; i < text.length; i++) {
+            var sp = document.createElement("span");
+            sp.textContent = text[i];
+            head.appendChild(sp);
+          }
+
+          var e0 = Math.min(0.12, D * 0.03);
+          tl.fromTo("#" + SID + "-kicker",
+            { opacity: 0, y: -16 },
+            { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" }, e0);
+
+          tl.fromTo("#" + SID + "-headline span",
+            { yPercent: 118 },
+            { yPercent: 0, duration: 0.85, stagger: Math.min(0.14, D * 0.02), ease: "power4.out" },
+            e0 + 0.2);
+
+          AM.wipe(tl, "#" + SID + "-subline", Math.min(e0 + 0.9, D * 0.35), 0.7, "bottom");
+
+          tl.to("#" + SID + "-rule", { scaleX: 1, duration: 0.9, ease: "power3.inOut" },
+            Math.min(e0 + 1.1, D * 0.42));
+
+          tl.fromTo("#" + SID + "-corner", { opacity: 0 }, { opacity: 1, duration: 0.6 },
+            Math.min(D * 0.5, D - 0.6));
+          AM.float(tl, "#" + SID + "-corner", Math.min(D * 0.5, D - 0.6) + 0.6, D);
+
+          // 背景流：淡入后匀速左移，持续时间留出收尾
+          tl.fromTo("#f-{{ scene_id }} .stream", { opacity: 0 }, { opacity: 0.3, duration: 0.8 },
+            e0 + 0.25);
+          tl.fromTo("#" + SID + "-track", { x: -160 }, { x: -420, duration: D - 0.6, ease: "none" },
+            e0 + 0.25);
+
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline span, #" + SID + "-subline, #" + SID + "-rule", D);{% endif %}
+          tl.to({}, { duration: D }, 0); // 全跨度锚点
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

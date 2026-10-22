@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": { "type": "string", "minLength": 2, "maxLength": 16, "description": "左上角标签" },
+    "headline": { "type": "string", "minLength": 2, "maxLength": 16, "description": "标题" },
+    "pros": {
+      "type": "array", "minItems": 1, "maxItems": 4,
+      "items": { "type": "string", "minLength": 2, "maxLength": 16 },
+      "description": "利/优点，格式「要点|小注」"
+    },
+    "cons": {
+      "type": "array", "minItems": 1, "maxItems": 4,
+      "items": { "type": "string", "minLength": 2, "maxLength": 16 },
+      "description": "弊/缺点，格式「要点|小注」"
+    },
+    "verdict": { "type": "string", "minLength": 2, "maxLength": 18, "description": "一句话裁决" },
+    "note": { "type": "string", "minLength": 0, "maxLength": 22, "description": "注解（可留空）" }
+  },
+  "required": ["kicker", "headline", "pros", "cons", "verdict"],
+  "additionalProperties": false
+}

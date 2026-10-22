@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6.4cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .duo {
+          flex: 1; display: grid; grid-template-columns: 46cqw 1fr;
+          align-items: center; min-height: 0; width: 92cqw; gap: 2cqw;
+        }
+        #f-{{ scene_id }} .rings { position: relative; width: 46cqw; height: 46cqw; }
+        #f-{{ scene_id }} .ring {
+          position: absolute; inset: 0; border-radius: 50%;
+          border: 1.5px solid var(--hairline-strong); background: var(--cream);
+        }
+        #f-{{ scene_id }} .ring .r-label {
+          position: absolute; top: 0.8cqh; left: 50%; transform: translateX(-50%);
+          font-family: var(--font-mono); font-size: 1.8cqmin; color: var(--ink-faint);
+          white-space: nowrap; letter-spacing: 0.08em;
+        }
+        #f-{{ scene_id }} .core {
+          position: absolute; inset: 26%; border-radius: 50%;
+          background: var(--ink); color: var(--cream);
+          display: flex; align-items: center; justify-content: center; text-align: center;
+          font-size: 2.8cqmin; font-weight: 600; line-height: 1.35; padding: 8%;
+        }
+        #f-{{ scene_id }} .legend { display: flex; flex-direction: column; gap: 1.6cqh; }
+        #f-{{ scene_id }} .leg {
+          border-left: 3px solid var(--hairline-strong); padding-left: 1.4cqw;
+          display: flex; flex-direction: column; gap: 0.3cqh;
+        }
+        #f-{{ scene_id }} .leg.first { border-color: var(--coral); }
+        #f-{{ scene_id }} .leg b { font-size: 3.2cqmin; font-weight: 600; color: var(--ink); }
+        #f-{{ scene_id }} .leg i { font-family: var(--font-mono); font-style: normal; font-size: 2cqmin; color: var(--ink-faint); }
+        #f-{{ scene_id }} .note { margin-top: 1.4cqh; font-family: var(--font-mono); font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em; }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .duo { grid-template-columns: 1fr; width: 92cqw; }
+          #f-{{ scene_id }} .rings { width: 62cqw; height: 62cqw; margin: 0 auto; }
+        }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="duo">
+            <div class="rings" id="s-{{ scene_id }}-rings">
+              {%- for raw in fields.layers %}
+              {%- set parts = raw.split("|") %}
+              {%- set inset_pct = (loop.index0 * 9) | string %}
+              <div class="ring" id="s-{{ scene_id }}-ring-{{ loop.index0 }}"
+                style="inset: {{ inset_pct }}%;">
+                <span class="r-label">{{ parts[0] }}</span>
+              </div>
+              {%- endfor %}
+              <div class="core" id="s-{{ scene_id }}-core">{{ fields.core }}</div>
+            </div>
+            <div class="legend">
+              {%- for raw in fields.layers %}
+              {%- set parts = raw.split("|") %}
+              <div class="leg{% if loop.index0 == 0 %} first{% endif %}" id="s-{{ scene_id }}-leg-{{ loop.index0 }}">
+                <b>{{ parts[0] }}</b>
+                {% if parts|length > 1 and parts[1] %}<i>{{ parts[1] }}</i>{% endif %}
+              </div>
+              {%- endfor %}
+            </div>
+          </div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          var N = {{ fields.layers | length }};
+
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+
+          // 圆环由外向内逐层生长，标注右侧级联，最后核心弹出
+          var t0 = Math.min(0.9, D * 0.16);
+          for (var i = 0; i < N; i++) {
+            var at = t0 + (D * 0.4 * i) / Math.max(1, N);
+            tl.fromTo("#" + SID + "-ring-" + i, { opacity: 0, scale: 0.6 },
+              { opacity: 1, scale: 1, duration: 0.55, ease: "back.out(1.9)" }, at);
+            tl.fromTo("#" + SID + "-leg-" + i, { opacity: 0, x: 24 * AD.flip },
+              { opacity: 1, x: 0, duration: 0.45, ease: "power3.out" }, at + 0.15);
+          }
+          var tC = Math.min(t0 + D * 0.4 + 0.3, D * 0.66);
+          AM.pop(tl, "#" + SID + "-core", tC, 0.55);
+          AM.pulse(tl, "#" + SID + "-core", tC + 0.6);
+          if (document.getElementById(SID + "-note")) {
+            AM.wipe(tl, "#" + SID + "-note", Math.min(tC + 0.9, D * 0.8), 0.6, "bottom");
+          }
+
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, [id^='" + SID + "-ring-'], [id^='" + SID + "-leg-'], #" + SID + "-core", D);{% endif %}
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

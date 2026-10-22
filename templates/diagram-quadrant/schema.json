@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": { "type": "string", "minLength": 2, "maxLength": 16, "description": "左上角标签" },
+    "headline": { "type": "string", "minLength": 2, "maxLength": 16, "description": "标题" },
+    "x_label": { "type": "string", "minLength": 1, "maxLength": 8, "description": "横轴名称，如「紧急 →」" },
+    "y_label": { "type": "string", "minLength": 1, "maxLength": 8, "description": "纵轴名称，如「重要 ↑」" },
+    "quadrants": {
+      "type": "array", "minItems": 4, "maxItems": 4,
+      "items": { "type": "string", "minLength": 2, "maxLength": 20 },
+      "description": "四象限，顺序：左上|右上|左下|右下，格式「名称|小注」"
+    },
+    "note": { "type": "string", "minLength": 0, "maxLength": 22, "description": "注解（可留空）" }
+  },
+  "required": ["kicker", "headline", "x_label", "y_label", "quadrants"],
+  "additionalProperties": false
+}

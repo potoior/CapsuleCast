@@ -1,0 +1,12 @@
+{
+  "id": "pros-cons", "name": "利弊清单", "role": "body",
+  "description": "天平式两列对照：✓利 vs ✗弊 + 底部裁决条。适合「X值不值得」「要不要做X」的权衡决策话题。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "weigh-scale",
+  "min_duration_s": 6, "max_duration_s": 16,
+  "field_order": ["kicker", "headline", "pros", "cons", "verdict", "note"],
+  "example": {"kicker": "要不要买", "headline": "要不要装洗碗机",
+              "pros": ["解放双手|每天省40分钟", "洗得干净|高温除菌"],
+              "cons": ["要弯腰摆碗|用了才懂", "费水电|其实比手洗省"],
+              "verdict": "懒人刚需，勤快人可缓",
+              "note": "先算时间账再算钱账"}
+}

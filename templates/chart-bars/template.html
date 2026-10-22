@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ scene_id }}</title>
+  </head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline {
+          font-family: var(--font-display);
+          font-size: 6.8cqmin;
+          margin-top: 3cqh;
+        }
+        #f-{{ scene_id }} .chart {
+          margin-top: 4.5cqh;
+          display: flex;
+          flex-direction: column;
+          gap: 2.6cqh;
+          max-width: 78cqw;
+        }
+        #f-{{ scene_id }} .row {
+          display: flex;
+          align-items: center;
+          gap: 2.4cqw;
+        }
+        #f-{{ scene_id }} .label {
+          font-family: var(--font-body);
+          font-size: 3.2cqmin;
+          font-weight: 700;
+          color: var(--ink);
+          flex: none;
+          width: 22cqw;
+          text-align: right;
+          line-height: 1.2;
+        }
+        #f-{{ scene_id }} .track {
+          flex: 1;
+          height: 4.4cqmin;
+          background: color-mix(in srgb, var(--ink) 7%, transparent);
+          border-radius: 0.8cqmin;
+          overflow: hidden;
+          position: relative;
+        }
+        #f-{{ scene_id }} .fill {
+          position: absolute;
+          inset: 0;
+          transform-origin: left center;
+          transform: scaleX(0);
+          border-radius: 0.8cqmin;
+          background: var(--tile-strong);
+        }
+        #f-{{ scene_id }} .row.hot .fill { background: var(--coral); }
+        #f-{{ scene_id }} .value {
+          font-family: var(--font-mono);
+          font-size: 3cqmin;
+          font-weight: 700;
+          color: var(--ink-soft);
+          flex: none;
+          width: 16cqw;
+          white-space: nowrap;
+        }
+        #f-{{ scene_id }} .row.hot .value { color: var(--coral-deep); }
+        #f-{{ scene_id }} .note {
+          margin-top: 3.6cqh;
+          font-family: var(--font-mono);
+          font-size: 2cqmin;
+          letter-spacing: 0.08em;
+          color: var(--ink-faint);
+        }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .chart { max-width: 92cqw; gap: 3cqh; }
+          #f-{{ scene_id }} .label { width: 26cqw; font-size: 3.8cqmin; }
+          #f-{{ scene_id }} .value { width: 20cqw; font-size: 3.6cqmin; }
+          #f-{{ scene_id }} .track { height: 5cqmin; }
+        }
+      </style>
+
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker">
+            <span class="hf-spike"></span> {{ fields.kicker }}
+          </div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="chart">
+            {% for b in fields.bars %}
+            {% set parts = b.split("|") %}
+            <div class="row" id="s-{{ scene_id }}-row-{{ loop.index0 }}"
+              data-value="{{ parts[1] if parts|length > 1 else '' }}">
+              <span class="label" id="s-{{ scene_id }}-lab-{{ loop.index0 }}">{{ parts[0] }}</span>
+              <span class="track"><span class="fill" id="s-{{ scene_id }}-fill-{{ loop.index0 }}"></span></span>
+              <span class="value" id="s-{{ scene_id }}-val-{{ loop.index0 }}">{{ parts[1] if parts|length > 1 else "" }}</span>
+            </div>
+            {% endfor %}
+          </div>
+          {% if fields.get('note') %}
+          <div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var N = {{ fields.bars | length }};
+          var rows = document.querySelectorAll('[id^="' + SID + '-row-"]');
+          // 数值解析 → 归一化宽度（最大值 100%，最小 14% 保底可见）
+          var vals = [], max = 0;
+          rows.forEach(function (r) {
+            var m = (r.getAttribute("data-value") || "").match(/-?[0-9]+(\.[0-9]+)?/);
+            var v = m ? parseFloat(m[0]) : 0;
+            vals.push(v);
+            if (v > max) max = v;
+          });
+          var hotIdx = 0;
+          for (var i = 1; i < vals.length; i++) if (vals[i] > vals[hotIdx]) hotIdx = i;
+          if (rows[hotIdx]) rows[hotIdx].classList.add("hot");
+
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+
+          // 条形级联生长：起点在 22%–58% 时长区间均分
+          var span = D * 0.58 - D * 0.22;
+          for (var i = 0; i < N; i++) {
+            var at = D * 0.22 + (span * i) / Math.max(1, N - 1);
+            var w = max > 0 ? Math.max(0.14, vals[i] / max) : 0.5;
+            tl.fromTo("#" + SID + "-fill-" + i, { scaleX: 0 },
+              { scaleX: w, duration: 0.9, ease: "power4.out" }, at);
+            tl.fromTo("#" + SID + "-row-" + i, { opacity: 0, y: 18 },
+              { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, at - 0.12);
+            AM.pop(tl, "#" + SID + "-val-" + i, at + 0.42);
+          }
+          AM.wipe(tl, "#" + SID + "-note", D * 0.66, 0.65, "bottom");
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, #" + SID + "-note, [id^='" + SID + "-row-']", D);{% endif %}
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

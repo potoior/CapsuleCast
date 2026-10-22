@@ -1,0 +1,10 @@
+{
+  "id": "news-card", "name": "快讯组", "role": "body",
+  "description": "2-3 条快讯纵排：序号 + 标题 + 来源胶囊，信息流节奏。适合资讯摘要、行业动态、一周大事。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "feed-scroll",
+  "min_duration_s": 5, "max_duration_s": 16,
+  "field_order": ["kicker", "headline", "items", "note"],
+  "example": {"kicker": "行业快讯", "headline": "本周 AI 三件事",
+              "items": ["某大模型开源|The Verge|10-21", "AI 手机出货翻倍|IDC|10-19", "欧盟通过 AI 法案|路透|10-18"],
+              "note": "节奏肉眼可见地加快"}
+}

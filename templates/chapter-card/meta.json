@@ -1,0 +1,26 @@
+{
+  "id": "chapter-card",
+  "name": "章节卡",
+  "role": "body",
+  "description": "章节转场卡：巨型序号 Part N/M + 章节标题，快速过场（3-6 秒）。长视频分节处使用，配 chime 音效。",
+  "aspects": [
+    "16:9",
+    "9:16",
+    "1:1"
+  ],
+  "motion": "numeral-slam",
+  "min_duration_s": 3,
+  "max_duration_s": 14,
+  "field_order": [
+    "kicker",
+    "part_no",
+    "part_total",
+    "chapter_title"
+  ],
+  "example": {
+    "kicker": "第二部分",
+    "part_no": "02",
+    "part_total": "05",
+    "chapter_title": "为什么劝退"
+  }
+}

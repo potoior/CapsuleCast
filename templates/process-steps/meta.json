@@ -1,0 +1,21 @@
+{
+  "id": "process-steps",
+  "name": "流程步骤",
+  "description": "3-5 步横向步进条（竖屏自动纵向），序号节点依次点亮、连接线生长。适合“首先 / 然后 / 最后”类流程。",
+  "role": "body",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "motion": "step-chain",
+  "min_duration_s": 5,
+  "max_duration_s": 22,
+  "field_order": ["kicker", "headline", "steps"],
+  "example": {
+    "kicker": "工作原理",
+    "headline": "一次缓存命中",
+    "steps": [
+      { "label": "读提示词", "detail": "逐 token 扫描" },
+      { "label": "查前缀", "detail": "与 KV Cache 对齐" },
+      { "label": "算增量", "detail": "只算新增部分" },
+      { "label": "回结果", "detail": "价格降一档" }
+    ]
+  }
+}
