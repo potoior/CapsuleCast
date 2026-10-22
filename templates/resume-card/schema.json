@@ -1,0 +1,61 @@
+{
+  "type": "object",
+  "properties": {
+    "kicker": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "左上角小标签，烘托求职氛围"
+    },
+    "headline": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "大标题，简历卡的主旨"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 10,
+      "description": "简历主人姓名"
+    },
+    "role_label": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 10,
+      "description": "目标职位或身份标签"
+    },
+    "skills": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 4,
+      "items": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 10,
+        "description": "技能|熟练度0-100"
+      },
+      "description": "技能条列表，格式：技能|熟练度0-100"
+    },
+    "experiences": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 3,
+      "items": {
+        "type": "string",
+        "minLength": 6,
+        "maxLength": 22,
+        "description": "时间|公司或项目|一句话"
+      },
+      "description": "经历时间轴，格式：时间|公司或项目|一句话"
+    },
+    "note": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 22,
+      "description": "底部备注，可留空"
+    }
+  },
+  "required": ["kicker", "headline", "name", "role_label", "skills", "experiences"],
+  "additionalProperties": false
+}

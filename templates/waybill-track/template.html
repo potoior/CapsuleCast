@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .wrap{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;width:92cqw;}
+        #f-{{ scene_id }} .wb{width:60cqw;background:#fff;border:1.5px solid var(--hairline-strong);box-shadow:0.6cqh 0.8cqw 0 color-mix(in srgb,var(--ink) 10%,transparent);padding:2.4cqh 2.4cqw;font-family:var(--font-mono);position:relative;}
+        #f-{{ scene_id }} .wb::after{content:"";position:absolute;left:0;right:0;top:9.4cqh;border-top:1.5px dashed var(--hairline-strong);}
+        #f-{{ scene_id }} .w-no{display:flex;justify-content:space-between;align-items:center;}
+        #f-{{ scene_id }} .w-no .no{font-size:2.8cqmin;font-weight:900;color:var(--ink);letter-spacing:0.08em;font-variant-numeric: tabular-nums;}
+        #f-{{ scene_id }} .w-no .co{font-size:1.9cqmin;color:var(--ink-faint);}
+        #f-{{ scene_id }} .w-bar{margin-top:1cqh;height:3cqh;background:repeating-linear-gradient(90deg,var(--ink) 0 0.2cqw,transparent 0.2cqw 0.5cqw,var(--ink) 0.5cqw 0.7cqw,transparent 0.7cqw 1.4cqw);transform-origin:0% 50%;}
+        #f-{{ scene_id }} .w-route{margin-top:2.2cqh;display:flex;align-items:center;gap:1.4cqw;}
+        #f-{{ scene_id }} .w-city{font-family:var(--font-display);font-size:4cqmin;font-weight:900;color:var(--ink);}
+        #f-{{ scene_id }} .w-city.to{color:var(--coral-deep);}
+        #f-{{ scene_id }} .w-track{flex:1;height:1.5px;background:var(--hairline-strong);position:relative;}
+        #f-{{ scene_id }} .w-track .w-fill{position:absolute;left:0;top:0;bottom:0;width:100%;transform-origin:0% 50%;}
+        #f-{{ scene_id }} .w-track .w-fill .dot{position:absolute;right:-0.7cqw;top:50%;transform:translateY(-50%);width:1.4cqw;height:1.4cqw;border-radius:50%;background:var(--coral);}
+        #f-{{ scene_id }} .evs{margin-top:1.8cqh;display:flex;flex-direction:column;gap:1cqh;}
+        #f-{{ scene_id }} .ev{display:grid;grid-template-columns:2cqw 1fr;gap:1.2cqw;align-items:baseline;}
+        #f-{{ scene_id }} .ev .nd{width:2cqw;height:2cqw;border-radius:50%;border:1.5px solid var(--ink);position:relative;top:0.4cqh;}
+        #f-{{ scene_id }} .ev.done .nd{background:var(--ink);}
+        #f-{{ scene_id }} .ev.now .nd{background:var(--coral);border-color:var(--coral);}
+        #f-{{ scene_id }} .ev .tx{display:flex;justify-content:space-between;font-size:2.3cqmin;color:var(--ink);border-bottom:1px dashed var(--hairline-strong);padding-bottom:0.7cqh;}
+        #f-{{ scene_id }} .ev .tx .st{font-weight:700;}
+        #f-{{ scene_id }} .ev.now .tx .st{color:var(--coral-deep);}
+        #f-{{ scene_id }} .ev .tx .loc{color:var(--ink-faint);}
+        #f-{{ scene_id }} .w-eta{margin-top:1.6cqh;text-align:right;font-size:2.4cqmin;font-weight:700;color:var(--coral-deep);}
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .wb{width:92cqw;}
+        }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="wrap"><div class="wb" id="s-{{ scene_id }}-wb"><div class="w-no"><span class="no" id="s-{{ scene_id }}-no">{{ fields.tracking_no }}</span><span class="co">{{ fields.kicker }}速运</span></div><div class="w-bar" id="s-{{ scene_id }}-bar"></div><div class="w-route" id="s-{{ scene_id }}-route">{% set rc = fields.route.split("|") %}<span class="w-city">{{ rc[0] }}</span><span class="w-track" id="s-{{ scene_id }}-track"><span class="w-fill" id="s-{{ scene_id }}-fill"><span class="dot" id="s-{{ scene_id }}-dot"></span></span></span><span class="w-city to">{{ rc[1] if rc|length > 1 else "" }}</span></div><div class="evs">{% for raw in fields.get("events", []) %}{% set parts = raw.split("|") %}<div class="ev{% if loop.last %} now{% elif not loop.last %} done{% endif %}" id="s-{{ scene_id }}-ev-{{ loop.index0 }}"><span class="nd"></span><span class="tx"><span class="st">{{ parts[0] }}</span><span class="loc">{{ parts[1] if parts|length > 1 else "" }}</span></span></div>{% endfor %}</div><div class="w-eta" id="s-{{ scene_id }}-eta">{{ fields.eta_label }}</div></div></div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+          var N = {{ fields.get("events", []) | length }};
+          var t0 = Math.min(0.9, D * 0.16);
+          tl.fromTo("#" + SID + "-wb", { opacity: 0, y: 28 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, t0);
+          tl.fromTo("#" + SID + "-bar", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power2.out" }, t0 + 0.2);
+          tl.fromTo("#" + SID + "-track", { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power2.inOut", transformOrigin: "0% 50%" }, t0 + 0.5);
+          tl.fromTo("#" + SID + "-fill", { scaleX: 0 }, { scaleX: 1, duration: 0.7, ease: "power2.inOut" }, t0 + 0.5);
+          for (var i = 0; i < N; i++) {
+            var at = t0 + 0.7 + 0.3 * i;
+            tl.fromTo("#" + SID + "-ev-" + i, { opacity: 0, x: -14 }, { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, at);
+            AM.pop(tl, "#" + SID + "-ev-" + i + " .nd", at + 0.1, 0.35);
+          }
+          AM.pop(tl, "#" + SID + "-eta", Math.min(t0 + 0.8 + 0.3 * N, D * 0.72), 0.5);
+          AM.pulse(tl, "#" + SID + "-eta", Math.min(t0 + 1.3 + 0.3 * N, D * 0.8));
+          if (document.getElementById(SID + "-note")) {
+            tl.fromTo("#" + SID + "-note", { opacity: 0 }, { opacity: 1, duration: 0.5 }, Math.min(t0 + 1.6 + 0.3 * N, D * 0.86));
+          }
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, #" + SID + "-wb", D);{% endif %}
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

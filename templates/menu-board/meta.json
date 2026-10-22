@@ -1,0 +1,18 @@
+{
+  "id": "menu-board",
+  "name": "菜单板",
+  "role": "body",
+  "description": "深夜食堂手写菜单板：菜名点线引价格、标签药丸、特价粉笔框。餐饮探店的行业装备。",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "motion": "chalk-write",
+  "min_duration_s": 6,
+  "max_duration_s": 16,
+  "field_order": ["kicker", "headline", "items", "special_label", "note"],
+  "example": {
+    "kicker": "深夜食堂",
+    "headline": "本店招牌都在这",
+    "items": ["麻婆豆腐|22|招牌", "回锅肉|28|微辣", "担担面|16|", "冰粉|8|解辣"],
+    "special_label": "今日特价：夫妻肺片 19.9",
+    "note": ""
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "type": "object",
+  "properties": {
+    "kicker": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "栏目前缀短标签，如“年度体检”"
+    },
+    "headline": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "主标题，如“打工人血常规实录”"
+    },
+    "patient_label": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 12,
+      "description": "受检者标签，如“受检者：本人”"
+    },
+    "items": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 5,
+      "items": {
+        "type": "string",
+        "minLength": 6,
+        "maxLength": 20,
+        "description": "指标|数值|状态ok/up/down|参考范围"
+      },
+      "description": "体检指标行列表，每项格式：指标|数值|状态ok/up/down|参考范围"
+    },
+    "conclusion": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "报告结论文案，如“两根箭头，都是奶茶的债”"
+    },
+    "note": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 22,
+      "description": "可选备注小字，可为空"
+    }
+  },
+  "required": [
+    "kicker",
+    "headline",
+    "patient_label",
+    "items",
+    "conclusion"
+  ],
+  "additionalProperties": false
+}

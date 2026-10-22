@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "properties": {
+    "kicker": { "type": "string", "minLength": 2, "maxLength": 16, "description": "眉头小字，如“看房笔记”" },
+    "headline": { "type": "string", "minLength": 2, "maxLength": 16, "description": "主标题，如“89㎡户型怎么排”" },
+    "total_label": { "type": "string", "minLength": 2, "maxLength": 12, "description": "总面积标签，如“89㎡ · 两室一厅”" },
+    "rooms": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 5,
+      "items": { "type": "string", "minLength": 5, "maxLength": 14, "description": "房间名|宽格数1-3|高格数1-2|备注" },
+      "description": "房间列表，每项格式：房间名|宽格数1-3|高格数1-2|备注"
+    },
+    "note": { "type": "string", "minLength": 0, "maxLength": 22, "description": "底部备注，可留空" }
+  },
+  "required": ["kicker", "headline", "total_label", "rooms"],
+  "additionalProperties": false
+}

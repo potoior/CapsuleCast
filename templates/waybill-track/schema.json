@@ -1,0 +1,56 @@
+{
+  "type": "object",
+  "description": "快递运单追踪卡片：单号条码 + 寄件→收件城市路由 + 物流节点时间线 + 预计送达",
+  "properties": {
+    "kicker": {
+      "type": "string",
+      "description": "小引导语，如「包裹去哪了」，常与品牌词组合显示为「××速运」",
+      "minLength": 2,
+      "maxLength": 16
+    },
+    "headline": {
+      "type": "string",
+      "description": "主标题，一句话概括包裹状态，如「你的快递在流浪」",
+      "minLength": 2,
+      "maxLength": 16
+    },
+    "tracking_no": {
+      "type": "string",
+      "description": "快递运单号，等宽字体展示并配条码图形",
+      "minLength": 4,
+      "maxLength": 18
+    },
+    "route": {
+      "type": "string",
+      "description": "寄件城市|收件城市",
+      "minLength": 3,
+      "maxLength": 12
+    },
+    "events": {
+      "type": "array",
+      "description": "物流节点列表，按时间从早到晚排列，最后一项为当前状态（高亮）",
+      "minItems": 3,
+      "maxItems": 4,
+      "items": {
+        "type": "string",
+        "description": "节点状态|位置或说明",
+        "minLength": 4,
+        "maxLength": 16
+      }
+    },
+    "eta_label": {
+      "type": "string",
+      "description": "预计送达提示，如「预计今日 18:00 前」",
+      "minLength": 4,
+      "maxLength": 12
+    },
+    "note": {
+      "type": "string",
+      "description": "补充说明，可留空",
+      "minLength": 0,
+      "maxLength": 22
+    }
+  },
+  "required": ["kicker", "headline", "tracking_no", "route", "events", "eta_label"],
+  "additionalProperties": false
+}

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .wrap{flex:1;display:flex;flex-direction:column;justify-content:center;gap:1.8cqh;min-height:0;width:92cqw;margin:0 auto;}
+        #f-{{ scene_id }} .route{display:flex;align-items:center;gap:1.8cqw;justify-content:center;}
+        #f-{{ scene_id }} .rt{font-family:var(--font-display);font-size:4.6cqmin;font-weight:900;color:var(--ink);}
+        #f-{{ scene_id }} .rt.arr{color:var(--coral-deep);}
+        #f-{{ scene_id }} .line{flex:none;width:10cqw;height:1.5px;background:repeating-linear-gradient(90deg,var(--ink) 0 1cqw,transparent 1cqw 1.6cqw);position:relative;}
+        #f-{{ scene_id }} .line::after{content:"✈";position:absolute;right:-0.6cqw;top:50%;transform:translateY(-58%);color:var(--coral-deep);font-size:2.4cqmin;}
+        #f-{{ scene_id }} .days{display:flex;flex-direction:column;gap:1.4cqh;}
+        #f-{{ scene_id }} .day{display:grid;grid-template-columns:9cqw 1fr;gap:1.6cqw;align-items:stretch;}
+        #f-{{ scene_id }} .day .dn{background:var(--ink);color:var(--cream);border-radius:var(--tile-radius);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:900;font-size:2.6cqmin;}
+        #f-{{ scene_id }} .day:last-child .dn{background:var(--coral-deep);}
+        #f-{{ scene_id }} .day .dc{border:1px solid var(--hairline-strong);border-radius:var(--tile-radius);background:var(--cream);padding:1.3cqh 1.6cqw;display:flex;align-items:baseline;gap:1.2cqw;min-width:0;}
+        #f-{{ scene_id }} .day .dc .th{font-size:2.8cqmin;font-weight:700;color:var(--ink);}
+        #f-{{ scene_id }} .day .dc .tp{font-family:var(--font-mono);font-size:2cqmin;color:var(--ink-faint);}
+        #f-{{ scene_id }} .budget{align-self:center;padding:1cqh 2.6cqw;border-radius:999px;border:1.5px solid var(--ink);font-family:var(--font-mono);font-size:2.6cqmin;font-weight:700;color:var(--ink);font-variant-numeric: tabular-nums;}
+        @container frame (max-aspect-ratio: 10/16) { #f-{{ scene_id }} .day .dn{width:14cqw;} }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="wrap"><div class="route" id="s-{{ scene_id }}-route"><span class="rt">{{ fields.route_label }}</span></div><div class="days">{% for raw in fields.get("days", []) %}{% set parts = raw.split("|") %}<div class="day" id="s-{{ scene_id }}-day-{{ loop.index0 }}"><span class="dn">{{ parts[0] }}</span><span class="dc"><span class="th">{{ parts[1] if parts|length > 1 else "" }}</span><span class="tp">{{ parts[2] if parts|length > 2 else "" }}</span></span></div>{% endfor %}</div><div class="budget" id="s-{{ scene_id }}-budget">{{ fields.budget_label }}</div></div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+          var N={{ fields.get("days", []) | length }};
+          var t0=Math.min(0.9,D*0.16);
+          tl.fromTo("#"+SID+"-route",{opacity:0,y:24},{opacity:1,y:0,duration:0.6,ease:"power3.out"},t0);
+          for(var i=0;i<N;i++){var at=t0+0.5+0.45*i;
+            tl.fromTo("#"+SID+"-day-"+i,{opacity:0,x:-26*AD.flip},{opacity:1,x:0,duration:0.45,ease:"back.out(1.5)"},at);
+            AM.pop(tl,"#"+SID+"-day-"+i+" .dn",at+0.15,0.4);}
+          AM.pop(tl,"#"+SID+"-budget",Math.min(t0+0.6+0.45*N,D*0.72),0.5);
+          AM.pulse(tl,"#"+SID+"-budget",Math.min(t0+1.2+0.45*N,D*0.8));
+          if(document.getElementById(SID+"-note")){AM.wipe(tl,"#"+SID+"-note",Math.min(t0+1.5+0.45*N,D*0.86),0.6,"bottom");}
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, #" + SID + "-route, [id^='" + SID + "-day-'], #" + SID + "-budget", D);{% endif %}
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

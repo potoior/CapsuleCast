@@ -1,0 +1,61 @@
+{
+  "type": "object",
+  "properties": {
+    "kicker": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "顶部小标，如「期末放榜」"
+    },
+    "headline": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "成绩单标题，如「高三上学期成绩单」"
+    },
+    "student_label": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 12,
+      "description": "学生归属说明，如「高三（2）班·某同学」"
+    },
+    "rows": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 6,
+      "items": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 10,
+        "description": "科目|分数"
+      },
+      "description": "科目成绩行，每项为「科目|分数」"
+    },
+    "avg": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 8,
+      "description": "平均分数字，如「110.5」"
+    },
+    "rank_label": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 8,
+      "description": "排名说明，如「班级第 7」"
+    },
+    "teacher_note": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 14,
+      "description": "教师评语，如「数学再稳一点，前途无量」"
+    },
+    "note": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 22,
+      "description": "底部备注，可为空"
+    }
+  },
+  "required": ["kicker", "headline", "student_label", "rows", "avg", "rank_label", "teacher_note"],
+  "additionalProperties": false
+}

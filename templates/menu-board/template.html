@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .wrap { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 0; width: 92cqw; }
+        #f-{{ scene_id }} .board { width: 60cqw; background: #2a2620; border: 1cqw solid #4a3f30; border-radius: 1.2cqw; padding: 3cqh 3cqw; display: flex; flex-direction: column; gap: 1.4cqh; box-shadow: 0.8cqh 1cqw 0 color-mix(in srgb, var(--ink) 20%, transparent); position: relative; }
+        #f-{{ scene_id }} .m-shop { font-family: var(--font-display); font-size: 4.2cqmin; font-weight: 900; color: #f5efdc; text-align: center; letter-spacing: 0.2em; border-bottom: 1.5px dashed #6a5f4d; padding-bottom: 1.2cqh; }
+        #f-{{ scene_id }} .m-sub { text-align: center; font-size: 2cqmin; color: #b8ad96; letter-spacing: 0.3em; margin-top: -0.6cqh; }
+        #f-{{ scene_id }} .m-item { display: flex; align-items: baseline; gap: 1cqw; }
+        #f-{{ scene_id }} .m-item .nm { font-size: 3cqmin; font-weight: 700; color: #f5efdc; white-space: nowrap; }
+        #f-{{ scene_id }} .m-item .dots { flex: 1; border-bottom: 0.4cqh dotted #6a5f4d; }
+        #f-{{ scene_id }} .m-item .pr { font-family: var(--font-display); font-size: 3.2cqmin; font-weight: 900; color: #f5efdc; font-variant-numeric: tabular-nums; }
+        #f-{{ scene_id }} .m-item .tg { font-family: var(--font-mono); font-size: 1.8cqmin; color: #ffd270; border: 1px solid #ffd270; border-radius: 999px; padding: 0.2cqh 0.9cqw; white-space: nowrap; }
+        #f-{{ scene_id }} .m-spec { margin-top: 1cqh; align-self: center; border: 1.5px dashed #ff9f7a; color: #ff9f7a; font-size: 2.6cqmin; font-weight: 700; padding: 1cqh 2cqw; transform: rotate(-1.2deg); }
+        .headline { font-family: var(--font-display); font-size: 6cqmin; margin-top: 3cqh; }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .board { width: 92cqw; }
+        }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="wrap"><div class="board" id="s-{{ scene_id }}-board"><div class="m-shop" id="s-{{ scene_id }}-shop">{{ fields.kicker }}</div><div class="m-sub" id="s-{{ scene_id }}-sub">{{ fields.headline }}</div>{% for raw in fields.get("items", []) %}{% set parts = raw.split("|") %}<div class="m-item" id="s-{{ scene_id }}-it-{{ loop.index0 }}"><span class="nm">{{ parts[0] }}</span><span class="dots"></span>{% if parts|length > 2 and parts[2] %}<span class="tg">{{ parts[2] }}</span>{% endif %}<span class="pr">{{ parts[1] if parts|length > 1 else "" }}</span></div>{% endfor %}<div class="m-spec" id="s-{{ scene_id }}-spec">{{ fields.special_label }}</div></div></div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+          var N = {{ fields.get("items", []) | length }};
+          var t0 = Math.min(0.9, D * 0.16);
+          tl.fromTo("#" + SID + "-board", { opacity: 0, rotation: -1.5, scale: 0.96 },
+            { opacity: 1, rotation: 0, scale: 1, duration: 0.7, ease: "back.out(1.4)" }, t0);
+          tl.fromTo("#" + SID + "-shop", { opacity: 0, y: -16 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, t0 + 0.25);
+          tl.fromTo("#" + SID + "-sub", { opacity: 0 }, { opacity: 1, duration: 0.4 }, t0 + 0.4);
+          for (var i = 0; i < N; i++) {
+            tl.fromTo("#" + SID + "-it-" + i, { opacity: 0, x: -18 },
+              { opacity: 1, x: 0, duration: 0.45, ease: "power2.out" }, t0 + 0.6 + 0.3 * i);
+          }
+          AM.pop(tl, "#" + SID + "-spec", Math.min(t0 + 0.7 + 0.3 * N, D * 0.72), 0.5);
+          AM.pulse(tl, "#" + SID + "-spec", Math.min(t0 + 1.2 + 0.3 * N, D * 0.8));
+          if (document.getElementById(SID + "-note")) {
+            tl.fromTo("#" + SID + "-note", { opacity: 0 },
+              { opacity: 1, duration: 0.5 }, Math.min(t0 + 1.5 + 0.3 * N, D * 0.86));
+          }
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, #" + SID + "-board", D);{% endif %}
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

@@ -567,6 +567,27 @@ def _choose_body_template(text: str) -> str:
         return "game-quest"
     if re.search(r"四格|漫画|吐槽剧场|名场面还原", text):
         return "comic-panel"
+    # ── 第 11 批行业单据位 ──
+    if re.search(r"K线|看盘|涨跌|大盘|基金净值|行情", text):
+        return "finance-candle"
+    if re.search(r"体检|化验单|血常规|指标偏高|参考范围", text):
+        return "medical-report"
+    if re.search(r"合同|条款|违约|押金不退|协议陷阱", text):
+        return "legal-clause"
+    if re.search(r"成绩单|期末成绩|放榜|出分了", text):
+        return "grade-card"
+    if re.search(r"简历|求职|面试经历|工作经历怎么写", text):
+        return "resume-card"
+    if re.search(r"行程单|旅行攻略|几日游|Day1|路线怎么排", text, re.I):
+        return "itinerary-card"
+    if re.search(r"快递|物流|运单|包裹到哪|派送", text):
+        return "waybill-track"
+    if re.search(r"服务器|宕机|告警|线上事故|值班", text):
+        return "monitor-dash"
+    if re.search(r"菜单|点菜|招牌菜|探店必点", text):
+        return "menu-board"
+    if re.search(r"户型|两室一厅|平面图|房间布局|看房", text):
+        return "floor-plan"
     # 公式卡 / 冰山 / 排行榜
     if re.search(r"公式|心法|法门|成功[的方程式]*=", text):
         return "formula-card"
@@ -773,6 +794,11 @@ def _fields_batch9(text: str) -> dict:
 def _fields_batch10(text: str) -> dict:
     """第 10 批视觉装置位（换词/小票/车票/成分表/终端/翻牌/任务面板/四格）：交给 LLM 合成。"""
     raise _NoFit("第 10 批结构化字段交给 LLM 合成")
+
+
+def _fields_batch11(text: str) -> dict:
+    """第 11 批行业单据位（K线/体检/合同/成绩单/简历/行程/快递/监控/菜单/户型）：交给 LLM 合成。"""
+    raise _NoFit("第 11 批结构化字段交给 LLM 合成")
 
 
 def _fields_rank(text: str) -> dict:
@@ -1006,6 +1032,11 @@ _EXTRACTORS = {
     "ticket-stub": _fields_batch10, "nutrition-label": _fields_batch10,
     "terminal-window": _fields_batch10, "split-flap": _fields_batch10,
     "game-quest": _fields_batch10, "comic-panel": _fields_batch10,
+    "finance-candle": _fields_batch11, "medical-report": _fields_batch11,
+    "legal-clause": _fields_batch11, "grade-card": _fields_batch11,
+    "resume-card": _fields_batch11, "itinerary-card": _fields_batch11,
+    "waybill-track": _fields_batch11, "monitor-dash": _fields_batch11,
+    "menu-board": _fields_batch11, "floor-plan": _fields_batch11,
     "rank-list": _fields_rank,
     "diagram-fishbone": _fields_fishbone,
     "diagram-journey": _fields_journey,

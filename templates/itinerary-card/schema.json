@@ -1,0 +1,49 @@
+{
+  "type": "object",
+  "properties": {
+    "kicker": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "顶部引导小字，如「五一攻略」"
+    },
+    "headline": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "行程标题大字，如「成都三日穷游路线」"
+    },
+    "route_label": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 12,
+      "description": "出发地与目的地，如「北京 → 成都」"
+    },
+    "days": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 4,
+      "items": {
+        "type": "string",
+        "minLength": 6,
+        "maxLength": 20,
+        "description": "D几|主题|亮点提示"
+      },
+      "description": "逐日行程卡，3-4 项，每项形如「D1|宽窄巷子+人民公园|盖碗茶打卡」"
+    },
+    "budget_label": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 10,
+      "description": "预算胶囊文案，如「人均 900 元」"
+    },
+    "note": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 22,
+      "description": "底部备注，可留空"
+    }
+  },
+  "required": ["kicker", "headline", "route_label", "days", "budget_label"],
+  "additionalProperties": false
+}

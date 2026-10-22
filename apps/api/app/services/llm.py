@@ -235,6 +235,9 @@ DIAGRAM_TIDS = frozenset({
     "sort-bins", "chain-distort", "quiz-reveal", "chat-bubbles",
     "word-slot", "receipt-strip", "ticket-stub", "nutrition-label",
     "terminal-window", "split-flap", "game-quest", "comic-panel",
+    "finance-candle", "medical-report", "legal-clause", "grade-card",
+    "resume-card", "itinerary-card", "waybill-track", "monitor-dash",
+    "menu-board", "floor-plan",
 })
 
 

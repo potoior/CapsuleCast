@@ -1,0 +1,44 @@
+{
+  "type": "object",
+  "description": "菜单板：深夜食堂手写菜单板，菜名点线引价格、标签药丸、特价粉笔框",
+  "properties": {
+    "kicker": {
+      "type": "string",
+      "description": "店名/栏目引导词，显示在菜单板顶部",
+      "minLength": 2,
+      "maxLength": 16
+    },
+    "headline": {
+      "type": "string",
+      "description": "副标题，显示在店名下方的小字",
+      "minLength": 2,
+      "maxLength": 16
+    },
+    "items": {
+      "type": "array",
+      "description": "菜单条目列表",
+      "minItems": 4,
+      "maxItems": 6,
+      "items": {
+        "type": "string",
+        "description": "菜名|价格|标签（标签可空）",
+        "minLength": 4,
+        "maxLength": 14
+      }
+    },
+    "special_label": {
+      "type": "string",
+      "description": "特价信息，显示在虚线粉笔框中",
+      "minLength": 4,
+      "maxLength": 16
+    },
+    "note": {
+      "type": "string",
+      "description": "备注小字，可空",
+      "minLength": 0,
+      "maxLength": 22
+    }
+  },
+  "required": ["kicker", "headline", "items", "special_label"],
+  "additionalProperties": false
+}

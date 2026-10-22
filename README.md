@@ -4,7 +4,7 @@
 
 **一句话主题，自动出片。**
 
-`主题 → AI 扩写 → 84 套 HTML 模板分镜 → 无头浏览器渲染 1080p 口播解说视频`
+`主题 → AI 扩写 → 94 套 HTML 模板分镜 → 无头浏览器渲染 1080p 口播解说视频`
 
 *Text → Faceless Video Factory*
 
@@ -83,7 +83,7 @@ CapsuleCast 是一台**口播解说视频的自动流水线**：你说一句主�
 
 ## 🎬 模板库
 
-84 套 = `图解语义 × 26` + `数据图 × 11` + `叙事载体 × 27` + `结构与钩子 × 12` + `视觉装置 × 8`。
+94 套 = `图解语义 × 26` + `数据图 × 11` + `叙事载体 × 27` + `结构与钩子 × 12` + `视觉装置 × 8` + `行业单据 × 10`。
 
 | 类别 | 模板 | 用在哪 |
 |---|---|---|
@@ -91,6 +91,7 @@ CapsuleCast 是一台**口播解说视频的自动流水线**：你说一句主�
 | 数据图 | bars · line · donut · table · kpi · scatter · gantt · waterfall · histogram · poll · splitbar | 有数字的段落自动选型 |
 | 叙事载体 | myth-buster · qa-card · checklist · rank-list · dialogue-quotes · bio-card · news-card · formula-card · price-compare · before-after · pros-cons · facts-trio · stat-clash · stat-equivalent · habit-grid · headline-barrage · tier-list · experiment-log · bio-timeline · dotmatrix · thermometer · compare-trio · progress-bundle · sort-bins · chain-distort · quiz-reveal · chat-bubbles | 误区粉碎 / 问答 / 自查清单 / 排行 / 引用 / 前后对比 / 利弊 / 冷知识三连 |
 | 视觉装置 | word-slot · receipt-strip · ticket-stub · nutrition-label · terminal-window · split-flap · game-quest · comic-panel |
+| 行业单据 | finance-candle · medical-report · legal-clause · grade-card · resume-card · itinerary-card · waybill-track · monitor-dash · menu-board · floor-plan |
 | 结构与钩子 | title-hook · bullet-list · big-stat · quote-cta · image-focus · free-blocks · chapter-card · process-steps · timeline-events · concept-compare · term-demo · term-explainer | 开场 / 收尾 / 万能兜底 |
 
 **模板三件套约定**：每套模板 = `meta.json`（元信息+示例）+ `schema.json`（字段约束）+ `template.html`（Jinja + CSS + GSAP）。示例字段必须过自身 schema，动画一律 `fromTo`，可选字段必须 `fields.get()`——违反约定会被 [57 条回归测试](apps/api/tests) 拦下。

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .wrap { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 0; width: 92cqw; }
+        #f-{{ scene_id }} .dash { width: 78cqw; background: #14161c; border: 1.5px solid #2a2e39; border-radius: 1.4cqw; padding: 2.4cqh 2.4cqw; display: flex; flex-direction: column; gap: 1.8cqh; box-shadow: 0.8cqh 1cqw 0 color-mix(in srgb,var(--ink) 15%,transparent); font-family: var(--font-mono); }
+        #f-{{ scene_id }} .d-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a2e39; padding-bottom: 1.2cqh; }
+        #f-{{ scene_id }} .d-sys { font-size: 2.6cqmin; font-weight: 700; color: #e8ecf3; }
+        #f-{{ scene_id }} .d-led { display: flex; align-items: center; gap: 0.7cqw; font-size: 1.9cqmin; color: #8b93a3; }
+        #f-{{ scene_id }} .d-led i { width: 1.4cqw; height: 1.4cqw; border-radius: 50%; background: #28c840; }
+        #f-{{ scene_id }} .d-led.warn i { background: #febc2e; }
+        #f-{{ scene_id }} .d-led.fail i { background: #ff5f57; }
+        #f-{{ scene_id }} .mgrid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1.4cqw; }
+        #f-{{ scene_id }} .mc { border: 1px solid #2a2e39; border-radius: 1cqw; background: #1a1e28; padding: 1.6cqh 1.2cqw; display: flex; flex-direction: column; gap: 0.6cqh; min-width: 0; }
+        #f-{{ scene_id }} .mc .mn { font-size: 1.8cqmin; color: #8b93a3; letter-spacing: 0.1em; }
+        #f-{{ scene_id }} .mc .mv { font-size: 3.8cqmin; font-weight: 900; color: #e8ecf3; font-variant-numeric: tabular-nums; line-height: 1; }
+        #f-{{ scene_id }} .mc.ok .mv { color: #8be3a3; }
+        #f-{{ scene_id }} .mc.warn .mv { color: #ffd270; }
+        #f-{{ scene_id }} .mc.fail .mv { color: #ff8f88; }
+        #f-{{ scene_id }} .mc .st { font-size: 1.7cqmin; font-weight: 700; }
+        #f-{{ scene_id }} .mc.ok .st { color: #28c840; }
+        #f-{{ scene_id }} .mc.warn .st { color: #febc2e; }
+        #f-{{ scene_id }} .mc.fail .st { color: #ff5f57; }
+        #f-{{ scene_id }} .d-verdict { border-left: 0.5cqw solid var(--coral); background: #1a1e28; border-radius: 0.6cqw; padding: 1.3cqh 1.6cqw; font-size: 2.6cqmin; font-weight: 700; color: #e8ecf3; }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .mgrid { grid-template-columns: 1fr 1fr; }
+        }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="wrap"><div class="dash" id="s-{{ scene_id }}-dash"><div class="d-head"><span class="d-sys">{{ fields.system_label }}</span><span class="d-led" id="s-{{ scene_id }}-led"><i id="s-{{ scene_id }}-ledi"></i><span id="s-{{ scene_id }}-ledt">healthy</span></span></div><div class="mgrid">{% for raw in fields.get("metrics", []) %}{% set parts = raw.split("|") %}<div class="mc {{ parts[2] if parts|length > 2 else 'ok' }}" id="s-{{ scene_id }}-mc-{{ loop.index0 }}"><span class="mn">{{ parts[0] }}</span><span class="mv">{{ parts[1] if parts|length > 1 else "" }}</span><span class="st">{% if parts|length > 2 %}{% if parts[2] == 'ok' %}● OK{% elif parts[2] == 'warn' %}▲ WARN{% else %}✕ CRIT{% endif %}{% endif %}</span></div>{% endfor %}</div><div class="d-verdict" id="s-{{ scene_id }}-vd">{{ fields.verdict }}</div></div></div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+          var MET = {{ fields.get("metrics") | tojson }};
+          var worst = "ok";
+          for (var i = 0; i < MET.length; i++) {
+            var st = String(MET[i]).split("|")[2] || "ok";
+            if (st === "fail") { worst = "fail"; }
+            else if (st === "warn" && worst !== "fail") { worst = "warn"; }
+          }
+          var led = document.getElementById(SID + "-led");
+          var ledt = document.getElementById(SID + "-ledt");
+          if (worst !== "ok") {
+            led.className = "d-led " + worst;
+            ledt.textContent = worst === "fail" ? "critical" : "warning";
+          }
+          var N = MET.length;
+          var t0 = Math.min(0.9, D * 0.16);
+          tl.fromTo("#" + SID + "-dash", { opacity: 0, scale: 0.95 },
+            { opacity: 1, scale: 1, duration: 0.6, ease: "power3.out" }, t0);
+          for (var i = 0; i < N; i++) {
+            tl.fromTo("#" + SID + "-mc-" + i, { opacity: 0, y: 18 },
+              { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, t0 + 0.3 + 0.2 * i);
+          }
+          tl.fromTo("#" + SID + "-ledi", { opacity: 0.3 },
+            { opacity: 1, duration: 0.4, ease: "none", yoyo: true, repeat: 9 }, t0 + 0.4);
+          AM.wipe(tl, "#" + SID + "-vd", Math.min(t0 + 0.5 + 0.2 * N, D * 0.68), 0.6, "left");
+          AM.pulse(tl, "#" + SID + "-vd", Math.min(t0 + 1.0 + 0.2 * N, D * 0.78));
+          if (document.getElementById(SID + "-note")) {
+            tl.fromTo("#" + SID + "-note", { opacity: 0 },
+              { opacity: 1, duration: 0.5 }, Math.min(t0 + 1.4 + 0.2 * N, D * 0.86));
+          }
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, #" + SID + "-dash", D);{% endif %}
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

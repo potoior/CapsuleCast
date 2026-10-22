@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .wrap{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;width:92cqw;}
+        #f-{{ scene_id }} .card{width:54cqw;background:#fff;border:1.5px solid var(--hairline-strong);box-shadow:0.6cqh 0.8cqw 0 color-mix(in srgb,var(--ink) 10%,transparent);padding:2.4cqh 2.6cqw;font-family:var(--font-mono);position:relative;}
+        #f-{{ scene_id }} .g-head{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2.5px solid var(--ink);padding-bottom:1cqh;}
+        #f-{{ scene_id }} .g-school{font-size:2.8cqmin;font-weight:700;letter-spacing:0.14em;color:var(--ink);}
+        #f-{{ scene_id }} .g-stu{font-size:2cqmin;color:var(--ink-faint);}
+        #f-{{ scene_id }} .g-row{display:flex;justify-content:space-between;align-items:baseline;padding:0.9cqh 0;border-bottom:1px dashed var(--hairline-strong);font-size:2.6cqmin;color:var(--ink);}
+        #f-{{ scene_id }} .g-row .sc{font-family:var(--font-display);font-size:3.6cqmin;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink);}
+        #f-{{ scene_id }} .g-row.best .sc{color:var(--coral-deep);}
+        #f-{{ scene_id }} .g-sum{display:flex;justify-content:space-between;align-items:center;margin-top:1.6cqh;}
+        #f-{{ scene_id }} .g-avg{font-family:var(--font-display);font-size:5cqmin;font-weight:900;color:var(--coral-deep);font-variant-numeric:tabular-nums;}
+        #f-{{ scene_id }} .g-avg i{font-style:normal;font-family:var(--font-mono);font-size:2cqmin;font-weight:400;color:var(--ink-faint);margin-left:0.6cqw;}
+        #f-{{ scene_id }} .g-rank{font-size:2.4cqmin;font-weight:700;color:var(--ink);}
+        #f-{{ scene_id }} .g-note{margin-top:1.4cqh;font-size:2.4cqmin;color:var(--ink);border-top:1.5px solid var(--ink);padding-top:1.2cqh;display:flex;justify-content:space-between;align-items:center;}
+        #f-{{ scene_id }} .g-note .tn{max-width:72%;}
+        #f-{{ scene_id }} .g-note .redseal{width:6.4cqw;height:6.4cqw;border-radius:50%;border:0.35cqw double var(--coral-deep);color:var(--coral-deep);display:flex;align-items:center;justify-content:center;font-size:1.8cqmin;font-weight:900;transform:rotate(-10deg);}
+        @container frame (max-aspect-ratio:10/16){ #f-{{ scene_id }} .card{width:92cqw;} }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="wrap"><div class="card" id="s-{{ scene_id }}-card"><div class="g-head"><span class="g-school">{{ fields.kicker }}</span><span class="g-stu">{{ fields.student_label }}</span></div>{% for raw in fields.get("rows", []) %}{% set parts = raw.split("|") %}<div class="g-row" id="s-{{ scene_id }}-row-{{ loop.index0 }}"><span>{{ parts[0] }}</span><span class="sc" id="s-{{ scene_id }}-sc-{{ loop.index0 }}">{{ parts[1] if parts|length > 1 else "" }}</span></div>{% endfor %}<div class="g-sum"><span class="g-avg" id="s-{{ scene_id }}-avg">{{ fields.avg }}<i>平均分</i></span><span class="g-rank" id="s-{{ scene_id }}-rank">{{ fields.rank_label }}</span></div><div class="g-note"><span class="tn" id="s-{{ scene_id }}-tn">评语：{{ fields.teacher_note }}</span><span class="redseal" id="s-{{ scene_id }}-seal">已阅</span></div></div></div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+          var ROWS={{ fields.get("rows") | tojson }};
+          var best=0,bv=-1;
+          for(var i=0;i<ROWS.length;i++){var v=parseFloat(String(ROWS[i]).split("|")[1])||0; if(v>bv){bv=v;best=i;}}
+          var be=document.getElementById(SID+"-row-"+best);
+          if(be){be.className="g-row best";}
+          var N=ROWS.length;
+          var t0=Math.min(0.9,D*0.16);
+          tl.fromTo("#"+SID+"-card",{opacity:0,y:-32},{opacity:1,y:0,duration:0.7,ease:"power3.out"},t0);
+          for(var i=0;i<N;i++){tl.fromTo("#"+SID+"-row-"+i,{opacity:0,x:-16},{opacity:1,x:0,duration:0.35,ease:"power3.out"},t0+0.4+0.25*i);}
+          AM.pop(tl,"#"+SID+"-avg",Math.min(t0+0.5+0.25*N,D*0.62),0.5);
+          AM.pulse(tl,"#"+SID+"-row-"+best,Math.min(t0+0.5+0.25*N,D*0.68));
+          tl.fromTo("#"+SID+"-rank",{opacity:0},{opacity:1,duration:0.4},Math.min(t0+0.6+0.25*N,D*0.7));
+          AM.wipe(tl,"#"+SID+"-tn",Math.min(t0+0.8+0.25*N,D*0.76),0.6,"bottom");
+          tl.fromTo("#"+SID+"-seal",{opacity:0,scale:2.2},{opacity:1,scale:1,duration:0.35,ease:"power3.in"},Math.min(t0+1.0+0.25*N,D*0.82));
+          if(document.getElementById(SID+"-note")){tl.fromTo("#"+SID+"-note",{opacity:0},{opacity:1,duration:0.5},Math.min(t0+1.3+0.25*N,D*0.88));}
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, #" + SID + "-card", D);{% endif %}
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

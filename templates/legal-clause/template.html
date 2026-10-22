@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        .wrap{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;width:92cqw;}
+        .contract{width:62cqw;background:#fbf6e9;border:1.5px solid var(--hairline-strong);box-shadow:0.6cqh 0.8cqw 0 color-mix(in srgb,var(--ink) 10%,transparent);padding:3cqh 3cqw;position:relative;font-family:var(--font-mono);}
+        .c-head{text-align:center;font-family:var(--font-display);font-size:3.6cqmin;font-weight:900;color:var(--ink);letter-spacing:0.3em;border-bottom:2px double var(--ink);padding-bottom:1.4cqh;}
+        .clause{margin-top:1.8cqh;font-size:2.8cqmin;color:var(--ink);line-height:1.7;}
+        .clause .no{font-weight:900;margin-right:0.6cqw;}
+        .hl{background:linear-gradient(transparent 62%,color-mix(in srgb,var(--coral) 45%,transparent) 62%);padding:0 0.2cqw;font-weight:700;}
+        .c-verdict{margin-top:2.2cqh;display:flex;justify-content:space-between;align-items:center;}
+        .c-vtxt{font-size:2.8cqmin;font-weight:700;color:var(--coral-deep);max-width:70%;}
+        .seal{width:9cqw;height:9cqw;border-radius:50%;border:0.45cqw double var(--coral-deep);color:var(--coral-deep);display:flex;align-items:center;justify-content:center;font-size:2cqmin;font-weight:900;transform:rotate(-14deg);text-align:center;}
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .contract{width:92cqw;}
+        }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="wrap"><div class="contract" id="s-{{ scene_id }}-contract"><div class="c-head" id="s-{{ scene_id }}-chead">{{ fields.contract_name }}</div>{% for raw in fields.get("clauses", []) %}{% set parts = raw.split("|") %}<div class="clause" id="s-{{ scene_id }}-cl-{{ loop.index0 }}"><span class="no">{{ parts[0] }}</span><span>{{ parts[1] if parts|length > 1 else "" }}</span></div>{% endfor %}<div class="c-verdict"><span class="c-vtxt" id="s-{{ scene_id }}-vtxt">{{ fields.verdict }}</span><span class="seal" id="s-{{ scene_id }}-seal">{{ fields.stamp }}</span></div></div></div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+          var HLT={{ fields.get("highlights") | tojson }};
+          var CLS={{ fields.get("clauses") | tojson }};
+          for(var i=0;i<CLS.length;i++){var el=document.getElementById(SID+"-cl-"+i); if(!el){continue;} var spans=el.querySelectorAll("span"); var t=spans[spans.length-1]; var txt=t.textContent; for(var h=0;h<HLT.length;h++){var w=HLT[h]; if(txt.indexOf(w)>=0){txt=txt.split(w).join('<span class="hl" id="'+SID+'-hl-'+h+'">'+w+'</span>');}} t.innerHTML=txt;}
+          var t0=Math.min(0.9,D*0.16);
+          AM.wipe(tl,"#"+SID+"-contract",t0,0.8,"top");
+          tl.fromTo("#"+SID+"-chead",{opacity:0},{opacity:1,duration:0.5},t0+0.3);
+          for(var i=0;i<CLS.length;i++){tl.fromTo("#"+SID+"-cl-"+i,{opacity:0,y:14},{opacity:1,y:0,duration:0.5,ease:"power2.out"},t0+0.6+0.4*i);}
+          for(var h=0;h<HLT.length;h++){if(document.getElementById(SID+"-hl-"+h)){AM.pulse(tl,"#"+SID+"-hl-"+h,Math.min(t0+1.0+0.4*CLS.length+0.3*h,D*0.72));}}
+          AM.pop(tl,"#"+SID+"-vtxt",Math.min(t0+1.2+0.4*CLS.length,D*0.74),0.5);
+          tl.fromTo("#"+SID+"-seal",{opacity:0,scale:2.2,rotation:10},{opacity:1,scale:1,rotation:-14,duration:0.35,ease:"power3.in"},Math.min(t0+1.5+0.4*CLS.length,D*0.8));
+          if(document.getElementById(SID+"-note")){tl.fromTo("#"+SID+"-note",{opacity:0},{opacity:1,duration:0.5},Math.min(t0+1.8+0.4*CLS.length,D*0.86));}
+          AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, #" + SID + "-contract", D);
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

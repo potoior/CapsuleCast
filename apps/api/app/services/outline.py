@@ -48,6 +48,9 @@ TEMPLATE_HINTS = [
     "sort-bins", "chain-distort", "quiz-reveal", "chat-bubbles",
     "word-slot", "receipt-strip", "ticket-stub", "nutrition-label",
     "terminal-window", "split-flap", "game-quest", "comic-panel",
+    "finance-candle", "medical-report", "legal-clause", "grade-card",
+    "resume-card", "itinerary-card", "waybill-track", "monitor-dash",
+    "menu-board", "floor-plan",
 ]
 
 _MAX = {"title": 24, "beat_title": 12, "point": 14, "narration": 64,
@@ -261,6 +264,16 @@ def _llm_outline(base: str, s, topic: str, duration_target_s: int) -> dict:
         "宣言/预告的翻牌时刻用 split-flap（message 短语 2-8 字 + subline 航班信息风格）；"
         "人生游戏化盘点用 game-quest（quests「任务|done/todo/locked|奖励」3-4 + level_label）；"
         "日常吐槽四格剧场用 comic-panel（panels 恰好 4 格「画面|台词」+ punchline 爆点）；"
+        "股票基金涨跌行情优先 finance-candle（pair 标的 + candles「开盘|收盘|振幅%」4-6 根 + trend 一句话）；"
+        "体检指标/化验单话题优先 medical-report（items「指标|数值|状态ok/up/down|参考范围」3-5 + conclusion 结论）；"
+        "合同避坑/法律条款优先 legal-clause（contract_name + clauses「第X条|摘要」2-3 + highlights 划线重点词 + stamp 章面 + verdict 律师提醒）；"
+        "考试放榜/成绩盘点优先 grade-card（rows「科目|分数」4-6 + avg 平均 + rank_label 排名 + teacher_note 评语）；"
+        "求职简历/转型经历优先 resume-card（name + role_label + skills「技能|熟练度」3-4 + experiences「时间|地方|一句话」2-3）；"
+        "旅行攻略/行程安排优先 itinerary-card（route_label 出发→到达 + days「D几|主题|提示」3-4 + budget_label 预算）；"
+        "快递物流/包裹追踪优先 waybill-track（tracking_no 单号 + route 城市|城市 + events 节点 3-4 + eta_label 送达）；"
+        "服务器宕机/运维告警优先 monitor-dash（system_label + metrics「指标|数值|ok/warn/fail」3-4 + verdict 处置）；"
+        "探店菜单/餐饮推荐优先 menu-board（items「菜名|价格|标签」4-6 + special_label 特价）；"
+        "户型/家装布局优先 floor-plan（total_label 面积户型 + rooms「房间|宽格|高格|备注」3-5）；"
         "TOP N/排行/最快最值得优先 rank-list（items 按名次「条目|小注」3-5 条）；"
         "多因归因/为什么出问题优先 diagram-fishbone（problem 鱼头 + bones「类别|原因」4-6 根）；"
         "阶段旅程/心理变化优先 diagram-journey（stages「阶段|事件|情绪0-100」3-5 段，情绪值必须给）；"

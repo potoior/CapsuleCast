@@ -1,0 +1,49 @@
+{
+  "type": "object",
+  "properties": {
+    "kicker": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "眉头小标签，如「小白看盘」"
+    },
+    "headline": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "主标题，如「三根K线看懂涨跌」"
+    },
+    "pair": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 12,
+      "description": "交易对，如「BTC/USDT」"
+    },
+    "candles": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 6,
+      "items": {
+        "type": "string",
+        "minLength": 8,
+        "maxLength": 16,
+        "description": "开盘|收盘|振幅%"
+      },
+      "description": "蜡烛数据，每项格式：开盘|收盘|振幅%"
+    },
+    "trend": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "趋势一句话，如「连阳转空又拉回」"
+    },
+    "note": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 22,
+      "description": "底部备注，可留空"
+    }
+  },
+  "required": ["kicker", "headline", "pair", "candles", "trend"],
+  "additionalProperties": false
+}

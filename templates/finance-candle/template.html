@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .wrap{flex:1;display:flex;flex-direction:column;justify-content:center;gap:1.6cqh;min-height:0;width:92cqw;margin:0 auto;}
+        #f-{{ scene_id }} .pair{font-family:var(--font-mono);font-size:2.6cqmin;color:var(--ink-faint);letter-spacing:0.14em;}
+        #f-{{ scene_id }} .chart{display:flex;align-items:flex-end;justify-content:center;gap:3.4cqw;height:38cqh;border-bottom:1.5px solid var(--ink);padding:0 4cqw;}
+        #f-{{ scene_id }} .cnd{position:relative;width:4.4cqw;height:100%;display:flex;align-items:flex-end;justify-content:center;}
+        #f-{{ scene_id }} .cnd .wick{position:absolute;left:50%;width:1.5px;background:var(--ink);transform:translateX(-50%);transform-origin:50% 100%;}
+        #f-{{ scene_id }} .cnd .body{position:relative;width:100%;border-radius:0.3cqw;transform-origin:50% 100%;}
+        #f-{{ scene_id }} .cnd.up .body{background:var(--coral);}
+        #f-{{ scene_id }} .cnd.up .wick{background:var(--coral-deep);}
+        #f-{{ scene_id }} .cnd.down .body{background:var(--ink);}
+        #f-{{ scene_id }} .cnd .px{position:absolute;bottom:-4.4cqh;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:1.9cqmin;color:var(--ink-faint);white-space:nowrap;font-variant-numeric:tabular-nums;}
+        #f-{{ scene_id }} .trnd{align-self:center;margin-top:4.4cqh;padding:1.2cqh 2.4cqw;border-radius:var(--tile-radius);background:var(--ink);color:var(--cream);font-size:2.8cqmin;font-weight:600;}
+        @container frame (max-aspect-ratio:10/16){ #f-{{ scene_id }} .chart{gap:2.4cqw;} #f-{{ scene_id }} .cnd{width:6cqw;} }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="wrap"><div class="pair" id="s-{{ scene_id }}-pair">{{ fields.pair }} · 4H</div><div class="chart" id="s-{{ scene_id }}-chart"></div><div class="trnd" id="s-{{ scene_id }}-trnd">{{ fields.trend }}</div></div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+          var CND={{ fields.get("candles") | tojson }};
+          var chart=document.getElementById(SID+"-chart");
+          var vals=[];
+          for(var i=0;i<CND.length;i++){var p=String(CND[i]).split("|"); vals.push([parseFloat(p[0])||0,parseFloat(p[1])||0,parseFloat(p[2])||1]);}
+          var mx=0;
+          for(var i=0;i<vals.length;i++){mx=Math.max(mx,Math.abs(vals[i][0]-vals[i][1]),vals[i][2]);}
+          for(var i=0;i<vals.length;i++){var c=document.createElement("div"); var up=vals[i][1]>=vals[i][0]; c.className="cnd "+(up?"up":"down"); c.id=SID+"-cnd-"+i; var wk=document.createElement("div"); wk.className="wick"; wk.id=SID+"-wick-"+i; wk.style.height=Math.max(8,(vals[i][2]/mx)*70)+"%"; var bd=document.createElement("div"); bd.className="body"; bd.id=SID+"-body-"+i; bd.style.height=Math.max(6,(Math.abs(vals[i][1]-vals[i][0])/mx)*55)+"%"; var px=document.createElement("div"); px.className="px"; px.textContent=Math.round(vals[i][1]); c.appendChild(wk); c.appendChild(bd); c.appendChild(px); chart.appendChild(c);}
+          var t0=Math.min(0.9,D*0.16);
+          var span=Math.max(0.7,D*0.4);
+          for(var i=0;i<CND.length;i++){var at=t0+(span*i)/Math.max(1,CND.length-1); tl.fromTo("#"+SID+"-cnd-"+i,{opacity:0},{opacity:1,duration:0.3},at); tl.fromTo("#"+SID+"-wick-"+i,{scaleY:0},{scaleY:1,duration:0.4,ease:"power2.out"},at); tl.fromTo("#"+SID+"-body-"+i,{scaleY:0},{scaleY:1,duration:0.5,ease:"back.out(1.8)"},at+0.1);}
+          AM.pulse(tl,"#"+SID+"-cnd-"+(CND.length-1),t0+span+0.3);
+          AM.wipe(tl,"#"+SID+"-trnd",Math.min(t0+span+0.7,D*0.7),0.65,"bottom");
+          AM.pulse(tl,"#"+SID+"-trnd",Math.min(t0+span+1.3,D*0.78));
+          if(document.getElementById(SID+"-note")){tl.fromTo("#"+SID+"-note",{opacity:0},{opacity:1,duration:0.5},Math.min(t0+span+1.6,D*0.84));}
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, #" + SID + "-pair, #" + SID + "-chart, #" + SID + "-trnd", D);{% endif %}
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>
