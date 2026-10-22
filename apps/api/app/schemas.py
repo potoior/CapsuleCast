@@ -16,7 +16,8 @@ class ProjectCreate(BaseModel):
     voice: str = Field(default="zf_xiaobei", max_length=32)
     bgm: str = Field(default="auto", max_length=16)
     theme: Literal["warm", "dark", "broadsheet", "neon", "journal", "swiss",
-                   "inkwash", "vaporwave", "film", "blueprint", "chalkboard", "brand"] = "warm"
+                   "inkwash", "vaporwave", "film", "blueprint", "chalkboard", "brand"] = ""
+    style: str = Field(default="", max_length=16)  # theme 的别名（两者给一个即可）
     brand_accent: str = Field(default="", max_length=9)
     direct: bool = False  # 全自动直出（大纲→分镜→渲染一气呵成，跳过确认）
     preset_id: str = Field(default="", max_length=32)  # 风格预设：服务端展开覆盖各字段

@@ -45,13 +45,13 @@
             {%- set parts = raw.split("|") %}
             {%- if NP == 2 %}
             {%- set sx = [22, 62] %}
-            {%- set sy = [26, 52] %}
+            {%- set sy = [22, 44] %}
             {%- elif NP == 3 %}
             {%- set sx = [16, 54, 34] %}
-            {%- set sy = [24, 30, 56] %}
+            {%- set sy = [18, 28, 44] %}
             {%- else %}
             {%- set sx = [14, 56, 18, 58] %}
-            {%- set sy = [22, 26, 56, 58] %}
+            {%- set sy = [16, 22, 44, 50] %}
             {%- endif %}
             <div class="part" id="s-{{ scene_id }}-part-{{ loop.index0 }}"
               style="left: {{ sx[loop.index0] }}cqw; top: {{ sy[loop.index0] }}cqh;">
@@ -87,14 +87,14 @@
             var sr = stage.getBoundingClientRect(), r = el.getBoundingClientRect();
             var tx = sr.left + sr.width * 0.5 - r.width / 2
               + (i - (n - 1) / 2) * sr.width * 0.02;
-            var ty = sr.top + sr.height * 0.42 - r.height / 2;
+            var ty = sr.top + sr.height * 0.42 - r.height / 2 + (i - (n - 1) / 2) * (r.height * 0.85);
             tl.to(el, {
               x: tx - r.left, y: ty - r.top,
               rotation: (i - (n - 1) / 2) * 7,
               duration: 0.55, ease: "power3.inOut"
             }, D * 0.52);
             // 整体登场时散块隐去（合体）
-            tl.fromTo(el, { opacity: 1 }, { opacity: 0, scale: 0.86, duration: 0.32, ease: "power2.in" },
+            tl.fromTo(el, { opacity: 1 }, { opacity: 0, scale: 0.86, duration: 0.32, ease: "power2.in", immediateRender: false },
               D * 0.60);
           }
           // 整体压顶

@@ -106,7 +106,7 @@ def create_project(payload: ProjectCreate, db: Session = Depends(get_db)):
         script_text=payload.script_text or "",
         aspect=payload.aspect,
         voice=payload.voice,
-        theme=payload.theme,
+        theme=(payload.theme or payload.style or "warm"),
         brand_accent=(payload.brand_accent or None) if payload.theme == "brand" else None,
         direct_to_video=bool(payload.direct),
         duration_target_s=payload.duration_target_s or 0,
