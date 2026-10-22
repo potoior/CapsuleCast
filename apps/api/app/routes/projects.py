@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import uuid
+from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException, UploadFile
 from pydantic import BaseModel, Field
-from pathlib import Path
 from rq import Queue
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -15,8 +15,14 @@ from ..config import get_settings
 from ..db import get_db
 from ..jobs.tasks import QUEUE_NAME, storyboard_task
 from ..models import Artifact, Job, JobStatus, Preset, Project, ProjectStatus, Scene
-from ..schemas import (JobOut, OutlineConfirm, PacingOption, PacingRequest,
-                       ProjectCreate, ProjectOut, SceneUpdate)
+from ..schemas import (
+    JobOut,
+    OutlineConfirm,
+    PacingRequest,
+    ProjectCreate,
+    ProjectOut,
+    SceneUpdate,
+)
 from ..services.template_engine import TemplateValidationError
 
 router = APIRouter(prefix="/api/projects", tags=["projects"])
@@ -73,7 +79,6 @@ def create_project(payload: ProjectCreate, db: Session = Depends(get_db)):
     if payload.mode == "topic":
         if len(payload.topic.strip()) < 2:
             raise HTTPException(422, "主题模式需要至少 2 个字的主题")
-        script_text = ""
     else:
         if len(payload.script_text.strip()) < 10:
             raise HTTPException(422, "文案至少 10 个字（或改用主题模式）")
@@ -149,8 +154,8 @@ def delete_project(project_id: str, db: Session = Depends(get_db)):
     for j in p.jobs:
         if j.status in (JobStatus.QUEUED, JobStatus.RUNNING):
             try:
-                from rq.job import Job as RQJob
                 from redis import Redis
+                from rq.job import Job as RQJob
                 s = get_settings()
                 RQJob.fetch(j.id, connection=Redis.from_url(s.redis_url)).cancel()
             except Exception:
@@ -174,7 +179,7 @@ def update_outline(project_id: str, body: dict, db: Session = Depends(get_db)):
         raise HTTPException(404, "项目不存在")
     if p.status not in (ProjectStatus.OUTLINE_READY, ProjectStatus.FAILED):
         raise HTTPException(409, f"当前状态 {p.status} 不可编辑大纲")
-    from ..services.outline import _clamp, _MAX, TEMPLATE_HINTS
+    from ..services.outline import _MAX, TEMPLATE_HINTS, _clamp
     try:
         outline = {
             "title": _clamp(body.get("title") or p.title, _MAX["title"]),
@@ -206,7 +211,7 @@ def update_outline(project_id: str, body: dict, db: Session = Depends(get_db)):
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(422, f"大纲结构错误: {e}")
+        raise HTTPException(422, f"大纲结构错误: {e}") from None
     p.outline = outline
     db.add(p)
     db.commit()
@@ -287,7 +292,7 @@ def hook_variants(project_id: str, db: Session = Depends(get_db)):
         if not isinstance(hooks, list) or len(hooks) != 3:
             raise ValueError("数量不对")
     except Exception as e:
-        raise HTTPException(502, f"钩子生成失败: {e}")
+        raise HTTPException(502, f"钩子生成失败: {e}") from None
     return {"hooks": [h.strip() for h in hooks]}
 
 
@@ -448,7 +453,7 @@ def update_scene(project_id: str, scene_id: str, payload: SceneUpdate,
         try:
             get_registry().validate(target_tpl, payload.fields or sc.fields)
         except TemplateValidationError as e:
-            raise HTTPException(422, {"template": e.template_id, "issues": e.issues})
+            raise HTTPException(422, {"template": e.template_id, "issues": e.issues}) from None
         if payload.template_id and payload.template_id != sc.template_id:
             sc.template_id = payload.template_id
         if payload.fields is not None:

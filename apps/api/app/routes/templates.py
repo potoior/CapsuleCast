@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from fastapi import APIRouter, HTTPException
 
-from ..services.template_engine import TemplateRegistry, get_registry
 from ..schemas import TemplateOut
+from ..services.template_engine import TemplateRegistry, get_registry
 
 router = APIRouter(prefix="/api/templates", tags=["templates"])
 
@@ -55,9 +55,9 @@ def get_template(template_id: str):
 # ── 用户自定义模板包导入/卸载 ────────────────────────────────
 import json
 import re
+import tempfile
 import zipfile
 from pathlib import Path
-import tempfile
 
 from fastapi import UploadFile
 from jsonschema import Draft202012Validator
@@ -93,7 +93,7 @@ def import_template_pack(file: UploadFile):
                         raise HTTPException(422, f"非法路径 {name}")
                 z.extractall(tdp)
         except zipfile.BadZipFile:
-            raise HTTPException(422, "不是合法 zip")
+            raise HTTPException(422, "不是合法 zip") from None
 
         root = tdp
         entries = list(tdp.iterdir())
@@ -109,7 +109,7 @@ def import_template_pack(file: UploadFile):
             schema = json.loads((root / "schema.json").read_text(encoding="utf-8"))
             html = (root / "template.html").read_text(encoding="utf-8")
         except Exception as e:
-            raise HTTPException(422, f"文件解析失败: {e}")
+            raise HTTPException(422, f"文件解析失败: {e}") from None
 
         tid = str(meta.get("id") or "")
         if not re.fullmatch(r"[a-z0-9][a-z0-9-]{2,31}", tid):
@@ -122,7 +122,7 @@ def import_template_pack(file: UploadFile):
         try:
             Draft202012Validator.check_schema(schema)
         except Exception as e:
-            raise HTTPException(422, f"schema 不合法: {str(e)[:160]}")
+            raise HTTPException(422, f"schema 不合法: {str(e)[:160]}") from None
         props = set(schema.get("properties", {}))
         for k in meta.get("field_order") or []:
             if k not in props:
@@ -162,7 +162,7 @@ def import_template_pack(file: UploadFile):
                 raise ValueError("渲染产物异常")
         except Exception as e:
             shutil.rmtree(dest, ignore_errors=True)
-            raise HTTPException(422, f"金测渲染未通过: {str(e)[:200]}")
+            raise HTTPException(422, f"金测渲染未通过: {str(e)[:200]}") from None
 
     import app.services.template_engine as te
     te._registry = None  # 单例复位，下一请求加载新模板
@@ -178,9 +178,10 @@ def delete_template(template_id: str):
     meta = json.loads((d / "meta.json").read_text(encoding="utf-8"))
     if not meta.get("user"):
         raise HTTPException(403, "内置模板不可删除")
+    from sqlalchemy import select
+
     from ..db import SessionLocal
     from ..models import Scene
-    from sqlalchemy import select
     db = SessionLocal()
     try:
         used = db.scalars(select(Scene.id).where(

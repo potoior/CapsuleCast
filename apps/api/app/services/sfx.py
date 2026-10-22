@@ -11,8 +11,8 @@ from pathlib import Path
 
 import numpy as np
 
-from .bgm import SR, _write_wav
 from ..config import get_settings
+from .bgm import SR, _write_wav
 
 _CACHE: dict[str, np.ndarray] = {}
 
@@ -73,7 +73,7 @@ def _synth(name: str) -> np.ndarray:
         n = int(dur * SR)
         t = np.arange(n) / SR
         x = np.zeros(n)
-        for i, (f, at, g) in enumerate([(1046.5, 0.0, 0.8), (1568.0, 0.09, 0.6)]):
+        for _i, (f, at, g) in enumerate([(1046.5, 0.0, 0.8), (1568.0, 0.09, 0.6)]):
             s = int(at * SR)
             seg = (np.sin(2 * np.pi * f * t[: n - s])
                    + 0.3 * np.sin(2 * np.pi * 2 * f * t[: n - s])) * _env_exp(n - s, 0.22)

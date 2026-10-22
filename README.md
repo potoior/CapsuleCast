@@ -4,7 +4,7 @@
 
 **一句话主题，自动出片。**
 
-`主题 → AI 扩写 → 62 套 HTML 模板分镜 → 无头浏览器渲染 1080p 口播解说视频`
+`主题 → AI 扩写 → 68 套 HTML 模板分镜 → 无头浏览器渲染 1080p 口播解说视频`
 
 *Text → Faceless Video Factory*
 
@@ -83,13 +83,13 @@ CapsuleCast 是一台**口播解说视频的自动流水线**：你说一句主�
 
 ## 🎬 模板库
 
-62 套 = `图解语义 × 26` + `数据图 × 8` + `叙事载体 × 16` + `结构与钩子 × 12`。
+68 套 = `图解语义 × 26` + `数据图 × 11` + `叙事载体 × 19` + `结构与钩子 × 12`。
 
 | 类别 | 模板 | 用在哪 |
 |---|---|---|
 | 图解语义 | flow · layers · cycle · quadrant · hub · pyramid · funnel · venn · tree · radar · gauge · stairs · spectrum · balance · fishbone · journey · iceberg · blocks · domino · onion · tug · swimlane · loop-duo · daywheel · callouts · bottleneck | 流程 / 层级 / 循环 / 放射 / 因果 / 分层 / 对抗 / 协作…大纲给 `template_hint`，LLM 合成结构化字段 |
-| 数据图 | bars · line · donut · table · kpi · scatter · gantt · waterfall | 有数字的段落自动选型 |
-| 叙事载体 | myth-buster · qa-card · checklist · rank-list · dialogue-quotes · bio-card · news-card · formula-card · price-compare · before-after · pros-cons · facts-trio · stat-clash · stat-equivalent · habit-grid · headline-barrage | 误区粉碎 / 问答 / 自查清单 / 排行 / 引用 / 前后对比 / 利弊 / 冷知识三连 |
+| 数据图 | bars · line · donut · table · kpi · scatter · gantt · waterfall · histogram · poll · splitbar | 有数字的段落自动选型 |
+| 叙事载体 | myth-buster · qa-card · checklist · rank-list · dialogue-quotes · bio-card · news-card · formula-card · price-compare · before-after · pros-cons · facts-trio · stat-clash · stat-equivalent · habit-grid · headline-barrage · tier-list · experiment-log · bio-timeline | 误区粉碎 / 问答 / 自查清单 / 排行 / 引用 / 前后对比 / 利弊 / 冷知识三连 |
 | 结构与钩子 | title-hook · bullet-list · big-stat · quote-cta · image-focus · free-blocks · chapter-card · process-steps · timeline-events · concept-compare · term-demo · term-explainer | 开场 / 收尾 / 万能兜底 |
 
 **模板三件套约定**：每套模板 = `meta.json`（元信息+示例）+ `schema.json`（字段约束）+ `template.html`（Jinja + CSS + GSAP）。示例字段必须过自身 schema，动画一律 `fromTo`，可选字段必须 `fields.get()`——违反约定会被 [57 条回归测试](apps/api/tests) 拦下。
@@ -151,6 +151,12 @@ cd apps/web && npm i && cd ../.. && make web   # :3300
 **自定义模板包**：zip 里放若干 `模板名/`（三件套结构同上），控制台上传即用。安全 lint 拒收路径穿越 / 外链资源 / eval，金测渲染不过自动回滚——放心导入第三方包。
 
 ## 🧩 写一套自己的模板
+
+> 完整指南见 **[CONTRIBUTING.md](CONTRIBUTING.md)**——含五步登记清单、运行时铁律和验收命令。三分钟起一个骨架：
+
+```bash
+make new-template ID="my-template" NAME="我的模板" DESC="一句话描述"
+```
 
 1. 建 `templates/你的模板/`：`meta.json`（含 `example`）、`schema.json`、`template.html`
 2. HTML 骨架：`{{ base_css }}` + 自有样式（`cqw/cqh` 容器单位，写竖屏断点 `@container`）
@@ -214,7 +220,7 @@ make status / make logs / make stop
 
 **必须接 LLM 吗？** 强烈建议。不接会退化到脚手架大纲 + 规则分镜，能出片但选型生硬。
 
-**模板能商用吗？** 模板是你自己的 HTML/CSS，随便改随便商用。仓库整体 License 待定（倾向 MIT，定了会更新）。
+**模板能商用吗？** 模板是你自己的 HTML/CSS，随便改随便商用。仓库整体是 MIT。
 
 ## 🙏 致谢
 

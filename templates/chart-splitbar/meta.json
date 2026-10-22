@@ -1,0 +1,33 @@
+{
+  "id": "chart-splitbar",
+  "name": "比例分割条",
+  "role": "body",
+  "description": "一条横棒按占比分色切段：钱的去向、时间的瓜分一图说清。适合「XX 都花在哪了」。",
+  "aspects": [
+    "16:9",
+    "9:16",
+    "1:1"
+  ],
+  "motion": "segment-fill",
+  "min_duration_s": 5,
+  "max_duration_s": 14,
+  "field_order": [
+    "kicker",
+    "headline",
+    "segments",
+    "total_label",
+    "note"
+  ],
+  "example": {
+    "kicker": "钱去哪了",
+    "headline": "一杯奶茶的钱怎么分",
+    "segments": [
+      "房租|45|连锁店的命门",
+      "原料|20|奶精茶包大头",
+      "人力|25|店员的时薪",
+      "品牌|10|招牌值这个价"
+    ],
+    "total_label": "一杯 22 元",
+    "note": "你以为在喝茶，其实在交房租"
+  }
+}

@@ -198,7 +198,7 @@ def align_scene_words(text: str, duration_s: float, *, lead_in_s: float = 0.04) 
     speech = duration_s - lead_in_s
     words: list[Word] = []
     t = lead_in_s
-    for (tok, disp), w in zip(tokens, weights):
+    for (tok, disp), w in zip(tokens, weights, strict=False):
         dur = speech * w / total_w
         words.append(Word(text=tok, start=round(t, 3), end=round(t + dur, 3), display=disp))
         t += dur

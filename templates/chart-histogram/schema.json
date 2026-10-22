@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": { "type": "string", "minLength": 2, "maxLength": 16, "description": "左上角标签" },
+    "headline": { "type": "string", "minLength": 2, "maxLength": 16, "description": "标题" },
+    "axis_label": { "type": "string", "minLength": 1, "maxLength": 10, "description": "横轴含义，如「月收入 →」" },
+    "buckets": {
+      "type": "array", "minItems": 4, "maxItems": 7,
+      "items": { "type": "string", "minLength": 2, "maxLength": 14 },
+      "description": "分布柱，格式「区间|相对高度0-100」"
+    },
+    "you_at": { "type": "string", "minLength": 1, "maxLength": 2, "description": "你在第几柱（1 起算的数字字符串）" },
+    "you_label": { "type": "string", "minLength": 1, "maxLength": 8, "description": "标记语，如「你在这」" },
+    "note": { "type": "string", "minLength": 0, "maxLength": 22, "description": "注解（可留空）" }
+  },
+  "required": ["kicker", "headline", "axis_label", "buckets", "you_at", "you_label"],
+  "additionalProperties": false
+}

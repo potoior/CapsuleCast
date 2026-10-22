@@ -520,6 +520,19 @@ def _choose_body_template(text: str) -> str:
         return "headline-barrage"
     if re.search(r"卡在哪|堵在|瓶颈|哪里断了|卡点|拖后腿", text):
         return "diagram-bottleneck"
+    # ── 第 8 批语义位 ──
+    if re.search(r"分布|正态|长尾|你在哪个区间|大部分人都|人群里", text):
+        return "chart-histogram"
+    if re.search(r"多少人选|你选哪个|投票|二选一|站哪边|站队", text):
+        return "chart-poll"
+    if re.search(r"分级|段位|梯队|红黑榜|评级|S级|榜单分档", text):
+        return "tier-list"
+    if re.search(r"钱花在哪|花在哪了|怎么瓜分|分成几份|占比多少", text):
+        return "chart-splitbar"
+    if re.search(r"我们做了个实验|实测|亲测|试了试|做了实验", text):
+        return "experiment-log"
+    if re.search(r"一生|生平|他的故事|传奇|从.*到.*逆袭", text):
+        return "bio-timeline"
     # 公式卡 / 冰山 / 排行榜
     if re.search(r"公式|心法|法门|成功[的方程式]*=", text):
         return "formula-card"
@@ -711,6 +724,11 @@ def _fields_batch6(text: str) -> dict:
 def _fields_batch7(text: str) -> dict:
     """第 7 批语义位（瀑布/日轮/对撞/具象/解剖/打卡/三连砸/卡点）：交给 LLM 合成。"""
     raise _NoFit("第 7 批结构化字段交给 LLM 合成")
+
+
+def _fields_batch8(text: str) -> dict:
+    """第 8 批语义位（直方/民意/分级/分割条/实验/生平）：交给 LLM 合成。"""
+    raise _NoFit("第 8 批结构化字段交给 LLM 合成")
 
 
 def _fields_rank(text: str) -> dict:
@@ -933,6 +951,9 @@ _EXTRACTORS = {
     "stat-clash": _fields_batch7, "stat-equivalent": _fields_batch7,
     "diagram-callouts": _fields_batch7, "habit-grid": _fields_batch7,
     "headline-barrage": _fields_batch7, "diagram-bottleneck": _fields_batch7,
+    "chart-histogram": _fields_batch8, "chart-poll": _fields_batch8,
+    "tier-list": _fields_batch8, "chart-splitbar": _fields_batch8,
+    "experiment-log": _fields_batch8, "bio-timeline": _fields_batch8,
     "rank-list": _fields_rank,
     "diagram-fishbone": _fields_fishbone,
     "diagram-journey": _fields_journey,
@@ -1019,7 +1040,7 @@ def _rule_storyboard(script_text: str, scene_count: int, registry: TemplateRegis
             if tid in DIAGRAM_TIDS:
                 try:
                     from .llm import synthesize_fields
-                    fields = synthesize_fields(tid, text, registry=reg)
+                    fields = synthesize_fields(tid, text, registry=registry)
                 except Exception:  # noqa: BLE001
                     fields = None
             if fields is None:
@@ -1049,7 +1070,7 @@ def generate_storyboard(
     used = "rule"
     scenes: list[StoryboardScene] = []
 
-    s = get_settings()
+    get_settings()
     if engine in ("auto", "llm"):
         llm_engine = LLMStoryboardEngine(reg)
         if llm_engine.available:

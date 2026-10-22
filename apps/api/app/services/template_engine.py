@@ -7,12 +7,10 @@
 from __future__ import annotations
 
 import json
-import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-import jsonschema
 from jinja2 import Environment, StrictUndefined, select_autoescape
 from jsonschema import Draft202012Validator
 from markupsafe import Markup

@@ -1,0 +1,33 @@
+{
+  "id": "bio-timeline",
+  "name": "人物生平时间线",
+  "role": "body",
+  "description": "一个人的一生切成 4-5 段里程碑：左人物名牌，右时间线逐段点亮。适合人物故事、传奇逆袭。",
+  "aspects": [
+    "16:9",
+    "9:16",
+    "1:1"
+  ],
+  "motion": "life-dots",
+  "min_duration_s": 6,
+  "max_duration_s": 18,
+  "field_order": [
+    "kicker",
+    "headline",
+    "person",
+    "milestones",
+    "note"
+  ],
+  "example": {
+    "kicker": "人物故事",
+    "headline": "从报童到报业大王",
+    "person": "何塞·萨拉曼卡",
+    "milestones": [
+      "1863|出生在港口贫民窟",
+      "1889|第一份印刷厂学徒工",
+      "1901|收购濒死小报",
+      "1935|建成全城第一高楼"
+    ],
+    "note": "时代给的运气，也是敢接的勇气"
+  }
+}

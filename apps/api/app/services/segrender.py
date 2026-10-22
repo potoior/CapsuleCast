@@ -27,7 +27,7 @@ from pathlib import Path
 
 from ..config import get_settings
 from . import hf
-from .compose import ScenePlan, _CAP_FONT, _FADE_S, _JINJA, _PILL_MAX, resolve_media_fields
+from .compose import _CAP_FONT, _FADE_S, _JINJA, _PILL_MAX, ScenePlan, resolve_media_fields
 from .template_engine import TemplateRegistry, aspect_size
 
 
@@ -243,7 +243,7 @@ def render_segmented(
         if job["cache"].exists() and job["cache"].stat().st_size > 10_000:
             _probe_duration(job["cache"])  # 可读性校验
             return job["cache"]
-        out = hf.render_video(job["dir"], "renders/seg.mp4", workers=2,
+        hf.render_video(job["dir"], "renders/seg.mp4", workers=2,
                               log_sink=None)
         seg_mp4 = job["dir"] / "renders" / "seg.mp4"
         shutil.copyfile(seg_mp4, job["cache"])
@@ -272,7 +272,7 @@ def render_segmented(
 
     # ── 拼接（xfade 交替 fade/slideleft + acrossfade）─────────
     actual = [_probe_duration(p) for p in seg_paths]
-    for j, a in zip(jobs, actual):
+    for j, a in zip(jobs, actual, strict=False):
         if abs(a - j["dur"]) > 0.6:
             _log(f"片段 {j['i'] + 1} 实测 {a:.2f}s 与预期 {j['dur']:.2f}s 偏差大，"
                  "以实测时长拼接", level="warn")

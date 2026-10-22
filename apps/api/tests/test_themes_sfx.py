@@ -1,9 +1,6 @@
 """主题令牌 + SFX 合成回归。"""
 import numpy as np
-import pytest
-
-from app.services.themes import (style_extra_css, theme_tokens,
-                                 tokens_for_captions)
+from app.services.themes import style_extra_css, theme_tokens, tokens_for_captions
 
 
 class TestThemeTokens:

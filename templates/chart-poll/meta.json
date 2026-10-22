@@ -1,0 +1,12 @@
+{
+  "id": "chart-poll", "name": "民意二选一", "role": "body",
+  "description": "两条百分比横条对垒 + 你站哪边：投票结果和站队时刻的仪式感。适合「多数人选了X」「你选哪个」。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "bar-duel",
+  "min_duration_s": 5, "max_duration_s": 14,
+  "field_order": ["kicker", "headline", "left_option", "left_pct", "right_option", "right_pct", "verdict", "note"],
+  "example": {"kicker": "站队时刻", "headline": "夏天空调打几度",
+              "left_option": "26 度环保派", "left_pct": "62",
+              "right_option": "22 度凉爽派", "right_pct": "38",
+              "verdict": "环保派赢，但凉爽派不服",
+              "note": "办公室空调战争的永恒议题"}
+}

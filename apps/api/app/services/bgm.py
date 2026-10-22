@@ -130,7 +130,7 @@ def _gen_warm() -> np.ndarray:
     t = _t()
     x = np.zeros_like(t)
     # 和弦垫（C3 E3 G3 B3 D4）：逐音淡入交替呼吸
-    for f, ph in zip((130.81, 164.81, 196.0, 246.94, 293.66), (0.0, 1.1, 2.3, 3.4, 4.6)):
+    for f, ph in zip((130.81, 164.81, 196.0, 246.94, 293.66), (0.0, 1.1, 2.3, 3.4, 4.6), strict=False):
         breathe = 0.62 + 0.38 * np.sin(2 * np.pi * t / 16.0 + ph)
         x += 0.32 * _sine(f, t, (1.0, 0.28, 0.08)) * breathe
     # 零星钟音（C 大调五声）：每 3.5-5.5s 一颗
@@ -171,7 +171,7 @@ def _gen_pulse() -> np.ndarray:
         hit = (seg_t >= 0) & (seg_t < 0.5)
         x[hit] += 0.16 * _sine(f, seg_t[hit], (1.0, 0.22)) * np.exp(-seg_t[hit] * 7.0)
     # 气声 hat：反拍上的带通噪声
-    noise = rng.standard_normal(len(t)) * 0.5
+    rng.standard_normal(len(t)) * 0.5
     for b in np.arange(beat / 2, DUR_S, beat):
         seg_t = t - b
         hit = (seg_t >= 0) & (seg_t < 0.08)

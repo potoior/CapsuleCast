@@ -4,8 +4,7 @@ import wave
 from pathlib import Path
 
 import pytest
-
-from app.services.compose import compose_project, ScenePlan
+from app.services.compose import ScenePlan, compose_project
 
 WAV = Path(sorted(glob.glob(
     "/home/nv5000/data/llm2video-work/tts-cache/01-*.wav"))[0])

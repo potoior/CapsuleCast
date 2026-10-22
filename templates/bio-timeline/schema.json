@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "左上角标签"
+    },
+    "headline": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "标题"
+    },
+    "person": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 12,
+      "description": "人物名"
+    },
+    "milestones": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 5,
+      "items": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 16
+      },
+      "description": "生平节点，格式「年份|事件」，按时间先后"
+    },
+    "note": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 22,
+      "description": "注解（可留空）"
+    }
+  },
+  "required": [
+    "kicker",
+    "headline",
+    "person",
+    "milestones"
+  ],
+  "additionalProperties": false
+}

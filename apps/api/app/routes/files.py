@@ -32,7 +32,7 @@ def get_file(object_key: str):
     try:
         p: Path = storage.local_path(object_key)
     except ValueError:
-        raise HTTPException(400, "非法路径")
+        raise HTTPException(400, "非法路径") from None
     if not p.is_file():
         raise HTTPException(404, "文件不存在")
     media_type = _MEDIA_TYPES.get(p.suffix.lower(), "application/octet-stream")

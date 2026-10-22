@@ -1,0 +1,32 @@
+{
+  "id": "experiment-log",
+  "name": "实验复盘",
+  "role": "body",
+  "description": "猜想→操作→结果→反常识四段实验日志：科学口播的经典叙事骨架，最后一张牌必须反转。",
+  "aspects": [
+    "16:9",
+    "9:16",
+    "1:1"
+  ],
+  "motion": "log-reveal",
+  "min_duration_s": 6,
+  "max_duration_s": 16,
+  "field_order": [
+    "kicker",
+    "headline",
+    "hypothesis",
+    "method",
+    "result",
+    "twist",
+    "note"
+  ],
+  "example": {
+    "kicker": "实测系列",
+    "headline": "隔夜水到底能不能喝",
+    "hypothesis": "隔夜水亚硝酸盐超标致癌",
+    "method": "同杯水放 24 小时，送实验室测",
+    "result": "亚硝酸盐 0.02，远低于国标",
+    "twist": "真正该担心的是没盖盖子落灰",
+    "note": "谣言最怕对照实验"
+  }
+}

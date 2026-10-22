@@ -1,3 +1,5 @@
+import pytest
+
 """AD 注入器金测：确定性种子、JS/CSS 缝进主块、闭合标签完好、语法可过 node。"""
 import subprocess
 from pathlib import Path as _Path
@@ -95,13 +97,11 @@ def test_no_progress_no_element():
 def test_am_source_sewn_into_frame_before_iife(tmp_path):
     """compose 后帧 HTML 必须含 window.AM 定义，且在 IIFE 之前。"""
     import glob as _glob
-    import shutil as _shutil
-    import subprocess as _sp
     import sys as _sys
     _sys.path.insert(0, str(_Path(__file__).resolve().parents[1]))
+    from app.config import get_settings
     from app.services.compose import ScenePlan, compose_project
     from app.services.template_engine import TemplateRegistry
-    from app.config import get_settings
 
     _wav_dir = get_settings().work_dir / "tts-cache"
     wav = sorted(_glob.glob(str(_wav_dir / "*.wav")))

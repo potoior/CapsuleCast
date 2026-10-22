@@ -13,7 +13,6 @@ from __future__ import annotations
 import json
 import logging
 import os
-import re
 import shutil
 import subprocess
 from dataclasses import dataclass, field
@@ -169,7 +168,7 @@ def render_video(
         try:
             p = _run(args, cwd=project_dir, timeout_s=s.hf_render_timeout_s,
                      env=env, log_sink=log_sink, extra_env=extra)
-        except subprocess.TimeoutExpired as e:
+        except subprocess.TimeoutExpired:
             last_tail = f"render 超时（{s.hf_render_timeout_s}s）"
             log.warning("渲染超时（尝试 %d/%d）", i, len(attempts))
             continue
@@ -214,7 +213,7 @@ def snapshot_frames(
     # --keep 命名：at-<seconds>s.png
     pngs = []
     for t in at_seconds:
-        name = f"at-{t:.2f}s.png".rstrip("0").rstrip(".") if t % 1 else f"at-{int(t)}s.png"
+        f"at-{t:.2f}s.png".rstrip("0").rstrip(".") if t % 1 else f"at-{int(t)}s.png"
         # 实际命名规则：at-0s / at-1.5s（去尾零）
         cand = None
         for fmt in (f"at-{t:g}s.png", f"at-{t:.2f}s.png"):
@@ -233,7 +232,7 @@ def snapshot_frames(
 # ── ffprobe ──────────────────────────────────────────────────
 
 def ffprobe(path: Path) -> dict:
-    s = get_settings()
+    get_settings()
     ffprobe_bin = shutil.which("ffprobe", path=HFEnv.build().env["PATH"])
     p = subprocess.run(
         [ffprobe_bin, "-v", "quiet", "-print_format", "json",
@@ -246,7 +245,7 @@ def ffprobe(path: Path) -> dict:
 
 
 def extract_poster(video: Path, out_png: Path, at_s: float = 1.0) -> Path:
-    s = get_settings()
+    get_settings()
     env_path = HFEnv.build().env["PATH"]
     ffmpeg_bin = shutil.which("ffmpeg", path=env_path)
     out_png.parent.mkdir(parents=True, exist_ok=True)

@@ -104,7 +104,7 @@ def _synthesize_text(model, value: str, *, voice: str, speed: float, lang: str):
         l_samples, l_rate = _synthesize_text(model, left, voice=voice, speed=speed, lang=lang)
         r_samples, r_rate = _synthesize_text(model, right, voice=voice, speed=speed, lang=lang)
         if l_rate != r_rate:
-            raise RuntimeError("Kokoro 两次合成采样率不一致")
+            raise RuntimeError("Kokoro 两次合成采样率不一致") from None
         samples = list(l_samples) + list(r_samples)
         return samples, l_rate
 
@@ -136,7 +136,7 @@ def synthesize_cached(
     line_id: str = "01",
 ) -> TTSResult:
     """合成一行并落缓存；命中直接返回。"""
-    s = get_settings()
+    get_settings()
     key = hashlib.sha256(
         f"{voice}|{speed}|{text}".encode("utf-8")
     ).hexdigest()[:24]

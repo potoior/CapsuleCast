@@ -1,5 +1,4 @@
 """模板注册表金测：34 套齐、schema 自洽、示例字段必须通过自身校验。"""
-import json
 from pathlib import Path
 
 from app.services.template_engine import TemplateRegistry, TemplateValidationError
@@ -15,7 +14,7 @@ def _tpl_root() -> Path:
 def test_registry_loads_all():
     reg = TemplateRegistry()
     ids = {t.id for t in reg.list()}
-    assert len(ids) >= 62, f"模板数不足: {len(ids)}"
+    assert len(ids) >= 68, f"模板数不足: {len(ids)}"
     for must in ["title-hook", "bullet-list", "quote-cta", "big-stat",
                  "diagram-funnel", "diagram-venn", "diagram-tree", "diagram-radar",
                  "diagram-gauge", "diagram-stairs", "diagram-spectrum",

@@ -17,11 +17,10 @@
 from __future__ import annotations
 
 import logging
-import re
 from typing import Any
 
 from ..config import get_settings
-from .llm import LLMStoryboardEngine, proxy_for
+from .llm import LLMStoryboardEngine
 from .template_engine import TemplateRegistry
 
 log = logging.getLogger(__name__)
@@ -43,6 +42,8 @@ TEMPLATE_HINTS = [
     "diagram-swimlane", "diagram-loop-duo",
     "chart-waterfall", "diagram-daywheel", "stat-clash", "stat-equivalent",
     "diagram-callouts", "habit-grid", "headline-barrage", "diagram-bottleneck",
+    "chart-histogram", "chart-poll", "tier-list", "chart-splitbar",
+    "experiment-log", "bio-timeline",
 ]
 
 _MAX = {"title": 24, "beat_title": 12, "point": 14, "narration": 64,
@@ -151,7 +152,7 @@ def _scaffold_outline(topic: str, duration_target_s: int) -> dict:
 def generate_outline(topic: str, *, duration_target_s: int) -> tuple[str, dict]:
     """返回 (引擎, 大纲)。"""
     s = get_settings()
-    engine = LLMStoryboardEngine.__new__(LLMStoryboardEngine)  # 只复用 client 逻辑
+    LLMStoryboardEngine.__new__(LLMStoryboardEngine)  # 只复用 client 逻辑
     base = (s.llm_base_url or "").rstrip("/")
     if base and s.llm_model:
         try:
@@ -234,6 +235,12 @@ def _llm_outline(base: str, s, topic: str, duration_target_s: int) -> dict:
         "坚持打卡/习惯战绩优先 habit-grid（done 完成 + total 总数 + streak 连续 + unit 单位 + verdict 战绩）；"
         "三句强观点连发（re-hook 节奏器）用 headline-barrage（statements 恰好 3 短句）；"
         "流程里找堵点/瓶颈诊断优先 diagram-bottleneck（nodes 3-5 环 + break_at 断在第几环 + cost 代价）；"
+        "人群分布/你在哪个区间优先 chart-histogram（buckets「区间|相对高度」4-7 柱 + you_at 你在第几柱）；"
+        "投票/二选一站队优先 chart-poll（left/right 选项名+百分比 + verdict 裁决）；"
+        "评级/红黑榜/梯队分档优先 tier-list（tiers「档名|评语」3-4 档，S 档最神）；"
+        "钱的去向/时间瓜分占比优先 chart-splitbar（segments「标签|占比%|小注」2-5 段 + total_label 总量）；"
+        "做了实验/实测/亲测优先 experiment-log（hypothesis 猜想 + method 操作 + result 结果 + twist 反常识反转）；"
+        "人物生平/一生故事优先 bio-timeline（person 人名 + milestones「年份|事件」3-5 段）；"
         "TOP N/排行/最快最值得优先 rank-list（items 按名次「条目|小注」3-5 条）；"
         "多因归因/为什么出问题优先 diagram-fishbone（problem 鱼头 + bones「类别|原因」4-6 根）；"
         "阶段旅程/心理变化优先 diagram-journey（stages「阶段|事件|情绪0-100」3-5 段，情绪值必须给）；"

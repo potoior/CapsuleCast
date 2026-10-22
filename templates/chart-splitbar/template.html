@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6.2cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .wrap {
+          flex: 1; display: flex; flex-direction: column; justify-content: center;
+          gap: 2.6cqh; min-height: 0; width: 92cqw;
+        }
+        #f-{{ scene_id }} .bar {
+          height: 7cqh; border-radius: 1cqw; overflow: hidden;
+          display: flex; min-width: 0;
+        }
+        #f-{{ scene_id }} .seg { height: 100%; display: flex; align-items: center; justify-content: center; transform-origin: 0% 50%; }
+        #f-{{ scene_id }} .seg span {
+          font-family: var(--font-display); font-size: 3.4cqmin; font-weight: 700;
+          color: var(--cream); font-variant-numeric: tabular-nums; white-space: nowrap;
+        }
+        #f-{{ scene_id }} .legend { display: flex; gap: 2.4cqw; flex-wrap: wrap; }
+        #f-{{ scene_id }} .leg { display: flex; align-items: baseline; gap: 0.8cqw; }
+        #f-{{ scene_id }} .leg .sw { width: 1.8cqw; height: 1.8cqw; border-radius: 0.4cqw; align-self: center; }
+        #f-{{ scene_id }} .leg b { font-size: 2.6cqmin; font-weight: 600; color: var(--ink); }
+        #f-{{ scene_id }} .leg i { font-family: var(--font-mono); font-style: normal; font-size: 1.9cqmin; color: var(--ink-faint); }
+        #f-{{ scene_id }} .total {
+          align-self: flex-end; font-family: var(--font-mono); font-size: 2.2cqmin;
+          color: var(--ink-faint); letter-spacing: 0.12em;
+        }
+        #f-{{ scene_id }} .note { margin-top: 0.4cqh; font-family: var(--font-mono); font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em; text-align: center; }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .seg span { font-size: 2.6cqmin; }
+        }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="wrap">
+            <div class="total" id="s-{{ scene_id }}-total">{{ fields.total_label }}</div>
+            <div class="bar" id="s-{{ scene_id }}-bar"></div>
+            <div class="legend" id="s-{{ scene_id }}-legend">
+              {%- for raw in fields.segments %}
+              {%- set parts = raw.split("|") %}
+              <div class="leg" id="s-{{ scene_id }}-leg-{{ loop.index0 }}">
+                <span class="sw" id="s-{{ scene_id }}-sw-{{ loop.index0 }}"></span>
+                <span><b>{{ parts[0] }}</b>{% if parts|length > 2 and parts[2] %} <i>{{ parts[2] }}</i>{% endif %}</span>
+              </div>
+              {%- endfor %}
+            </div>
+          </div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          var bar = document.getElementById(SID + "-bar");
+
+          var PALETTE = ["#c96f4a", "#1a1a19", "#6b7a8e", "#8d6a9f", "#a3937f"];
+          var raw = {{ fields.segments | tojson }};
+          var N = raw.length, pcts = [], sum = 0;
+          for (var i = 0; i < N; i++) {
+            var p = parseFloat(String(raw[i]).split("|")[1] || "0") || 0;
+            pcts.push(p); sum += p;
+          }
+          for (var i = 0; i < N; i++) {
+            var pct = sum > 0 ? (pcts[i] / sum) * 100 : 100 / N;
+            var seg = document.createElement("div");
+            seg.className = "seg";
+            seg.id = SID + "-seg-" + i;
+            seg.style.width = pct + "%";
+            seg.style.background = PALETTE[i % PALETTE.length];
+            var sp = document.createElement("span");
+            sp.textContent = pcts[i] + "%";
+            seg.appendChild(sp);
+            bar.appendChild(seg);
+            var sw = document.getElementById(SID + "-sw-" + i);
+            if (sw) { sw.style.background = PALETTE[i % PALETTE.length]; }
+          }
+
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+
+          // 分段按顺序从左填充 → 图例级联 → 尾段呼吸
+          var t0 = Math.min(0.9, D * 0.18);
+          var span = Math.min(1.6, D * 0.36);
+          tl.fromTo("#" + SID + "-total", { opacity: 0 },
+            { opacity: 1, duration: 0.4 }, t0);
+          for (var i = 0; i < N; i++) {
+            var at = t0 + 0.2 + (span * i) / Math.max(1, N - 1);
+            tl.fromTo("#" + SID + "-seg-" + i, { scaleX: 0 },
+              { scaleX: 1, duration: 0.5, ease: "power3.inOut" }, at);
+            tl.fromTo("#" + SID + "-leg-" + i, { opacity: 0, y: 12 },
+              { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, at + 0.25);
+          }
+          AM.pulse(tl, "#" + SID + "-seg-0", t0 + 0.2 + span + 0.3);
+          if (document.getElementById(SID + "-note")) {
+            AM.wipe(tl, "#" + SID + "-note", Math.min(t0 + span + 0.9, D * 0.78), 0.6, "bottom");
+          }
+
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, #" + SID + "-total, #" + SID + "-bar, [id^='" + SID + "-seg-'], [id^='" + SID + "-leg-']", D);{% endif %}
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

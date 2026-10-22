@@ -1,0 +1,13 @@
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+exclude = [".venv", "reference", "apps/web"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B"]
+ignore = ["E501", "B008"]  # B008: FastAPI Depends 参数默认值是官方惯例
+
+[tool.ruff.lint.per-file-ignores]
+"apps/api/app/routes/templates.py" = ["E402"]
+"scripts/*" = ["E402"]
+"apps/api/tests/*" = ["E402"]

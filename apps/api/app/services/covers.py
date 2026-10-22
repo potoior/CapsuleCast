@@ -149,7 +149,7 @@ def generate_covers(
     brand: str = "AI 视频工坊",
 ) -> list[Path]:
     """生成 3 张封面 PNG，返回路径列表。"""
-    s = get_settings()
+    get_settings()
     out_dir.mkdir(parents=True, exist_ok=True)
 
     # 素材加工
@@ -177,7 +177,7 @@ def generate_covers(
         hp = out_dir / f"cover-{name}.html"
         hp.write_text(html, encoding="utf-8")
         png = out_dir / f"cover-{name}.png"
-        r = subprocess.run(
+        subprocess.run(
             [str(_CHROME), "--no-sandbox", "--disable-gpu",
              f"--screenshot={png}", "--window-size=1920,1080",
              f"file://{hp}"],

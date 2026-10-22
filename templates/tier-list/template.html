@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .tiers {
+          flex: 1; display: flex; flex-direction: column; justify-content: center;
+          gap: 1.4cqh; min-height: 0; width: 92cqw;
+        }
+        #f-{{ scene_id }} .tier {
+          display: grid; grid-template-columns: 10cqw 1fr; gap: 1.4cqw;
+          align-items: stretch; min-height: 8.6cqh;
+        }
+        #f-{{ scene_id }} .badge {
+          border-radius: var(--tile-radius); display: flex; align-items: center; justify-content: center;
+          font-family: var(--font-display); font-size: 4.2cqmin; font-weight: 700; color: var(--cream);
+        }
+        #f-{{ scene_id }} .tier.t0 .badge { background: var(--coral-deep); }
+        #f-{{ scene_id }} .tier.t1 .badge { background: var(--ink); }
+        #f-{{ scene_id }} .tier.t2 .badge { background: color-mix(in srgb, var(--ink) 55%, var(--cream)); }
+        #f-{{ scene_id }} .tier.t3 .badge { background: color-mix(in srgb, var(--ink) 30%, var(--cream)); }
+        #f-{{ scene_id }} .slot {
+          border: 1px solid var(--hairline-strong); border-radius: var(--tile-radius);
+          background: var(--cream); display: flex; align-items: center; padding: 0 1.8cqw;
+          font-size: 2.9cqmin; font-weight: 600; color: var(--ink); min-width: 0;
+        }
+        #f-{{ scene_id }} .tier.t0 .slot { border-color: var(--coral); background: color-mix(in srgb, var(--coral) 8%, var(--cream)); }
+        #f-{{ scene_id }} .note { margin-top: 1.4cqh; font-family: var(--font-mono); font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em; text-align: center; }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .tier { grid-template-columns: 14cqw 1fr; }
+        }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="tiers">
+            {%- for raw in fields.tiers %}
+            {%- set parts = raw.split("|") %}
+            <div class="tier t{{ loop.index0 }}" id="s-{{ scene_id }}-tier-{{ loop.index0 }}">
+              <div class="badge">{{ parts[0] }}</div>
+              <div class="slot">{{ parts[1] if parts|length > 1 else "" }}</div>
+            </div>
+            {%- endfor %}
+          </div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          var N = {{ fields.tiers | length }};
+
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+
+          // 档位自上而下砸入，S 档压轴呼吸
+          var t0 = Math.min(0.9, D * 0.16);
+          var gap = Math.min(0.5, D * 0.13);
+          for (var i = 0; i < N; i++) {
+            tl.fromTo("#" + SID + "-tier-" + i,
+              { opacity: 0, x: -36 * AD.flip, rotation: 1.5 * AD.flip },
+              { opacity: 1, x: 0, rotation: 0, duration: 0.5, ease: "back.out(1.7)" },
+              t0 + gap * i);
+          }
+          AM.pulse(tl, "#" + SID + "-tier-0", t0 + gap * N + 0.2);
+          if (document.getElementById(SID + "-note")) {
+            AM.wipe(tl, "#" + SID + "-note", Math.min(t0 + gap * N + 0.7, D * 0.8), 0.6, "bottom");
+          }
+
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, [id^='" + SID + "-tier-']", D);{% endif %}
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6.2cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .polls {
+          flex: 1; display: flex; flex-direction: column; justify-content: center;
+          gap: 3cqh; min-height: 0; width: 90cqw;
+        }
+        #f-{{ scene_id }} .opt { display: flex; flex-direction: column; gap: 0.8cqh; }
+        #f-{{ scene_id }} .opt .row { display: flex; justify-content: space-between; align-items: baseline; }
+        #f-{{ scene_id }} .opt .name { font-size: 3.2cqmin; font-weight: 600; color: var(--ink); }
+        #f-{{ scene_id }} .opt.win .name { color: var(--coral-deep); }
+        #f-{{ scene_id }} .opt .pct {
+          font-family: var(--font-display); font-size: 5.4cqmin; font-weight: 700;
+          color: var(--ink); font-variant-numeric: tabular-nums; line-height: 1;
+        }
+        #f-{{ scene_id }} .opt.win .pct { color: var(--coral-deep); }
+        #f-{{ scene_id }} .track {
+          height: 4.4cqh; border-radius: 999px; background: var(--tile); overflow: hidden;
+        }
+        #f-{{ scene_id }} .track .fill {
+          height: 100%; border-radius: 999px; transform-origin: 0% 50%;
+          background: color-mix(in srgb, var(--ink) 72%, var(--cream));
+        }
+        #f-{{ scene_id }} .opt.win .track .fill { background: var(--coral); }
+        #f-{{ scene_id }} .verdict {
+          align-self: center; margin-top: 1.4cqh; padding: 1.4cqh 3cqw;
+          border-radius: var(--tile-radius); background: var(--ink); color: var(--cream);
+          font-size: 2.9cqmin; font-weight: 600;
+        }
+        #f-{{ scene_id }} .note { margin-top: 0.8cqh; font-family: var(--font-mono); font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em; text-align: center; }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="polls">
+            <div class="opt{% if fields.left_pct | int >= fields.right_pct | int %} win{% endif %}" id="s-{{ scene_id }}-optL">
+              <div class="row"><span class="name">{{ fields.left_option }}</span><span class="pct" id="s-{{ scene_id }}-pL">0%</span></div>
+              <div class="track"><div class="fill" id="s-{{ scene_id }}-fL"></div></div>
+            </div>
+            <div class="opt{% if fields.right_pct | int > fields.left_pct | int %} win{% endif %}" id="s-{{ scene_id }}-optR">
+              <div class="row"><span class="name">{{ fields.right_option }}</span><span class="pct" id="s-{{ scene_id }}-pR">0%</span></div>
+              <div class="track"><div class="fill" id="s-{{ scene_id }}-fR"></div></div>
+            </div>
+          </div>
+          <div class="verdict" id="s-{{ scene_id }}-verdict">{{ fields.verdict }}</div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          var L = {{ fields.left_pct | int }}, R = {{ fields.right_pct | int }};
+
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+
+          // 双条对向生长 + 百分比滚动对垒 → 裁决收口
+          var t0 = Math.min(0.9, D * 0.2);
+          tl.fromTo("#" + SID + "-optL", { opacity: 0, x: -30 * AD.flip },
+            { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, t0);
+          tl.fromTo("#" + SID + "-optR", { opacity: 0, x: 30 * AD.flip },
+            { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, t0 + 0.15);
+          var grow = Math.min(1.3, D * 0.3);
+          tl.fromTo("#" + SID + "-fL", { scaleX: 0 }, { scaleX: L / 100, duration: grow, ease: "power3.out" }, t0 + 0.2);
+          tl.fromTo("#" + SID + "-fR", { scaleX: 0 }, { scaleX: R / 100, duration: grow, ease: "power3.out" }, t0 + 0.35);
+          var oL = { v: 0 }, oR = { v: 0 };
+          tl.fromTo(oL, { v: 0 }, { v: L, duration: grow, ease: "power3.out",
+            onUpdate: function () { document.getElementById(SID + "-pL").textContent = Math.round(oL.v) + "%"; } }, t0 + 0.2);
+          tl.fromTo(oR, { v: 0 }, { v: R, duration: grow, ease: "power3.out",
+            onUpdate: function () { document.getElementById(SID + "-pR").textContent = Math.round(oR.v) + "%"; } }, t0 + 0.35);
+          var tV = Math.min(t0 + grow + 0.5, D * 0.66);
+          AM.wipe(tl, "#" + SID + "-verdict", tV, 0.6, "bottom");
+          AM.pulse(tl, "#" + SID + "-verdict", tV + 0.6);
+          if (document.getElementById(SID + "-note")) {
+            tl.fromTo("#" + SID + "-note", { opacity: 0 },
+              { opacity: 1, duration: 0.5 }, Math.min(tV + 0.5, D * 0.8));
+          }
+
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, #" + SID + "-optL, #" + SID + "-optR, #" + SID + "-verdict", D);{% endif %}
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

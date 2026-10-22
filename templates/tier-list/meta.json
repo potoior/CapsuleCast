@@ -1,0 +1,31 @@
+{
+  "id": "tier-list",
+  "name": "分级档位表",
+  "role": "body",
+  "description": "S/A/B 档横条分卡：把一串东西按档位归堆。适合「评级」「梯队」「红黑榜」的网感内容。",
+  "aspects": [
+    "16:9",
+    "9:16",
+    "1:1"
+  ],
+  "motion": "rank-slots",
+  "min_duration_s": 6,
+  "max_duration_s": 16,
+  "field_order": [
+    "kicker",
+    "headline",
+    "tiers",
+    "note"
+  ],
+  "example": {
+    "kicker": "内行评级",
+    "headline": "通勤耳机红黑榜",
+    "tiers": [
+      "S|天花板/降噪旗舰",
+      "A|主力放心冲",
+      "B|能用别吹",
+      "C|图一乐"
+    ],
+    "note": "别问为什么没有 D，问就是没活到测评"
+  }
+}

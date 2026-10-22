@@ -12,14 +12,12 @@ import logging
 import subprocess
 import sys
 import threading
-import time
 from datetime import datetime, timedelta, timezone
 
+from app.config import get_settings
+from app.jobs.tasks import QUEUE_NAME
 from redis import Redis
 from rq import Worker
-
-from app.config import get_settings
-from app.jobs.tasks import QUEUE_NAME, render_task, storyboard_task
 
 logging.basicConfig(
     level=logging.INFO,

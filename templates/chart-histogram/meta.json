@@ -1,0 +1,12 @@
+{
+  "id": "chart-histogram", "name": "分布直方图", "role": "body",
+  "description": "人群分布的竖柱形态 + 「你在哪」标记：正态、长尾一眼看懂。适合「大部分人是这样，你是哪样」的分布话题。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "shape-emerge",
+  "min_duration_s": 6, "max_duration_s": 16,
+  "field_order": ["kicker", "headline", "axis_label", "buckets", "you_at", "you_label", "note"],
+  "example": {"kicker": "收入真相", "headline": "中国人月收入分布",
+              "axis_label": "月收入 →",
+              "buckets": ["3千以下|90", "3-8千|70", "8千-2万|40", "2-5万|18", "5万以上|6"],
+              "you_at": "3", "you_label": "你在这",
+              "note": "中位数比平均数诚实"}
+}

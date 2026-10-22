@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": { "type": "string", "minLength": 2, "maxLength": 16, "description": "左上角标签" },
+    "headline": { "type": "string", "minLength": 2, "maxLength": 16, "description": "标题" },
+    "left_option": { "type": "string", "minLength": 2, "maxLength": 12, "description": "选项 A 名称" },
+    "left_pct": { "type": "string", "minLength": 1, "maxLength": 3, "description": "选项 A 百分比（数字）" },
+    "right_option": { "type": "string", "minLength": 2, "maxLength": 12, "description": "选项 B 名称" },
+    "right_pct": { "type": "string", "minLength": 1, "maxLength": 3, "description": "选项 B 百分比（数字）" },
+    "verdict": { "type": "string", "minLength": 2, "maxLength": 18, "description": "一句话裁决" },
+    "note": { "type": "string", "minLength": 0, "maxLength": 22, "description": "注解（可留空）" }
+  },
+  "required": ["kicker", "headline", "left_option", "left_pct", "right_option", "right_pct", "verdict"],
+  "additionalProperties": false
+}

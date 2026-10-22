@@ -17,7 +17,7 @@ import time
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable
+from typing import Callable
 
 from sqlalchemy import select
 
@@ -25,7 +25,6 @@ from ..config import get_settings
 from ..db import SessionLocal
 from ..models import Artifact, Job, JobLog, JobStatus, Project, ProjectStatus, Scene
 from . import hf, storage
-from .captions import align_scene_words
 from .compose import ScenePlan, compose_project
 from .template_engine import TemplateRegistry
 from .tts import synthesize_cached
@@ -200,7 +199,7 @@ def _compose(
         jlog.log(f"⚠ 旁白含 {len(_stat_hits)} 处具体数字（{'、'.join(_stat_hits[:6])}…），"
                  "发布前请人工核对数据来源", level="warn", stage="compose")
 
-    drifted = [i for i, l in enumerate(result.leads or []) if abs(l - 0.04) > 0.06]
+    drifted = [i for i, ln in enumerate(result.leads or []) if abs(ln - 0.04) > 0.06]
     jlog.log(
         f"组装完成: {len(plans)} 镜 · 总时长 {result.total_duration:.1f}s · "
         f"字幕组 {result.groups_count} · 目录 {out}",
@@ -275,9 +274,10 @@ def run_outline_job(job_id: str) -> None:
 
         # ── 全自动直出：大纲就绪即链式发起分镜（分镜完成再自动渲染）──
         if project.direct_to_video:
-            from ..jobs.tasks import QUEUE_NAME, storyboard_task
             from redis import Redis
             from rq import Queue
+
+            from ..jobs.tasks import QUEUE_NAME, storyboard_task
             s = get_settings()
             q = Queue(QUEUE_NAME, connection=Redis.from_url(s.redis_url))
             rjob = Job(id=uuid.uuid4().hex, project_id=project.id, kind="storyboard")
@@ -390,7 +390,7 @@ def run_storyboard_job(job_id: str) -> None:
                 scenes[i].snapshot_url = storage.presigned_get(key)
                 db.add(scenes[i])
         # 每镜语音也上传——预览播放器试听用
-        for i, (sc, wav_p, _d) in enumerate(tts_results):
+        for _i, (sc, wav_p, _d) in enumerate(tts_results):
             try:
                 wav_p = Path(wav_p)
                 if wav_p.exists():
@@ -412,9 +412,10 @@ def run_storyboard_job(job_id: str) -> None:
 
         # ── 直出模式：跳过用户确认，链式发起渲染 ────────────────
         if project.direct_to_video:
-            from ..jobs.tasks import QUEUE_NAME, render_task
             from redis import Redis
             from rq import Queue
+
+            from ..jobs.tasks import QUEUE_NAME, render_task
             s = get_settings()
             q = Queue(QUEUE_NAME, connection=Redis.from_url(s.redis_url))
             rjob = Job(id=uuid.uuid4().hex, project_id=project.id, kind="render")
@@ -513,7 +514,7 @@ def run_render_job(job_id: str) -> None:
                 check = None
         if check is None:
             jlog.log("运行 hyperframes check（lint + 运行时 + 布局 + 对比度）…", stage="check")
-            check = hf.run_check(out_dir, log_sink=lambda l: jlog.log(str(l)[:600], stage="check"))
+            check = hf.run_check(out_dir, log_sink=lambda ln: jlog.log(str(ln)[:600], stage="check"))
             # 只有通过的结论才值得记忆；失败必须重跑
             _ok = check.get("ok", check.get("status") == "pass")
             _errs = check.get("errors") or [i for i in (check.get("issues") or [])
@@ -825,7 +826,7 @@ def run_render_job(job_id: str) -> None:
                     series=getattr(project, "series", None),
                     episode_no=getattr(project, "episode_no", None),
                 )
-                ab_out = hf.render_video(ab_dir, "renders/video.mp4", log_sink=lambda l: None)
+                ab_out = hf.render_video(ab_dir, "renders/video.mp4", log_sink=lambda ln: None)
                 ab_video = ab_out.output
                 if ab_track and ab_track != "none":
                     bed_ab = ab_dir / "renders" / "bgm-bed.wav"
@@ -866,7 +867,7 @@ def run_render_job(job_id: str) -> None:
         for k, asp in enumerate(extra):
             try:
                 alt_dir = _project_dir(project.id).parent / f"project-{project.id}" / f"current-{asp.replace(':', 'x')}"
-                alt_compose = compose_project(
+                compose_project(
                     project_id=project.id, title=project.title, aspect=asp,
                     scenes=plans_for_extra, out_dir=alt_dir, registry=reg,
                     pads=plan.pads, theme=project.theme or "warm",
@@ -879,14 +880,14 @@ def run_render_job(job_id: str) -> None:
                     episode_no=getattr(project, "episode_no", None),
                     logo_opacity=float(getattr(project, "logo_opacity", 0.85) or 0.85),
                 )
-                alt_check = hf.run_check(alt_dir, log_sink=lambda l: None)
+                alt_check = hf.run_check(alt_dir, log_sink=lambda ln: None)
                 ok2 = alt_check.get("ok", alt_check.get("status") == "pass")
                 errs2 = [i for i in (alt_check.get("issues") or [])
                          if str(i.get("severity", "")).lower() == "error"]
                 if not ok2 or errs2:
                     jlog.log(f"{asp} check 未通过，跳过该画幅", level="warn", stage="publish")
                     continue
-                alt_out = hf.render_video(alt_dir, "renders/video.mp4", log_sink=lambda l: None)
+                alt_out = hf.render_video(alt_dir, "renders/video.mp4", log_sink=lambda ln: None)
                 alt_video = alt_out.output
                 # BGM 床复用（时间线一致）
                 if track_saved and track_saved != "none":

@@ -5,7 +5,6 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, Field, field_validator
 
-
 # ── 项目 ────────────────────────────────────────────────────
 
 class ProjectCreate(BaseModel):

@@ -31,7 +31,7 @@ def _detach_inherited_pool() -> None:
 
 
 def storyboard_task(job_id: str) -> None:
-    j = get_current_job()
+    get_current_job()
     _detach_inherited_pool()
     try:
         pipeline.run_storyboard_job(job_id)

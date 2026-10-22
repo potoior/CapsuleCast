@@ -1,9 +1,7 @@
 """抽取器/启发式/变体播种回归——每一条都对应本会话真实炸过的坑。"""
 import pytest
-
 from app.services import storyboard as sb
-from app.services.storyboard import (_EXTRACTORS, _NoFit, _choose_body_template,
-                                     apply_variant)
+from app.services.storyboard import _EXTRACTORS, _choose_body_template, _NoFit, apply_variant
 
 
 class TestExtractors:

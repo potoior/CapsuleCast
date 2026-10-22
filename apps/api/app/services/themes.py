@@ -263,10 +263,10 @@ def _hex_ok(v: str) -> bool:
 def _shift(hex_color: str, factor: float, toward: str = "black") -> str:
     """向黑/白方向移动明度（factor 0-1）。"""
     r, g, b = (int(hex_color[i:i + 2], 16) / 255 for i in (1, 3, 5))
-    h, l, s = colorsys.rgb_to_hls(r, g, b)
-    l = max(0.0, min(1.0, l * (1 - factor))) if toward == "black" \
-        else max(0.0, min(1.0, l + (1 - l) * factor))
-    r, g, b = colorsys.hls_to_rgb(h, l, s)
+    h, lum, s = colorsys.rgb_to_hls(r, g, b)
+    lum = max(0.0, min(1.0, lum * (1 - factor))) if toward == "black" \
+        else max(0.0, min(1.0, lum + (1 - lum) * factor))
+    r, g, b = colorsys.hls_to_rgb(h, lum, s)
     return "#{:02X}{:02X}{:02X}".format(round(r * 255), round(g * 255), round(b * 255))
 
 

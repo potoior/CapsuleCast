@@ -17,6 +17,12 @@ worker: ## 启动 RQ 渲染 worker
 web: ## 启动 Next.js 控制台 (127.0.0.1:3300)
 	cd apps/web && npx next dev -p 3300
 
+lint: ## ruff 检查（PR 前请跑）
+	$(VENV)/ruff check apps/api scripts
+
+new-template: ## 脚手架：make new-template ID="my-template" NAME="中文名" DESC="描述"
+	$(VENV)/python scripts/new_template.py "$(ID)" "$(NAME)" "$(DESC)"
+
 e2e: ## 本地端到端验证（不经 API/DB：分镜→TTS→组装→check→render）
 	$(VENV)/python scripts/e2e_local.py
 
