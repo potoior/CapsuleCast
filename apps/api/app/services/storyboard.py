@@ -533,6 +533,23 @@ def _choose_body_template(text: str) -> str:
         return "experiment-log"
     if re.search(r"一生|生平|他的故事|传奇|从.*到.*逆袭", text):
         return "bio-timeline"
+    # ── 第 9 批语义位 ──
+    if re.search(r"分之一|一半.{0,4}(人生|时间|工资)|百分之\d+", text):
+        return "stat-dotmatrix"
+    if re.search(r"存钱进度|攒到|目标还差|还剩多少到目标", text):
+        return "stat-thermometer"
+    if re.search(r"三种方案|三个选|三选一|三路|哪个更划算", text):
+        return "compare-trio"
+    if re.search(r"几个习惯|进度盘点|进度一览|多目标|各有进度", text):
+        return "progress-bundle"
+    if re.search(r"怎么分类|分桶|归到哪|收纳|分成三类", text):
+        return "sort-bins"
+    if re.search(r"传话|以讹传讹|越传越|变味|谣言怎么长", text):
+        return "chain-distort"
+    if re.search(r"猜猜|哪个是真的|考考你|你能答对|来测一测", text):
+        return "quiz-reveal"
+    if re.search(r"聊天记录|微信对话|当我说|老板说|爸妈的对话", text):
+        return "chat-bubbles"
     # 公式卡 / 冰山 / 排行榜
     if re.search(r"公式|心法|法门|成功[的方程式]*=", text):
         return "formula-card"
@@ -729,6 +746,11 @@ def _fields_batch7(text: str) -> dict:
 def _fields_batch8(text: str) -> dict:
     """第 8 批语义位（直方/民意/分级/分割条/实验/生平）：交给 LLM 合成。"""
     raise _NoFit("第 8 批结构化字段交给 LLM 合成")
+
+
+def _fields_batch9(text: str) -> dict:
+    """第 9 批语义位（点阵/温度计/三对比/多进度/分桶/传话/猜猜看/气泡）：交给 LLM 合成。"""
+    raise _NoFit("第 9 批结构化字段交给 LLM 合成")
 
 
 def _fields_rank(text: str) -> dict:
@@ -954,6 +976,10 @@ _EXTRACTORS = {
     "chart-histogram": _fields_batch8, "chart-poll": _fields_batch8,
     "tier-list": _fields_batch8, "chart-splitbar": _fields_batch8,
     "experiment-log": _fields_batch8, "bio-timeline": _fields_batch8,
+    "stat-dotmatrix": _fields_batch9, "stat-thermometer": _fields_batch9,
+    "compare-trio": _fields_batch9, "progress-bundle": _fields_batch9,
+    "sort-bins": _fields_batch9, "chain-distort": _fields_batch9,
+    "quiz-reveal": _fields_batch9, "chat-bubbles": _fields_batch9,
     "rank-list": _fields_rank,
     "diagram-fishbone": _fields_fishbone,
     "diagram-journey": _fields_journey,

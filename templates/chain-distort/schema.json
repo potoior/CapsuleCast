@@ -1,0 +1,37 @@
+{
+  "type": "object",
+  "properties": {
+    "kicker": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "左上角小标签，点明观察视角，如“传播观察”"
+    },
+    "headline": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "主标题，一句话概括主题，如“一句话是怎么传歪的”"
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "string",
+        "minLength": 4,
+        "maxLength": 24,
+        "description": "传话链节点，格式：转述人|原话，如“小李|楼下便利店打折了”，四步依次越来越离谱"
+      },
+      "description": "传话链四步，每项用“|”分隔转述人与内容"
+    },
+    "note": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 22,
+      "description": "底部小结，可空，如“谣言=原话×转手次数”"
+    }
+  },
+  "required": ["kicker", "headline", "steps"],
+  "additionalProperties": false
+}

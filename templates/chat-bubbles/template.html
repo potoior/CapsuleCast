@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .chat{flex:1;display:flex;flex-direction:column;justify-content:center;gap:1.6cqh;min-height:0;width:68cqw;margin:0 auto;}
+        #f-{{ scene_id }} .msg{display:flex;}
+        #f-{{ scene_id }} .msg.L{justify-content:flex-start;}
+        #f-{{ scene_id }} .msg.R{justify-content:flex-end;}
+        #f-{{ scene_id }} .bub{max-width:78%;padding:1.8cqh 1.8cqw;font-size:3cqmin;line-height:1.4;color:var(--ink);border:1.5px solid var(--hairline-strong);background:var(--cream);border-radius:1.6cqw 1.6cqw 1.6cqw 0.4cqw;}
+        #f-{{ scene_id }} .msg.R .bub{border-color:var(--coral);background:color-mix(in srgb,var(--coral) 12%,var(--cream));border-radius:1.6cqw 1.6cqw 0.4cqw 1.6cqw;}
+        @container frame (max-aspect-ratio:10/16){ #f-{{ scene_id }} .chat{width:92cqw;}}
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="chat">{% for raw in fields.get("messages", []) %}{% set parts = raw.split("|") %}{% set side = parts[0] %}<div class="msg {{ side }}" id="s-{{ scene_id }}-msg-{{ loop.index0 }}"><div class="bub">{{ parts[1] if parts|length > 1 else "" }}</div></div>{% endfor %}</div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+          var N={{ fields.messages | length }};
+          var t0=Math.min(0.8,D*0.14);
+          var gap=Math.min(0.6,Math.max(0.3,(D*0.55)/Math.max(1,N)));
+          for(var i=0;i<N;i++){tl.fromTo("#"+SID+"-msg-"+i,{opacity:0,y:24},{opacity:1,y:0,duration:0.4,ease:"back.out(1.8)"},t0+gap*i);}
+          AM.pulse(tl,"#"+SID+"-msg-"+(N-1)+" .bub",t0+gap*(N-1)+0.6);
+          if(document.getElementById(SID+"-note")){AM.wipe(tl,"#"+SID+"-note",Math.min(t0+gap*N+0.6,D*0.78),0.6,"bottom");}
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, [id^='" + SID + "-msg-']", D);{% endif %}
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

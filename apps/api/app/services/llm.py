@@ -231,6 +231,8 @@ DIAGRAM_TIDS = frozenset({
     "diagram-callouts", "habit-grid", "headline-barrage", "diagram-bottleneck",
     "chart-histogram", "chart-poll", "tier-list", "chart-splitbar",
     "experiment-log", "bio-timeline",
+    "stat-dotmatrix", "stat-thermometer", "compare-trio", "progress-bundle",
+    "sort-bins", "chain-distort", "quiz-reveal", "chat-bubbles",
 })
 
 

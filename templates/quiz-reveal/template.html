@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .q{flex:1;display:flex;flex-direction:column;justify-content:center;gap:2.4cqh;min-height:0;width:92cqw;margin:0 auto;}
+        #f-{{ scene_id }} .qq{font-family:var(--font-display);font-size:5.4cqmin;font-weight:700;text-align:center;color:var(--ink);line-height:1.3;}
+        #f-{{ scene_id }} .opts{display:grid;grid-template-columns:repeat(3,1fr);gap:2cqw;}
+        #f-{{ scene_id }} .opt{position:relative;border:1.5px solid var(--hairline-strong);border-radius:var(--tile-radius);background:var(--cream);padding:3cqh 1.4cqw;display:flex;align-items:center;justify-content:center;text-align:center;font-size:3.2cqmin;font-weight:600;color:var(--ink);min-height:16cqh;line-height:1.35;}
+        #f-{{ scene_id }} .opt .let{position:absolute;left:1cqw;top:0.8cqh;font-family:var(--font-mono);font-size:2cqmin;font-weight:700;color:var(--ink-faint);}
+        #f-{{ scene_id }} .opt.right{border-color:var(--coral);background:color-mix(in srgb,var(--coral) 12%,var(--cream));color:var(--coral-deep);}
+        #f-{{ scene_id }} .opt.dim{opacity:0.35;}
+        #f-{{ scene_id }} .ok{position:absolute;right:-1.2cqw;top:-2cqh;width:4.4cqw;height:4.4cqw;border-radius:50%;background:var(--coral);color:var(--cream);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:2.6cqmin;}
+        #f-{{ scene_id }} .explain{align-self:center;padding:1.4cqh 3cqw;border-radius:var(--tile-radius);background:var(--ink);color:var(--cream);font-size:2.9cqmin;font-weight:600;}
+        @container frame (max-aspect-ratio:10/16){ #f-{{ scene_id }} .opts{grid-template-columns:1fr;}}
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="q"><div class="qq" id="s-{{ scene_id }}-qq">{{ fields.question }}</div><div class="opts">{% for raw in fields.get("options", []) %}<div class="opt" id="s-{{ scene_id }}-opt-{{ loop.index0 }}"><span class="let">{{ ["A","B","C"][loop.index0] }}</span>{{ raw }}</div>{% endfor %}</div><div class="explain" id="s-{{ scene_id }}-explain">{{ fields.explain }}</div></div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+          var ANS=(parseInt("{{ fields.answer }}",10)||1)-1; var t0=Math.min(0.9,D*0.16); AM.focus(tl,"#"+SID+"-qq",t0,0.8); for(var i=0;i<3;i++){tl.fromTo("#"+SID+"-opt-"+i,{opacity:0,y:26},{opacity:1,y:0,duration:0.45,ease:"back.out(1.7)"},t0+0.35+0.15*i);} var tR=Math.min(t0+1.5,D*0.5); var optR=document.getElementById(SID+"-opt-"+ANS); optR.className="opt right"; var badge=document.createElement("span"); badge.className="ok"; badge.id=SID+"-okbadge"; badge.textContent="✓"; optR.appendChild(badge); for(var i=0;i<3;i++){if(i!==ANS){tl.fromTo("#"+SID+"-opt-"+i,{opacity:1,y:0},{opacity:0.35,y:8,duration:0.5,ease:"power2.inOut"},tR);}} AM.pop(tl,"#"+SID+"-okbadge",tR+0.15,0.5); AM.pulse(tl,"#"+SID+"-opt-"+ANS,tR+0.5); AM.float(tl,"#"+SID+"-opt-"+ANS,tR+1.0,D); var tE=Math.min(tR+0.9,D*0.72); AM.wipe(tl,"#"+SID+"-explain",tE,0.65,"bottom"); AM.pulse(tl,"#"+SID+"-explain",tE+0.7); if(document.getElementById(SID+"-note")){tl.fromTo("#"+SID+"-note",{opacity:0},{opacity:1,duration:0.5},Math.min(tE+0.5,D*0.84));}
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, #" + SID + "-qq, [id^='" + SID + "-opt-'], #" + SID + "-explain, #" + SID + "-okbadge", D);{% endif %}
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

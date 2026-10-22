@@ -1,0 +1,37 @@
+{
+  "type": "object",
+  "properties": {
+    "kicker": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "顶部小引导词，如「年中盘点」"
+    },
+    "headline": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "主标题，概括这组目标的主题"
+    },
+    "items": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 4,
+      "items": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 18,
+        "description": "每项格式：名称|进度数值0-100|备注（用竖线分隔，进度数值必填，备注可省略）"
+      },
+      "description": "进度条列表，每项为「名称|百分比|短说明」竖线分隔字符串"
+    },
+    "note": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 22,
+      "description": "底部点睛短句，可空"
+    }
+  },
+  "required": ["kicker", "headline", "items"],
+  "additionalProperties": false
+}

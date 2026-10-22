@@ -1,0 +1,19 @@
+{
+  "id": "stat-dotmatrix",
+  "name": "点阵百分比",
+  "role": "body",
+  "description": "百分比画成 10×10 点阵配大数字滚动：比例冲击时刻。",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "motion": "dot-wave",
+  "min_duration_s": 5,
+  "max_duration_s": 14,
+  "field_order": ["kicker", "headline", "pct", "item_label", "detail", "note"],
+  "example": {
+    "kicker": "时间账本",
+    "headline": "人生三分之一在睡觉",
+    "pct": "33",
+    "item_label": "你的一生",
+    "detail": "按78岁算要睡26年",
+    "note": ""
+  }
+}

@@ -44,6 +44,8 @@ TEMPLATE_HINTS = [
     "diagram-callouts", "habit-grid", "headline-barrage", "diagram-bottleneck",
     "chart-histogram", "chart-poll", "tier-list", "chart-splitbar",
     "experiment-log", "bio-timeline",
+    "stat-dotmatrix", "stat-thermometer", "compare-trio", "progress-bundle",
+    "sort-bins", "chain-distort", "quiz-reveal", "chat-bubbles",
 ]
 
 _MAX = {"title": 24, "beat_title": 12, "point": 14, "narration": 64,
@@ -241,6 +243,14 @@ def _llm_outline(base: str, s, topic: str, duration_target_s: int) -> dict:
         "钱的去向/时间瓜分占比优先 chart-splitbar（segments「标签|占比%|小注」2-5 段 + total_label 总量）；"
         "做了实验/实测/亲测优先 experiment-log（hypothesis 猜想 + method 操作 + result 结果 + twist 反常识反转）；"
         "人物生平/一生故事优先 bio-timeline（person 人名 + milestones「年份|事件」3-5 段）；"
+        "单一百分比的冲击时刻优先 stat-dotmatrix（pct 百分比 + item_label 指代 + detail 展开）；"
+        "单一目标的进度追踪优先 stat-thermometer（current 当前 + goal 目标 + milestones 里程碑刻度 1-3）；"
+        "三选一决策优先 compare-trio（options 恰好 3 条「名称|要点|小注」+ winner 胜者 + verdict）；"
+        "多目标进度盘点优先 progress-bundle（items「项目|进度0-100|小注」3-4 条）；"
+        "信息/任务分类归桶优先 sort-bins（source_label 一堆杂项 + bins「箱名|条目/条目」2-3 箱）；"
+        "传话/谣言变味过程优先 chain-distort（steps 恰好 4 条「转述人|话」逐级变形）；"
+        "猜猜看悬念钩子优先 quiz-reveal（question + options 恰好 3 项 + answer 正确项 + explain）；"
+        "情景对话还原优先 chat-bubbles（messages 2-4 条「L|内容」或「R|内容」左右气泡）；"
         "TOP N/排行/最快最值得优先 rank-list（items 按名次「条目|小注」3-5 条）；"
         "多因归因/为什么出问题优先 diagram-fishbone（problem 鱼头 + bones「类别|原因」4-6 根）；"
         "阶段旅程/心理变化优先 diagram-journey（stages「阶段|事件|情绪0-100」3-5 段，情绪值必须给）；"

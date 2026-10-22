@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .rows{flex:1;display:flex;flex-direction:column;justify-content:center;gap:1.8cqh;min-height:0;width:90cqw;margin:0 auto;}
+        #f-{{ scene_id }} .prow{display:grid;grid-template-columns:20cqw 1fr 11cqw;gap:1.4cqw;align-items:center;}
+        #f-{{ scene_id }} .prow .txt{display:flex;flex-direction:column;gap:0.2cqh;min-width:0;}
+        #f-{{ scene_id }} .prow .nm{font-size:3cqmin;font-weight:600;color:var(--ink);}
+        #f-{{ scene_id }} .prow .sub{font-family:var(--font-mono);font-size:1.9cqmin;color:var(--ink-faint);}
+        #f-{{ scene_id }} .track{height:2.6cqh;border-radius:999px;background:var(--tile);overflow:hidden;}
+        #f-{{ scene_id }} .track .pfill{height:100%;border-radius:999px;background:color-mix(in srgb,var(--ink) 60%,var(--cream));transform-origin:0% 50%;}
+        #f-{{ scene_id }} .prow.top .pfill{background:var(--coral);}
+        #f-{{ scene_id }} .prow .pv{font-family:var(--font-display);font-size:3.6cqmin;font-weight:700;font-variant-numeric:tabular-nums;text-align:right;color:var(--ink);}
+        @container frame (max-aspect-ratio:10/16){ #f-{{ scene_id }} .prow{grid-template-columns:1fr 11cqw;grid-template-rows:auto auto;}#f-{{ scene_id }} .track{grid-column:1 / -1;}}
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="rows">{% for raw in fields.get("items", []) %}{% set parts = raw.split("|") %}<div class="prow" id="s-{{ scene_id }}-row-{{ loop.index0 }}"><div class="txt"><span class="nm">{{ parts[0] }}</span><span class="sub">{{ parts[2] if parts|length > 2 else "" }}</span></div><div class="track"><div class="pfill" id="s-{{ scene_id }}-fill-{{ loop.index0 }}"></div></div><span class="pv" id="s-{{ scene_id }}-pv-{{ loop.index0 }}">0%</span></div>{% endfor %}</div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+          var ITEMS={{ fields.get("items") | tojson }};
+          var pcts=[],best=0,bi=0;
+          for(var i=0;i<ITEMS.length;i++){var p=parseFloat(String(ITEMS[i]).split("|")[1])||0; pcts.push(p); if(p>best){best=p;bi=i;}}
+          for(var i=0;i<ITEMS.length;i++){var el=document.getElementById(SID+"-fill-"+i); el.style.width=Math.max(2,pcts[i])+"%"; var row=document.getElementById(SID+"-row-"+i); if(i===bi){row.className="prow top";}}
+          var t0=Math.min(0.9,D*0.16);
+          var grow=Math.min(1.1,D*0.28);
+          for(var i=0;i<ITEMS.length;i++){var at=t0+0.2*i;
+            tl.fromTo("#"+SID+"-row-"+i,{opacity:0,x:-30*AD.flip},{opacity:1,x:0,duration:0.45,ease:"power3.out"},at);
+            tl.fromTo("#"+SID+"-fill-"+i,{scaleX:0},{scaleX:1,duration:grow,ease:"power3.out"},at+0.15);
+            AM.countUp(tl,"#"+SID+"-pv-"+i,0,pcts[i],at+0.15,grow,"%");
+          }
+          AM.pulse(tl,"#"+SID+"-row-"+bi,t0+0.2*(ITEMS.length-1)+grow+0.2);
+          if(document.getElementById(SID+"-note")){AM.wipe(tl,"#"+SID+"-note",Math.min(t0+0.2*ITEMS.length+grow+0.5,D*0.78),0.6,"bottom");}
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, [id^='" + SID + "-row-'], [id^='" + SID + "-pv-']", D);{% endif %}
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .chain{flex:1;display:flex;flex-direction:column;justify-content:center;gap:0.4cqh;min-height:0;width:80cqw;margin:0 auto;}
+        #f-{{ scene_id }} .say{display:grid;grid-template-columns:9cqw 1fr;gap:1.4cqw;align-items:center;}
+        #f-{{ scene_id }} .say .who{font-family:var(--font-mono);font-size:2cqmin;font-weight:700;color:var(--ink-faint);text-align:right;letter-spacing:0.08em;}
+        #f-{{ scene_id }} .say .bub{border:1px solid var(--hairline-strong);border-radius:var(--tile-radius);background:var(--cream);padding:1.4cqh 1.6cqw;font-size:3cqmin;font-weight:500;color:var(--ink);line-height:1.35;min-width:0;}
+        #f-{{ scene_id }} .say.d1 .bub{transform:rotate(0.8deg);font-size:3.2cqmin;}
+        #f-{{ scene_id }} .say.d2 .bub{transform:rotate(1.6deg);font-size:3.5cqmin;color:color-mix(in srgb,var(--coral-deep) 40%,var(--ink));}
+        #f-{{ scene_id }} .say.d3{position:relative;}
+        #f-{{ scene_id }} .say.d3 .bub{transform:rotate(2deg);font-size:3.8cqmin;font-weight:700;border-color:var(--coral);background:color-mix(in srgb,var(--coral) 12%,var(--cream));color:var(--coral-deep);}
+        #f-{{ scene_id }} .dub{position:absolute;right:-1cqw;top:-2.2cqh;padding:0.5cqh 1cqw;border-radius:999px;background:var(--coral);color:var(--cream);font-size:1.9cqmin;font-weight:700;}
+        #f-{{ scene_id }} .arw{text-align:center;color:var(--hairline-strong);font-size:2.2cqmin;line-height:1;}
+        @container frame (max-aspect-ratio:10/16){ #f-{{ scene_id }} .chain{width:92cqw;}#f-{{ scene_id }} .say{grid-template-columns:14cqw 1fr;}}
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="chain">{% for raw in fields.get("steps", []) %}{% set parts = raw.split("|") %}{% if not loop.first %}<div class="arw">▼</div>{% endif %}<div class="say{% if loop.index0 == 1 %} d1{% elif loop.index0 == 2 %} d2{% elif loop.index0 == 3 %} d3{% endif %}" id="s-{{ scene_id }}-say-{{ loop.index0 }}"><span class="who">{{ parts[0] }}</span><span class="bub">{{ parts[1] if parts|length > 1 else "" }}{% if loop.index0 == 3 %}<span class="dub" id="s-{{ scene_id }}-dub">已离谱</span>{% endif %}</span></div>{% endfor %}</div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+          var t0=Math.min(0.9,D*0.16);
+          var span=Math.max(0.7,D*0.4);
+          for(var i=0;i<4;i++){var at=t0+(span*i)/4; tl.fromTo("#"+SID+"-say-"+i,{opacity:0,y:22},{opacity:1,y:0,duration:0.45,ease:"back.out(1.6)"},at);}
+          AM.pop(tl,"#"+SID+"-dub",t0+span+0.1,0.45);
+          AM.pulse(tl,"#"+SID+"-say-3",t0+span+0.5);
+          if(document.getElementById(SID+"-note")){AM.wipe(tl,"#"+SID+"-note",Math.min(t0+span+1.1,D*0.78),0.6,"bottom");}
+          AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, [id^='" + SID + "-say-'], #" + SID + "-dub", D);
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "眉题，页面顶部的小标签文字"
+    },
+    "headline": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "主标题，一行大字"
+    },
+    "pct": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 3,
+      "description": "百分比数字（0-100，不含百分号）"
+    },
+    "item_label": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 10,
+      "description": "统计对象的说明标签，显示在数字下方"
+    },
+    "detail": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 16,
+      "description": "补充细节说明，一行小字"
+    },
+    "note": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 22,
+      "description": "底部注释，可留空"
+    }
+  },
+  "required": ["kicker", "headline", "pct", "item_label", "detail"],
+  "additionalProperties": false
+}

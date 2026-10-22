@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "kicker": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "左上角小标签，说明这组数据是什么主题，如「攒钱计划」"
+    },
+    "headline": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "主标题，点明追踪的具体目标，如「买房首付进度」"
+    },
+    "unit": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4,
+      "description": "计量单位，显示在当前值下方，如「元」「kg」"
+    },
+    "current": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 8,
+      "description": "当前达成值，纯数字字符串，如「182000」"
+    },
+    "goal": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 8,
+      "description": "目标总值，纯数字字符串，如「600000」"
+    },
+    "milestones": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 3,
+      "items": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 16,
+        "description": "里程碑，格式「数值|标签」，如「200000|装修钱凑齐」"
+      },
+      "description": "里程碑刻度列表，每项为「数值|标签」格式，按数值升序排列"
+    },
+    "verdict": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 18,
+      "description": "一句进度点评，如「攒到三成，进度条才刚热身」"
+    },
+    "note": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 22,
+      "description": "可选脚注，补充说明或数据来源，留空则不显示"
+    }
+  },
+  "required": ["kicker", "headline", "unit", "current", "goal", "milestones", "verdict"],
+  "additionalProperties": false
+}

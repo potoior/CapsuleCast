@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .flow{flex:1;display:flex;flex-direction:column;justify-content:center;gap:3.6cqh;min-height:0;width:92cqw;margin:0 auto;position:relative;}
+        #f-{{ scene_id }} .src{align-self:center;padding:2cqh 3cqw;border-radius:999px;background:var(--ink);color:var(--cream);font-size:3.2cqmin;font-weight:700;}
+        #f-{{ scene_id }} .links{display:flex;justify-content:space-around;height:6cqh;position:relative;}
+        #f-{{ scene_id }} .link{position:relative;width:1.5px;height:100%;background:repeating-linear-gradient(var(--hairline-strong) 0 0.6cqh, transparent 0.6cqh 1.2cqh);transform-origin:50% 0%;}
+        #f-{{ scene_id }} .bins{display:grid;gap:2cqw;}
+        #f-{{ scene_id }} .bin{border:1.5px solid var(--hairline-strong);border-radius:var(--tile-radius);background:var(--cream);padding:2cqh 1.6cqw;display:flex;flex-direction:column;gap:1cqh;min-width:0;}
+        #f-{{ scene_id }} .bin .bnm{font-size:2.9cqmin;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:0.8cqw;}
+        #f-{{ scene_id }} .bin .sw{width:1.8cqw;height:1.8cqw;border-radius:0.4cqw;}
+        #f-{{ scene_id }} .bin .chips{display:flex;flex-wrap:wrap;gap:0.8cqh 0.8cqw;}
+        #f-{{ scene_id }} .chip{border:1px solid var(--hairline-strong);border-radius:999px;padding:0.6cqh 1.2cqw;font-size:2.3cqmin;color:var(--ink);background:color-mix(in srgb,var(--tile) 60%,var(--cream));}
+        @container frame (max-aspect-ratio:10/16){ #f-{{ scene_id }} .bins{grid-template-columns:1fr;}}
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="flow"><div class="src" id="s-{{ scene_id }}-src">{{ fields.source_label }}</div><div class="links" id="s-{{ scene_id }}-links"></div><div class="bins" id="s-{{ scene_id }}-bins"></div></div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+          var BINS={{ fields.bins | tojson }}; var COLORS=["#c96f4a","#1a1a19","#6b7a8e"];
+          var binsEl=document.getElementById(SID+"-bins"); binsEl.style.gridTemplateColumns="repeat("+BINS.length+",1fr)";
+          var linksEl=document.getElementById(SID+"-links");
+          for(var i=0;i<BINS.length;i++){var seg=String(BINS[i]).split("|"); var bin=document.createElement("div"); bin.className="bin"; bin.id=SID+"-bin-"+i;
+            var head=document.createElement("div"); head.className="bnm"; head.innerHTML='<span class="sw" style="background:'+COLORS[i%3]+'"></span>'+seg[0]; bin.appendChild(head);
+            var chips=document.createElement("div"); chips.className="chips"; var items=String(seg[1]||"").split("/");
+            for(var c=0;c<items.length;c++){var ch=document.createElement("span"); ch.className="chip"; ch.id=SID+"-chip-"+i+"-"+c; ch.textContent=items[c]; chips.appendChild(ch);}
+            bin.appendChild(chips); binsEl.appendChild(bin);
+            var lk=document.createElement("div"); lk.className="link"; lk.id=SID+"-link-"+i; linksEl.appendChild(lk);}
+          var t0=Math.min(0.9,D*0.16); AM.focus(tl,"#"+SID+"-src",t0,0.8);
+          for(var i=0;i<BINS.length;i++){var at=t0+0.5+0.25*i;
+            tl.fromTo("#"+SID+"-link-"+i,{scaleY:0},{scaleY:1,duration:0.4,ease:"power2.out"},at);
+            AM.wipe(tl,"#"+SID+"-bin-"+i,at+0.1,0.55,"top");
+            AM.pop(tl,'[id^="'+SID+"-chip-"+i+'-"]',at+0.45,0.35);}
+          AM.pulse(tl,"#"+SID+"-bin-0",t0+0.5+0.25*BINS.length+0.9);
+          if(document.getElementById(SID+"-note")){AM.wipe(tl,"#"+SID+"-note",Math.min(t0+0.5+0.25*BINS.length+1.4,D*0.78),0.6,"bottom");}
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, #" + SID + "-src, [id^='" + SID + "-link-'], [id^='" + SID + "-bin-'], [id^='" + SID + "-chip-']", D);{% endif %}
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>
