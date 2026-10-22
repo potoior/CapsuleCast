@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .kicker-row { display: flex; align-items: center; gap: 1.3cqw; }
+        #f-{{ scene_id }} .stage {
+          flex: 1; position: relative; min-height: 0; width: 92cqw;
+        }
+        #f-{{ scene_id }} .slam {
+          position: absolute; inset: 0;
+          display: flex; align-items: center; justify-content: center;
+          overflow: hidden;
+        }
+        #f-{{ scene_id }} .slam .mask { overflow: hidden; padding: 0 0.08em; }
+        #f-{{ scene_id }} .slam .txt {
+          display: block; font-family: var(--font-display);
+          font-size: 8.2cqmin; font-weight: 700; color: var(--ink);
+          line-height: 1.12; letter-spacing: -0.02em; text-align: center;
+        }
+        #f-{{ scene_id }} .slam.hot .txt { color: var(--coral-deep); }
+        #f-{{ scene_id }} .slam .ord {
+          position: absolute; right: 4cqw; bottom: 6cqh;
+          font-family: var(--font-mono); font-size: 3cqmin; font-weight: 700;
+          color: color-mix(in srgb, var(--ink) 30%, transparent);
+          letter-spacing: 0.14em;
+        }
+        #f-{{ scene_id }} .subline {
+          position: absolute; left: 0; right: 0; bottom: 14cqh;
+          text-align: center; font-family: var(--font-mono);
+          font-size: 2.4cqmin; color: var(--ink-faint); letter-spacing: 0.2em;
+        }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .slam .txt { font-size: 7cqmin; }
+        }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="kicker-row hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="stage" id="s-{{ scene_id }}-stage">
+            {%- for s in fields.statements %}
+            <div class="slam{% if loop.last %} hot{% endif %}" id="s-{{ scene_id }}-slam-{{ loop.index0 }}">
+              <div class="mask"><span class="txt">{{ s }}</span></div>
+              <span class="ord">0{{ loop.index }} / 03</span>
+            </div>
+            {%- endfor %}
+            {% if fields.get('subline') %}<div class="subline" id="s-{{ scene_id }}-subline">{{ fields.get('subline') }}</div>{% endif %}
+          </div>
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+
+          // 三连砸：每句遮罩升起 → 停驻 → 向上擦出；末句驻场 + 收口副题
+          var seg = Math.max(1.6, (D - 0.6) / 3);
+          for (var i = 0; i < 3; i++) {
+            var at = 0.4 + seg * i;
+            var hold = Math.max(0.7, seg - 1.0);
+            tl.fromTo("#" + SID + "-slam-" + i + " .txt", { yPercent: 118 },
+              { yPercent: 0, duration: 0.6, ease: "power4.out" }, at);
+            tl.fromTo("#" + SID + "-slam-" + i + " .ord", { opacity: 0 },
+              { opacity: 1, duration: 0.4 }, at + 0.25);
+            if (i < 2) {
+              tl.fromTo("#" + SID + "-slam-" + i + " .txt", { yPercent: 0 },
+                { yPercent: -118, duration: 0.5, ease: "power3.in" }, at + 0.6 + hold);
+              tl.fromTo("#" + SID + "-slam-" + i + " .ord", { opacity: 1 },
+                { opacity: 0, duration: 0.3 }, at + 0.6 + hold);
+            }
+          }
+          AM.pulse(tl, "#" + SID + "-slam-2 .txt", 0.4 + seg * 2 + 1.0);
+          if (document.getElementById(SID + "-subline")) {
+            AM.wipe(tl, "#" + SID + "-subline", Math.min(0.4 + seg * 2 + 0.8, D * 0.85), 0.6, "bottom");
+          }
+
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, [id^='" + SID + "-slam-']", D);{% endif %}
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

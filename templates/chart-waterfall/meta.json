@@ -1,0 +1,11 @@
+{
+  "id": "chart-waterfall", "name": "瀑布图", "role": "body",
+  "description": "逐级扣减/累加的瀑布：起点满格，一步一栏浮空增减，落到终值。适合「工资到手」「预算层层扣」「成本拆解」。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "step-drain",
+  "min_duration_s": 6, "max_duration_s": 18,
+  "field_order": ["kicker", "headline", "start_label", "start_value", "steps", "end_label", "note"],
+  "example": {"kicker": "工资真相", "headline": "两万月薪到手多少",
+              "start_label": "税前", "start_value": "20000",
+              "steps": ["五险一金|-4100", "个税|-990", "房租|-3500", "吃饭|-2400"],
+              "end_label": "可支配", "note": "还没算买东西"}
+}

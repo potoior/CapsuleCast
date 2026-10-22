@@ -1,0 +1,12 @@
+{
+  "id": "stat-clash", "name": "数字对撞", "role": "body",
+  "description": "两个大数字左右对撞 + VS 徽章 + 裁决条：数字碾压时刻的仪式感。适合「X 是 Y 的 N 倍」「相差多少」。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "number-duel",
+  "min_duration_s": 5, "max_duration_s": 14,
+  "field_order": ["kicker", "headline", "left_label", "left_value", "right_label", "right_value", "verdict", "note"],
+  "example": {"kicker": "差距时刻", "headline": "纸书和电子书差多少",
+              "left_label": "一本纸书", "left_value": "39",
+              "right_label": "同款电子书", "right_value": "6",
+              "verdict": "差 6.5 倍，纸在为质感付费",
+              "note": "质感这东西，见仁见智"}
+}

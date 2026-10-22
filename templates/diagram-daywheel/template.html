@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6.2cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .duo {
+          flex: 1; display: grid; grid-template-columns: 46cqw 1fr;
+          align-items: center; min-height: 0; width: 92cqw; gap: 2cqw;
+        }
+        #f-{{ scene_id }} .wheelbox { position: relative; width: min(44cqw, 52cqh); height: min(44cqw, 52cqh); margin: 0 auto; }
+        #f-{{ scene_id }} .wheelbox svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+        #f-{{ scene_id }} .core {
+          position: absolute; inset: 30%; border-radius: 50%;
+          background: var(--ink); color: var(--cream);
+          display: flex; align-items: center; justify-content: center; text-align: center;
+          font-size: 2.9cqmin; font-weight: 700; line-height: 1.3; padding: 6%;
+        }
+        #f-{{ scene_id }} .legend { display: flex; flex-direction: column; gap: 1.2cqh; }
+        #f-{{ scene_id }} .leg { display: grid; grid-template-columns: 2.2cqw 1fr auto; gap: 1cqw; align-items: baseline; }
+        #f-{{ scene_id }} .leg .swatch { width: 2.2cqw; height: 2.2cqw; border-radius: 0.5cqw; align-self: center; }
+        #f-{{ scene_id }} .leg b { font-size: 2.7cqmin; font-weight: 600; color: var(--ink); }
+        #f-{{ scene_id }} .leg i { font-family: var(--font-mono); font-style: normal; font-size: 1.9cqmin; color: var(--ink-faint); }
+        #f-{{ scene_id }} .leg .hrs { font-family: var(--font-mono); font-size: 2cqmin; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+        #f-{{ scene_id }} .note { margin-top: 1.2cqh; font-family: var(--font-mono); font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em; }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .duo { grid-template-columns: 1fr; width: 92cqw; }
+          #f-{{ scene_id }} .wheelbox { width: min(66cqw, 34cqh); height: min(66cqw, 34cqh); }
+        }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="duo">
+            <div class="wheelbox" id="s-{{ scene_id }}-wheelbox">
+              <svg viewBox="0 0 100 100" id="s-{{ scene_id }}-svg"></svg>
+              <div class="core" id="s-{{ scene_id }}-core">{{ fields.core_label }}</div>
+            </div>
+            <div class="legend" id="s-{{ scene_id }}-legend">
+              {%- for raw in fields.slices %}
+              {%- set parts = raw.split("|") %}
+              <div class="leg" id="s-{{ scene_id }}-leg-{{ loop.index0 }}">
+                <span class="swatch" id="s-{{ scene_id }}-sw-{{ loop.index0 }}"></span>
+                <span><b>{{ parts[0] }}</b>
+                {% if parts|length > 2 and parts[2] %}<i> {{ parts[2] }}</i>{% endif %}</span>
+                <span class="hrs" id="s-{{ scene_id }}-hrs-{{ loop.index0 }}">{{ parts[1] if parts|length > 1 else "" }}</span>
+              </div>
+              {%- endfor %}
+            </div>
+          </div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          var N = {{ fields.slices | length }};
+          var svg = document.getElementById(SID + "-svg");
+
+          // 弧段 build 期铺好：dasharray/dashoffset + 逐段旋转（静态样式，动画只动 strokeDashoffset）
+          var PALETTE = ["#1a1a19", "#c96f4a", "#6b7a8e", "#3f4b3a", "#8d6a9f", "#a3937f"];
+          var raw = {{ fields.slices | tojson }};
+          var CIRC = 2 * Math.PI * 40, hrs = [];
+          var totalH = 0;
+          for (var i = 0; i < N; i++) {
+            var h = parseFloat(String(String(raw[i]).split("|")[1] || "1").replace(/[^0-9.]/g, "")) || 1;
+            hrs.push(h); totalH += h;
+          }
+          var acc = 0;
+          for (var i = 0; i < N; i++) {
+            var frac = hrs[i] / Math.max(0.1, totalH);
+            var seg = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            seg.setAttribute("cx", "50"); seg.setAttribute("cy", "50"); seg.setAttribute("r", "40");
+            seg.setAttribute("fill", "none");
+            seg.setAttribute("stroke", PALETTE[i % PALETTE.length]);
+            seg.setAttribute("stroke-width", "9");
+            seg.id = SID + "-arc-" + i;
+            var gap = CIRC * 0.006;
+            seg.style.strokeDasharray = (CIRC * frac - gap) + " " + (CIRC - CIRC * frac + gap);
+            seg.style.strokeDashoffset = -CIRC * acc;
+            seg.style.transform = "rotate(-90deg)";
+            seg.style.transformOrigin = "50% 50%";
+            svg.appendChild(seg);
+            var sw = document.getElementById(SID + "-sw-" + i);
+            if (sw) { sw.style.background = PALETTE[i % PALETTE.length]; }
+            acc += frac;
+          }
+
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+
+          // 弧段逐个亮起 + 图例级联 + 轮心弹出
+          var t0 = Math.min(0.9, D * 0.16);
+          for (var i = 0; i < N; i++) {
+            var at = t0 + (D * 0.42 * i) / Math.max(1, N - 1);
+            tl.fromTo("#" + SID + "-arc-" + i, { opacity: 0 },
+              { opacity: 1, duration: 0.5, ease: "power2.out" }, at);
+            tl.fromTo("#" + SID + "-leg-" + i, { opacity: 0, x: 22 * AD.flip },
+              { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, at + 0.12);
+          }
+          var tC = Math.min(t0 + D * 0.42 + 0.2, D * 0.68);
+          AM.pop(tl, "#" + SID + "-core", tC, 0.55);
+          AM.pulse(tl, "#" + SID + "-core", tC + 0.6);
+          if (document.getElementById(SID + "-note")) {
+            AM.wipe(tl, "#" + SID + "-note", Math.min(tC + 0.9, D * 0.8), 0.6, "bottom");
+          }
+
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, [id^='" + SID + "-arc-'], [id^='" + SID + "-leg-'], #" + SID + "-core", D);{% endif %}
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

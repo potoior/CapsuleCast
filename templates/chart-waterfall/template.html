@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6.2cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .stage {
+          flex: 1; position: relative; min-height: 0; width: 92cqw; margin-top: 2cqh;
+        }
+        #f-{{ scene_id }} .col {
+          position: absolute; bottom: 14cqh; width: 11cqw;
+          display: flex; flex-direction: column; align-items: center; gap: 0.8cqh;
+        }
+        #f-{{ scene_id }} .col .v { font-family: var(--font-mono); font-size: 2.1cqmin; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
+        #f-{{ scene_id }} .col .bar { width: 100%; border-radius: 0.6cqw; background: var(--ink); transform-origin: 50% 100%; }
+        #f-{{ scene_id }} .col.delta .bar { background: color-mix(in srgb, var(--coral) 78%, var(--cream)); }
+        #f-{{ scene_id }} .col.end .bar { background: var(--coral); }
+        #f-{{ scene_id }} .col .l { font-size: 2.2cqmin; font-weight: 600; color: var(--ink); white-space: nowrap; }
+        #f-{{ scene_id }} .col .d { font-family: var(--font-mono); font-size: 1.9cqmin; color: var(--coral-deep); font-weight: 700; white-space: nowrap; }
+        #f-{{ scene_id }} .dash { position: absolute; height: 1px; border-top: 1.5px dashed var(--hairline-strong); }
+        #f-{{ scene_id }} .floor { position: absolute; left: 2cqw; right: 2cqw; bottom: 13cqh; height: 1.5px; background: var(--hairline-strong); }
+        #f-{{ scene_id }} .note { margin-top: 1.2cqh; font-family: var(--font-mono); font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em; }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .col { width: 18cqw; }
+          #f-{{ scene_id }} .col .v { font-size: 1.8cqmin; }
+          #f-{{ scene_id }} .col .l { font-size: 1.9cqmin; }
+        }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="stage" id="s-{{ scene_id }}-stage">
+            <div class="floor" id="s-{{ scene_id }}-floor"></div>
+          </div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          var stage = document.getElementById(SID + "-stage");
+
+          // 布局在 build 期算好（静态样式写 DOM 合法；动画只碰 transform/opacity）
+          var startV = parseFloat("{{ fields.start_value }}".replace(/,/g, "")) || 0;
+          var rawSteps = {{ fields.steps | tojson }};
+          var steps = [], cum = startV, maxAbs = Math.max(startV, 0.001);
+          for (var i = 0; i < rawSteps.length; i++) {
+            var seg = String(rawSteps[i]).split("|");
+            var dv = parseFloat(String(seg[1] || "0").replace(/,/g, "")) || 0;
+            steps.push({ label: seg[0], dv: dv, from: cum });
+            cum += dv;
+            maxAbs = Math.max(maxAbs, Math.abs(cum), Math.abs(dv));
+          }
+          var endV = cum;
+          maxAbs = Math.max(maxAbs, endV);
+          var H = 58; // 最大柱高 cqh 百分比基数
+          var cols = [{ kind: "start", label: "{{ fields.start_label }}", v: startV, base: 0, top: startV }];
+          for (var i = 0; i < steps.length; i++) {
+            cols.push({ kind: "delta", label: steps[i].label, dv: steps[i].dv,
+                        base: Math.min(steps[i].from, steps[i].from + steps[i].dv),
+                        top: Math.abs(steps[i].dv) });
+          }
+          cols.push({ kind: "end", label: "{{ fields.end_label }}", v: endV, base: 0, top: endV });
+
+          var n = cols.length, gap = 2.2, totalW = 94, w = (totalW - gap * (n - 1)) / n;
+          for (var i = 0; i < n; i++) {
+            var c = cols[i];
+            var el = document.createElement("div");
+            el.className = "col" + (c.kind === "delta" ? " delta" : c.kind === "end" ? " end" : "");
+            el.id = SID + "-col-" + i;
+            var dv = document.createElement("div");
+            dv.className = "v";
+            dv.textContent = (c.kind === "delta"
+              ? (c.dv > 0 ? "+" : "") + c.dv.toLocaleString("en-US")
+              : c.v.toLocaleString("en-US"));
+            var bar = document.createElement("div");
+            bar.className = "bar";
+            bar.style.height = Math.max(4, (Math.abs(c.top) / maxAbs) * H) + "cqh";
+            bar.style.transformOrigin = c.kind === "delta" ? "50% 100%" : "50% 100%";
+            el.style.left = (i * (w + gap)) + "cqw";
+            el.style.width = w + "cqw";
+            el.style.bottom = (14 + (c.base / maxAbs) * H) + "cqh";
+            var lab = document.createElement("div");
+            lab.className = "l";
+            lab.textContent = c.label;
+            el.appendChild(dv); el.appendChild(bar); el.appendChild(lab);
+            stage.appendChild(el);
+            if (c.kind === "delta") {
+              var sign = document.createElement("div");
+              sign.className = "d";
+              sign.textContent = "";
+              el.appendChild(sign);
+            }
+          }
+
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+
+          // 起点柱长出 → 每级浮空增减依次落位 → 终值柱压轴
+          var t0 = Math.min(0.9, D * 0.16);
+          tl.fromTo("#" + SID + "-floor", { scaleX: 0 },
+            { scaleX: 1, duration: 0.6, ease: "power2.out", transformOrigin: "0% 50%" }, t0);
+          tl.fromTo("#" + SID + "-col-0", { opacity: 0 }, { opacity: 1, duration: 0.4 }, t0 + 0.1);
+          tl.fromTo("#" + SID + "-col-0 .bar", { scaleY: 0 },
+            { scaleY: 1, duration: 0.7, ease: "power3.out" }, t0 + 0.15);
+          var span = Math.max(0.5, D * 0.42 - t0);
+          for (var i = 1; i < n; i++) {
+            var at = t0 + 0.5 + (span * (i - 1)) / Math.max(1, n - 2);
+            tl.fromTo("#" + SID + "-col-" + i, { opacity: 0, y: 18 },
+              { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, at);
+            tl.fromTo("#" + SID + "-col-" + i + " .bar", { scaleY: 0 },
+              { scaleY: 1, duration: 0.5, ease: "back.out(1.6)" }, at + 0.05);
+          }
+          AM.pulse(tl, "#" + SID + "-col-" + (n - 1), t0 + 0.5 + span + 0.4);
+          if (document.getElementById(SID + "-note")) {
+            AM.wipe(tl, "#" + SID + "-note", Math.min(t0 + span + 1.1, D * 0.78), 0.6, "bottom");
+          }
+
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, #" + SID + "-floor, [id^='" + SID + "-col-']", D);{% endif %}
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

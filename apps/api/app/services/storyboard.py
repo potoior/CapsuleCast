@@ -503,6 +503,23 @@ def _choose_body_template(text: str) -> str:
         return "diagram-swimlane"
     if re.search(r"恶性循环|良性循环|两个循环|越陷越深|滚雪球", text):
         return "diagram-loop-duo"
+    # ── 第 7 批语义位 ──
+    if re.search(r"工资到手|到手多少|层层扣|扣完|成本怎么拆|扣税|五险一金", text):
+        return "chart-waterfall"
+    if re.search(r"我的一天|一天怎么过|24\s?小时|作息|时间都花在", text):
+        return "diagram-daywheel"
+    if re.search(r"是.{0,8}的.{0,4}倍|相差多少|多了多少倍|碾压|吊打", text):
+        return "stat-clash"
+    if re.search(r"到底有多[大少长]|相当于|换算一下|等价于", text):
+        return "stat-equivalent"
+    if re.search(r"拆解|拆开看|解剖|组成部分|配置单|值在哪", text):
+        return "diagram-callouts"
+    if re.search(r"打卡|连续.{0,4}天|坚持了.{0,4}天|习惯养成|完成率", text):
+        return "habit-grid"
+    if re.search(r"三句话|记住这.{0,3}句|划重点|三连击", text):
+        return "headline-barrage"
+    if re.search(r"卡在哪|堵在|瓶颈|哪里断了|卡点|拖后腿", text):
+        return "diagram-bottleneck"
     # 公式卡 / 冰山 / 排行榜
     if re.search(r"公式|心法|法门|成功[的方程式]*=", text):
         return "formula-card"
@@ -689,6 +706,11 @@ def _fields_iceberg(text: str) -> dict:
 def _fields_batch6(text: str) -> dict:
     """第 6 批语义位（前后/利弊/三连/多米诺/洋葱/拔河/泳道/双环）：结构复杂，交给 LLM 合成。"""
     raise _NoFit("第 6 批结构化字段交给 LLM 合成")
+
+
+def _fields_batch7(text: str) -> dict:
+    """第 7 批语义位（瀑布/日轮/对撞/具象/解剖/打卡/三连砸/卡点）：交给 LLM 合成。"""
+    raise _NoFit("第 7 批结构化字段交给 LLM 合成")
 
 
 def _fields_rank(text: str) -> dict:
@@ -907,6 +929,10 @@ _EXTRACTORS = {
     "facts-trio": _fields_batch6, "diagram-domino": _fields_batch6,
     "diagram-onion": _fields_batch6, "diagram-tug": _fields_batch6,
     "diagram-swimlane": _fields_batch6, "diagram-loop-duo": _fields_batch6,
+    "chart-waterfall": _fields_batch7, "diagram-daywheel": _fields_batch7,
+    "stat-clash": _fields_batch7, "stat-equivalent": _fields_batch7,
+    "diagram-callouts": _fields_batch7, "habit-grid": _fields_batch7,
+    "headline-barrage": _fields_batch7, "diagram-bottleneck": _fields_batch7,
     "rank-list": _fields_rank,
     "diagram-fishbone": _fields_fishbone,
     "diagram-journey": _fields_journey,

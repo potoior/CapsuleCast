@@ -1,0 +1,10 @@
+{
+  "id": "headline-barrage", "name": "大字三连砸", "role": "body",
+  "description": "三个短句依次全屏砸落的连击页：中段 re-hook、强观点连发的节奏器。每句一屏，编号角标。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "slam-sequence",
+  "min_duration_s": 6, "max_duration_s": 14,
+  "field_order": ["kicker", "statements", "subline", "note"],
+  "example": {"kicker": "划重点", "statements": ["别用意志力硬扛", "把目标切到够得着", "让环境替你坚持"],
+              "subline": "三句话，改掉三分钟热度",
+              "note": ""}
+}

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .duo {
+          flex: 1; display: grid; grid-template-columns: 46cqw 1fr;
+          align-items: center; gap: 2cqw; min-height: 0; width: 92cqw;
+        }
+        #f-{{ scene_id }} .statbox {
+          border: 1.5px solid var(--ink); border-radius: var(--tile-radius);
+          background: var(--cream); padding: 3cqh 1.6cqw;
+          display: flex; flex-direction: column; gap: 1cqh; align-items: center; min-width: 0;
+        }
+        #f-{{ scene_id }} .statbox .big {
+          font-family: var(--font-display); font-size: 7.4cqmin; font-weight: 700; line-height: 1.05;
+          color: var(--ink); font-variant-numeric: tabular-nums; letter-spacing: -0.02em;
+          text-align: center; word-break: break-all;
+        }
+        #f-{{ scene_id }} .statbox .eq {
+          font-family: var(--font-mono); font-size: 2.2cqmin; letter-spacing: 0.28em;
+          color: var(--coral-deep); font-weight: 700;
+        }
+        #f-{{ scene_id }} .items { display: flex; flex-direction: column; gap: 1.6cqh; }
+        #f-{{ scene_id }} .eq-item {
+          border-left: 3px solid var(--coral); padding-left: 1.6cqw;
+          display: flex; flex-direction: column; gap: 0.3cqh;
+        }
+        #f-{{ scene_id }} .eq-item b { font-size: 3.2cqmin; font-weight: 600; color: var(--ink); line-height: 1.35; }
+        #f-{{ scene_id }} .eq-item i { font-family: var(--font-mono); font-style: normal; font-size: 2cqmin; color: var(--ink-faint); }
+        #f-{{ scene_id }} .note { margin-top: 1.4cqh; font-family: var(--font-mono); font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em; }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .duo { grid-template-columns: 1fr; width: 92cqw; }
+          #f-{{ scene_id }} .statbox { padding: 2.4cqh 3cqw; }
+        }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="duo">
+            <div class="statbox" id="s-{{ scene_id }}-statbox">
+              <span class="eq" id="s-{{ scene_id }}-eq">{{ fields.equals_label }}</span>
+              <span class="big" id="s-{{ scene_id }}-stat">{{ fields.stat }}</span>
+            </div>
+            <div class="items">
+              {%- for raw in fields.get("items", []) %}
+              {%- set parts = raw.split("|") %}
+              <div class="eq-item" id="s-{{ scene_id }}-it-{{ loop.index0 }}">
+                <b>{{ parts[0] }}</b>
+                {% if parts|length > 1 and parts[1] %}<i>{{ parts[1] }}</i>{% endif %}
+              </div>
+              {%- endfor %}
+            </div>
+          </div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+
+          // 大数字模糊聚焦登场 → 等价物逐张弹出翻译
+          var t0 = Math.min(0.9, D * 0.18);
+          AM.focus(tl, "#" + SID + "-statbox", t0, 0.85);
+          AM.pop(tl, '[id^="' + SID + '-it-"]', Math.min(t0 + 0.7, D * 0.42), 0.5);
+          var last = document.querySelectorAll('[id^="' + SID + '-it-"]').length - 1;
+          if (last >= 0) {
+            AM.pulse(tl, "#" + SID + "-it-" + last, Math.min(t0 + 1.5, D * 0.66));
+          }
+          if (document.getElementById(SID + "-note")) {
+            AM.wipe(tl, "#" + SID + "-note", Math.min(t0 + 1.9, D * 0.78), 0.6, "bottom");
+          }
+
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, #" + SID + "-statbox, [id^='" + SID + "-it-']", D);{% endif %}
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

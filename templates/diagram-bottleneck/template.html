@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6.2cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .track {
+          flex: 1; display: flex; align-items: center; justify-content: center;
+          gap: 0.8cqw; min-height: 0; width: 94cqw;
+        }
+        #f-{{ scene_id }} .node {
+          width: 14cqw; max-width: 14cqw;
+          border: 1.5px solid var(--hairline-strong); border-radius: var(--tile-radius);
+          background: var(--cream); padding: 2.2cqh 1cqw;
+          display: flex; flex-direction: column; gap: 0.5cqh; align-items: center; text-align: center;
+        }
+        #f-{{ scene_id }} .node b { font-size: 2.9cqmin; font-weight: 600; color: var(--ink); line-height: 1.3; }
+        #f-{{ scene_id }} .node i { font-family: var(--font-mono); font-style: normal; font-size: 1.9cqmin; color: var(--ink-faint); }
+        #f-{{ scene_id }} .arrow { font-family: var(--font-mono); font-size: 2.6cqmin; color: var(--ink-faint); flex: none; }
+        #f-{{ scene_id }} .node.brk {
+          border-color: var(--coral);
+          background: color-mix(in srgb, var(--coral) 12%, var(--cream));
+          position: relative;
+        }
+        #f-{{ scene_id }} .node.brk .x {
+          position: absolute; right: -1.4cqw; top: -2.4cqh;
+          width: 4.4cqw; height: 4.4cqw; border-radius: 50%;
+          background: var(--coral); color: var(--cream);
+          display: flex; align-items: center; justify-content: center;
+          font-weight: 700; font-size: 2.6cqmin;
+        }
+        #f-{{ scene_id }} .cost {
+          margin-top: 1.8cqh; width: 92cqw; padding: 1.6cqh 2cqw;
+          border-radius: var(--tile-radius);
+          background: color-mix(in srgb, var(--coral) 14%, var(--cream));
+          border: 1.5px solid var(--coral); color: var(--coral-deep);
+          font-size: 3cqmin; font-weight: 600; text-align: center;
+        }
+        #f-{{ scene_id }} .note { margin-top: 1cqh; font-family: var(--font-mono); font-size: 2cqmin; color: var(--ink-faint); letter-spacing: 0.06em; text-align: center; }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .track { flex-wrap: wrap; gap: 1.2cqw 2cqw; }
+          #f-{{ scene_id }} .node { width: 40cqw; max-width: 40cqw; }
+          #f-{{ scene_id }} .arrow { display: none; }
+        }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="track" id="s-{{ scene_id }}-track">
+            {%- for raw in fields.nodes %}
+            {%- set parts = raw.split("|") %}
+            {% if not loop.first %}<span class="arrow" id="s-{{ scene_id }}-ar-{{ loop.index0 }}">▸</span>{% endif %}
+            <div class="node{% if loop.index == (fields.break_at | int) %} brk{% endif %}" id="s-{{ scene_id }}-node-{{ loop.index0 }}">
+              <b>{{ parts[0] }}</b>
+              {% if parts|length > 1 and parts[1] %}<i>{{ parts[1] }}</i>{% endif %}
+              {% if loop.index == (fields.break_at | int) %}<span class="x" id="s-{{ scene_id }}-xmark">✕</span>{% endif %}
+            </div>
+            {%- endfor %}
+          </div>
+          <div class="cost" id="s-{{ scene_id }}-cost">{{ fields.cost }}</div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          var N = {{ fields.nodes | length }};
+          var BRK = {{ fields.break_at | int }};
+
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+
+          // 环节正常流动 → 走到断点标红打✕ → 代价条亮起
+          var t0 = Math.min(0.9, D * 0.16);
+          var span = Math.max(0.6, D * 0.36);
+          for (var i = 0; i < N; i++) {
+            var at = t0 + (span * i) / Math.max(1, N - 1);
+            tl.fromTo("#" + SID + "-node-" + i, { opacity: 0, y: 24, scale: 0.9 },
+              { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "back.out(1.7)" }, at);
+          }
+          var tB = t0 + span + 0.15;
+          if (document.getElementById(SID + "-xmark")) {
+            AM.pop(tl, "#" + SID + "-xmark", tB, 0.45);
+            AM.pulse(tl, "#" + SID + "-xmark", tB + 0.5);
+          }
+          tl.fromTo("#" + SID + "-node-" + (BRK - 1), { rotation: 0 },
+            { rotation: -1.5 * AD.flip, duration: 0.4, ease: "power2.inOut", yoyo: true, repeat: 3 }, tB);
+          var tC = Math.min(tB + 0.7, D * 0.66);
+          AM.wipe(tl, "#" + SID + "-cost", tC, 0.65, "bottom");
+          AM.pulse(tl, "#" + SID + "-cost", tC + 0.7);
+          if (document.getElementById(SID + "-note")) {
+            tl.fromTo("#" + SID + "-note", { opacity: 0 },
+              { opacity: 1, duration: 0.5 }, Math.min(tC + 0.5, D * 0.82));
+          }
+
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, [id^='" + SID + "-node-'], #" + SID + "-cost, #" + SID + "-xmark", D);{% endif %}
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

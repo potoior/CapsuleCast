@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": { "type": "string", "minLength": 2, "maxLength": 16, "description": "左上角标签" },
+    "headline": { "type": "string", "minLength": 2, "maxLength": 16, "description": "标题" },
+    "nodes": {
+      "type": "array", "minItems": 3, "maxItems": 5,
+      "items": { "type": "string", "minLength": 2, "maxLength": 16 },
+      "description": "流程环节，格式「环节|小注」"
+    },
+    "break_at": { "type": "string", "minLength": 1, "maxLength": 2, "description": "断裂在第几环（1 起算的数字字符串）" },
+    "cost": { "type": "string", "minLength": 4, "maxLength": 20, "description": "堵点代价，一句话" },
+    "note": { "type": "string", "minLength": 0, "maxLength": 22, "description": "注解（可留空）" }
+  },
+  "required": ["kicker", "headline", "nodes", "break_at", "cost"],
+  "additionalProperties": false
+}

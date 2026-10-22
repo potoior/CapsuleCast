@@ -1,0 +1,11 @@
+{
+  "id": "habit-grid", "name": "打卡热力格", "role": "body",
+  "description": "习惯打卡日历格：7×5 方格阵按完成度点亮，末尾连续段珊瑚色高亮 + 连击统计。适合「坚持 X 天」「习惯养成」。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "grid-lightup",
+  "min_duration_s": 5, "max_duration_s": 14,
+  "field_order": ["kicker", "headline", "done", "total", "streak", "unit", "verdict", "note"],
+  "example": {"kicker": "习惯实验", "headline": "早起 35 天战绩",
+              "done": "28", "total": "35", "streak": "9", "unit": "天",
+              "verdict": "完成率 80%，最长连击 9 天",
+              "note": "断掉的那几天，都是周末"}
+}

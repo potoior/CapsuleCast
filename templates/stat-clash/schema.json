@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": { "type": "string", "minLength": 2, "maxLength": 16, "description": "左上角标签" },
+    "headline": { "type": "string", "minLength": 2, "maxLength": 16, "description": "标题" },
+    "left_label": { "type": "string", "minLength": 1, "maxLength": 10, "description": "左侧主体名" },
+    "left_value": { "type": "string", "minLength": 1, "maxLength": 10, "description": "左侧数字（可带单位，如 39 / 3.5万）" },
+    "right_label": { "type": "string", "minLength": 1, "maxLength": 10, "description": "右侧主体名" },
+    "right_value": { "type": "string", "minLength": 1, "maxLength": 10, "description": "右侧数字" },
+    "verdict": { "type": "string", "minLength": 2, "maxLength": 18, "description": "一句话裁决" },
+    "note": { "type": "string", "minLength": 0, "maxLength": 22, "description": "注解（可留空）" }
+  },
+  "required": ["kicker", "headline", "left_label", "left_value", "right_label", "right_value", "verdict"],
+  "additionalProperties": false
+}

@@ -1,0 +1,11 @@
+{
+  "id": "diagram-daywheel", "name": "24小时日轮", "role": "body",
+  "description": "一天切成弧段的时间轮：环上按小时占比分弧，中心是主题。适合「我的一天」「作息表」「24小时怎么过」。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "arc-spin",
+  "min_duration_s": 6, "max_duration_s": 18,
+  "field_order": ["kicker", "headline", "core_label", "slices", "note"],
+  "example": {"kicker": "作息实录", "headline": "程序员的一天怎么转",
+              "core_label": "我的一天",
+              "slices": ["睡眠|7小时|00:00-07:00", "通勤|1.5小时|挤地铁", "写代码|8小时|心流时段", "开会|2小时|灵魂出窍", "刷手机|3小时|报复性", "吃饭杂务|2.5小时|修猫砂"],
+              "note": "睡眠这环，是最容易被挪用的"}
+}

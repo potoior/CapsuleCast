@@ -41,6 +41,8 @@ TEMPLATE_HINTS = [
     "before-after", "pros-cons", "facts-trio",
     "diagram-domino", "diagram-onion", "diagram-tug",
     "diagram-swimlane", "diagram-loop-duo",
+    "chart-waterfall", "diagram-daywheel", "stat-clash", "stat-equivalent",
+    "diagram-callouts", "habit-grid", "headline-barrage", "diagram-bottleneck",
 ]
 
 _MAX = {"title": 24, "beat_title": 12, "point": 14, "narration": 64,
@@ -155,18 +157,20 @@ def generate_outline(topic: str, *, duration_target_s: int) -> tuple[str, dict]:
         try:
             outline = _llm_outline(base, s, topic, duration_target_s)
             _sanitize(outline)
-            # 自愈防线：主模型偶发不守 schema（零 hint 静默退化）→ 自动重试一次
+            # 自愈防线：主模型偶发不守 schema（零 hint 静默退化）→ 最多自动重试 2 次
             beats = outline.get("beats") or []
             if beats and not any(b.get("template_hint") for b in beats):
-                log.warning("LLM 大纲零 template_hint，自动重试一次（防全 bullet-list 退化）")
-                try:
-                    retry = _llm_outline(base, s, topic, duration_target_s)
-                    _sanitize(retry)
-                    if any(b.get("template_hint") for b in (retry.get("beats") or [])):
-                        return "llm", retry
-                    log.warning("重试仍零 hint，保留首版大纲")
-                except Exception as e:
-                    log.warning("零 hint 重试失败，保留首版: %s", e)
+                for attempt in (1, 2):
+                    log.warning("LLM 大纲零 template_hint，自动重试 %d/2（防全 bullet-list 退化）", attempt)
+                    try:
+                        retry = _llm_outline(base, s, topic, duration_target_s)
+                        _sanitize(retry)
+                        if any(b.get("template_hint") for b in (retry.get("beats") or [])):
+                            log.warning("第 %d 次重试拿到 hint，采用重试版大纲", attempt)
+                            return "llm", retry
+                    except Exception as e:
+                        log.warning("零 hint 重试 %d 失败: %s", attempt, e)
+                log.warning("重试 2 次仍零 hint，保留首版大纲")
             return "llm", outline
         except Exception as e:
             log.warning("LLM 扩写失败，回落脚手架: %s", e)
@@ -222,6 +226,14 @@ def _llm_outline(base: str, s, topic: str, duration_target_s: int) -> dict:
         "两种力量对抗拉扯优先 diagram-tug（left/right 力量名 + 各 1-3 条论据 + verdict 谁赢）；"
         "多角色接力协作优先 diagram-swimlane（lanes 2-3 条道，格式「角色|步骤|步骤」）；"
         "恶性循环vs良性循环对比优先 diagram-loop-duo（bad_loop/good_loop 各 3-4 步闭环）；"
+        "层层扣减到终值（工资到手/成本拆解）优先 chart-waterfall（start_value 起点 + steps「项目|±数字」2-5 级 + end_label 终值栏）；"
+        "我的一天/作息时间分配优先 diagram-daywheel（slices「活动|小时数|小注」3-6 段，小时数合计接近 24）；"
+        "两个数字对比碾压时刻优先 stat-clash（left/right 主体名+数字 + verdict 裁决）；"
+        "抽象大数字翻译成等价物优先 stat-equivalent（stat 大数字 + items「画面|小注」2-3 个相当于）；"
+        "拆解某物的组成部分优先 diagram-callouts（subject 中央主体 + callouts「部位|说明」3-4 点）；"
+        "坚持打卡/习惯战绩优先 habit-grid（done 完成 + total 总数 + streak 连续 + unit 单位 + verdict 战绩）；"
+        "三句强观点连发（re-hook 节奏器）用 headline-barrage（statements 恰好 3 短句）；"
+        "流程里找堵点/瓶颈诊断优先 diagram-bottleneck（nodes 3-5 环 + break_at 断在第几环 + cost 代价）；"
         "TOP N/排行/最快最值得优先 rank-list（items 按名次「条目|小注」3-5 条）；"
         "多因归因/为什么出问题优先 diagram-fishbone（problem 鱼头 + bones「类别|原因」4-6 根）；"
         "阶段旅程/心理变化优先 diagram-journey（stages「阶段|事件|情绪0-100」3-5 段，情绪值必须给）；"

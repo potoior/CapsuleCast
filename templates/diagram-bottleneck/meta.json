@@ -1,0 +1,12 @@
+{
+  "id": "diagram-bottleneck", "name": "卡点图", "role": "body",
+  "description": "流程里找堵点：环节照常流动，一处标红断裂 + 代价说明。适合「系统卡在哪」「哪里拖慢了全局」。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "break-find",
+  "min_duration_s": 6, "max_duration_s": 16,
+  "field_order": ["kicker", "headline", "nodes", "break_at", "cost", "note"],
+  "example": {"kicker": "效率诊断", "headline": "为什么出餐总超时",
+              "nodes": ["接单|3 分钟", "备菜|8 分钟", "炒制|12 分钟", "打包|2 分钟"],
+              "break_at": "3",
+              "cost": "卡在打包：骑手到店干等，差评翻倍",
+              "note": "瓶颈不是最忙的环节，是最拖后腿的环节"}
+}

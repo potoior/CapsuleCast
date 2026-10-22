@@ -1,0 +1,12 @@
+{
+  "id": "stat-equivalent", "name": "数字具象化", "role": "body",
+  "description": "把抽象大数字翻译成看得懂的等价物：左边巨号数字，右边两三张「相当于」卡。适合「X 到底有多大 / 有多少」。",
+  "aspects": ["16:9", "9:16", "1:1"], "motion": "number-translate",
+  "min_duration_s": 5, "max_duration_s": 14,
+  "field_order": ["kicker", "headline", "stat", "equals_label", "items", "note"],
+  "example": {"kicker": "尺度感", "headline": "一亿到底是多少",
+              "stat": "100,000,000",
+              "equals_label": "相当于",
+              "items": ["你每天数 1 万|要数 27 年", "全国每人给你 7 毛钱|就够了"],
+              "note": "大数字没有直觉，等价物才有"}
+}

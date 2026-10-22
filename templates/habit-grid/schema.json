@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": { "type": "string", "minLength": 2, "maxLength": 16, "description": "左上角标签" },
+    "headline": { "type": "string", "minLength": 2, "maxLength": 16, "description": "标题" },
+    "done": { "type": "string", "minLength": 1, "maxLength": 4, "description": "完成格数（数字）" },
+    "total": { "type": "string", "minLength": 1, "maxLength": 4, "description": "总格数（数字，一般 35）" },
+    "streak": { "type": "string", "minLength": 1, "maxLength": 4, "description": "当前连续天数（数字）" },
+    "unit": { "type": "string", "minLength": 1, "maxLength": 4, "description": "单位，如「天」" },
+    "verdict": { "type": "string", "minLength": 2, "maxLength": 18, "description": "一句话战绩总结" },
+    "note": { "type": "string", "minLength": 0, "maxLength": 22, "description": "注解（可留空）" }
+  },
+  "required": ["kicker", "headline", "done", "total", "streak", "unit", "verdict"],
+  "additionalProperties": false
+}
