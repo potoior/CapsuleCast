@@ -19,4 +19,5 @@ reference/
 # 本地运行产物
 *.log
 *.mp4
+!docs/media/*.mp4
 .DS_Store

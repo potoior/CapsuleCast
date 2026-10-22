@@ -21,6 +21,16 @@
 
 ---
 
+## 🎬 项目介绍视频
+
+下面这条 60 秒介绍片，**就是用 CapsuleCast 自己渲染的**——swiss 网格风格，`diagram-flow / checklist / formula-card` 等模板混编，旁白、字幕、配乐、进度条一条不少：
+
+<p align="center"><img src="docs/img/intro-trailer.gif" alt="CapsuleCast 60 秒介绍片预告" width="82%"></p>
+
+完整版（60s · 1080p · 带旁白）：**[docs/media/capsulecast-intro.mp4](docs/media/capsulecast-intro.mp4)** —— 点开即可在 GitHub 页面直接播放。
+
+---
+
 ## 📸 先看成片
 
 六种模板的真实渲染帧（流程图 / 误区粉碎 / 旅程图 / 枢纽图 / 双环对比 / 金句收尾）：
