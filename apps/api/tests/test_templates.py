@@ -14,7 +14,7 @@ def _tpl_root() -> Path:
 def test_registry_loads_all():
     reg = TemplateRegistry()
     ids = {t.id for t in reg.list()}
-    assert len(ids) >= 76, f"模板数不足: {len(ids)}"
+    assert len(ids) >= 84, f"模板数不足: {len(ids)}"
     for must in ["title-hook", "bullet-list", "quote-cta", "big-stat",
                  "diagram-funnel", "diagram-venn", "diagram-tree", "diagram-radar",
                  "diagram-gauge", "diagram-stairs", "diagram-spectrum",

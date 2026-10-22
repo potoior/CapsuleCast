@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .wrap{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;width:92cqw;}
+        #f-{{ scene_id }} .board{padding:2.4cqh 2.6cqw;background:#14161c;border-radius:1.4cqw;border:1.5px solid #2a2e39;box-shadow:0.8cqh 1cqw 0 color-mix(in srgb,var(--ink) 15%,transparent);display:flex;flex-direction:column;gap:1.8cqh;align-items:center;}
+        #f-{{ scene_id }} .flaps{display:flex;gap:0.7cqw;}
+        #f-{{ scene_id }} .flap{width:8cqw;height:12cqh;background:#1d2029;border:1px solid #343a48;border-radius:0.7cqw;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+        #f-{{ scene_id }} .flap::before{content:"";position:absolute;left:0;right:0;top:50%;height:1.5px;background:#101318;}
+        #f-{{ scene_id }} .flap span{font-family:var(--font-display);font-size:5cqmin;font-weight:700;color:#e8ecf3;line-height:1;}
+        #f-{{ scene_id }} .flap.on{background:#232838;}
+        #f-{{ scene_id }} .flap.on span{color:var(--coral);}
+        #f-{{ scene_id }} .sub{font-family:var(--font-mono);font-size:2.4cqmin;color:#8b93a3;letter-spacing:0.3em;}
+        @container frame (max-aspect-ratio:10/16){ #f-{{ scene_id }} .flap{width:9.6cqw;} }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="wrap"><div class="board" id="s-{{ scene_id }}-board"><div class="flaps" id="s-{{ scene_id }}-flaps"></div><div class="sub" id="s-{{ scene_id }}-sub">{{ fields.subline }}</div></div></div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+          var MSG="{{ fields.message }}";
+          var flapsEl=document.getElementById(SID+"-flaps");
+          var CH="ABCDEFGHJKLMNPQRSTUVWXYZ·!?";
+          for(var i=0;i<MSG.length;i++){var f=document.createElement("div"); f.className="flap"; f.id=SID+"-flap-"+i; f.innerHTML='<span id="'+SID+'-fc-'+i+'"> </span>'; flapsEl.appendChild(f);}
+          var t0=Math.min(0.9,D*0.18);
+          tl.fromTo("#"+SID+"-board",{opacity:0,y:30,scale:0.96},{opacity:1,y:0,scale:1,duration:0.7,ease:"power3.out"},t0);
+          var rollDur=Math.min(1.6,D*0.4);
+          for(var i=0;i<MSG.length;i++){(function(idx){var seq=[]; for(var k=0;k<4;k++){seq.push(CH[(idx*7+k*13)%CH.length]);} seq.push(MSG[idx]); var o={n:0}; tl.fromTo(o,{n:0},{n:seq.length,duration:rollDur,ease:"power2.in",onUpdate:function(){var el=document.getElementById(SID+"-fc-"+idx); if(el){el.textContent=seq[Math.min(seq.length-1,Math.floor(o.n))];}}},t0+0.4+idx*0.12); tl.call(function(){var f=document.getElementById(SID+"-flap-"+idx); if(f){f.className="flap on";}},null,t0+0.4+idx*0.12+rollDur);})(i);}
+          AM.focus(tl,"#"+SID+"-sub",t0+0.5+MSG.length*0.12+rollDur,0.6);
+          AM.pulse(tl,"#"+SID+"-board",t0+0.6+MSG.length*0.12+rollDur);
+          if(document.getElementById(SID+"-note")){AM.wipe(tl,"#"+SID+"-note",Math.min(t0+1.2+MSG.length*0.12+rollDur,D*0.82),0.6,"bottom");}
+          AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, #" + SID + "-board, #" + SID + "-sub", D);
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

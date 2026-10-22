@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        .stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.4cqh;min-height:0;width:92cqw;margin:0 auto;}
+        .sent{display:flex;align-items:baseline;flex-wrap:wrap;justify-content:center;gap:0 0.15em;font-family:var(--font-display);font-size:6.4cqmin;font-weight:700;color:var(--ink);line-height:1.5;}
+        .slotbox{display:inline-block;overflow:hidden;vertical-align:bottom;padding:0 0.12em;border-bottom:0.06em solid var(--coral);}
+        .slot{display:inline-block;color:var(--coral-deep);white-space:nowrap;}
+        .vnote{font-family:var(--font-mono);font-size:2.6cqmin;color:var(--ink-faint);letter-spacing:0.2em;}
+        .headline { font-family: var(--font-display); font-size: 6cqmin; margin-top: 3cqh; }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .sent{font-size:5.4cqmin;}
+        }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="stage"><div class="sent" id="s-{{ scene_id }}-sent"></div><div class="vnote" id="s-{{ scene_id }}-vnote"></div></div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+          var SENT="{{ fields.sentence }}";
+          var VARS={{ fields.get("variants") | tojson }};
+          var m=SENT.match(/^(.*?)\[(.*?)\](.*)$/s)||[null,SENT,"", ""];
+          var sentEl=document.getElementById(SID+"-sent");
+          var pre=document.createElement("span"); pre.textContent=m[1];
+          var slot=document.createElement("span"); slot.className="slotbox";
+          slot.innerHTML='<span class="slot" id="'+SID+'-slot">'+(m[2]||VARS[0].split("|")[0])+'</span>';
+          var suf=document.createElement("span"); suf.textContent=m[3];
+          sentEl.appendChild(pre); sentEl.appendChild(slot); sentEl.appendChild(suf);
+          var vnote=document.getElementById(SID+"-vnote");
+          vnote.textContent=String(VARS[0]).split("|")[1]||"";
+          var t0=Math.min(1.0,D*0.18);
+          tl.fromTo("#"+SID+"-sent",{opacity:0,y:30},{opacity:1,y:0,duration:0.7,ease:"power3.out"},t0);
+          tl.fromTo("#"+SID+"-vnote",{opacity:0},{opacity:1,duration:0.5},t0+0.4);
+          var seg=Math.max(1.4,(D-t0-0.8)/3);
+          for(var i=1;i<3;i++){var at=t0+0.6+seg*i;
+            var word=String(VARS[i]).split("|")[0];
+            var note=String(VARS[i]).split("|")[1]||"";
+            tl.fromTo("#"+SID+"-slot",{yPercent:0},{yPercent:-115,duration:0.35,ease:"power2.in"},at);
+            tl.fromTo("#"+SID+"-slot",{yPercent:115},{yPercent:0,duration:0.4,ease:"power3.out"},at+0.35);
+            tl.call(function(w){document.getElementById(SID+"-slot").textContent=w;},[word],at+0.33);
+            tl.call(function(n){document.getElementById(SID+"-vnote").textContent=n;},[note],at+0.4);
+            tl.fromTo("#"+SID+"-vnote",{opacity:0},{opacity:1,duration:0.35},at+0.5);}
+          AM.pulse(tl,"#"+SID+"-slot",t0+0.6+seg*3+0.3);
+          if(document.getElementById(SID+"-note")){AM.wipe(tl,"#"+SID+"-note",Math.min(t0+0.6+seg*3+0.9,D*0.82),0.6,"bottom");}
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, #" + SID + "-sent, #" + SID + "-vnote", D);{% endif %}
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "kicker": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "眉头小字，栏目感前缀"
+    },
+    "headline": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "标题，本集漫画主题"
+    },
+    "panels": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "string",
+        "minLength": 4,
+        "maxLength": 20,
+        "description": "画面|台词"
+      },
+      "description": "四格内容，格式为 画面|台词"
+    },
+    "punchline": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 12,
+      "description": "末格爆点，星爆上的标语"
+    },
+    "note": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 22,
+      "description": "底部备注，可留空"
+    }
+  },
+  "required": ["kicker", "headline", "panels", "punchline"],
+  "additionalProperties": false
+}

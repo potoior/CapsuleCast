@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .wrap{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;width:92cqw;}
+        #f-{{ scene_id }} .panel{width:66cqw;background:#14161c;border:2px solid #c9a86f;border-radius:1.4cqw;padding:2.6cqh 2.4cqw;display:flex;flex-direction:column;gap:1.8cqh;box-shadow:0.8cqh 1cqw 0 color-mix(in srgb,var(--ink) 15%,transparent);}
+        #f-{{ scene_id }} .p-head{display:flex;justify-content:space-between;align-items:baseline;}
+        #f-{{ scene_id }} .p-title{font-family:var(--font-display);font-size:3.8cqmin;font-weight:700;color:#e8ecf3;}
+        #f-{{ scene_id }} .p-co{font-family:var(--font-mono);font-size:2cqmin;color:#c9a86f;letter-spacing:0.2em;}
+        #f-{{ scene_id }} .q{display:grid;grid-template-columns:4.4cqw 1fr auto;gap:1.2cqw;align-items:center;padding:1.3cqh 1cqw;border-bottom:1px solid #2a2e39;}
+        #f-{{ scene_id }} .q .st{width:4.4cqw;height:4.4cqw;border-radius:0.8cqw;border:1.5px solid #3a4152;display:flex;align-items:center;justify-content:center;font-size:2.4cqmin;font-weight:700;color:#8b93a3;}
+        #f-{{ scene_id }} .q.done .st{background:#2c5f3f;border-color:#3fa468;color:#b8f5cd;}
+        #f-{{ scene_id }} .q.done .qn{text-decoration:line-through;}
+        #f-{{ scene_id }} .q.locked{opacity:0.55;}
+        #f-{{ scene_id }} .q .qn{font-size:2.9cqmin;font-weight:600;color:#e8ecf3;}
+        #f-{{ scene_id }} .q .rw{font-family:var(--font-mono);font-size:2cqmin;color:#c9a86f;}
+        #f-{{ scene_id }} .lv{display:flex;align-items:center;gap:1.6cqw;}
+        #f-{{ scene_id }} .xpbar{flex:1;height:2.4cqh;border-radius:999px;background:#2a2e39;overflow:hidden;}
+        #f-{{ scene_id }} .xpbar .xf{height:100%;width:62%;background:linear-gradient(90deg,#c9a86f,#e8c690);border-radius:999px;transform-origin:0% 50%;}
+        #f-{{ scene_id }} .lvtag{font-family:var(--font-mono);font-size:2.4cqmin;font-weight:700;color:#e8c690;white-space:nowrap;}
+        @container frame (max-aspect-ratio:10/16){ #f-{{ scene_id }} .panel{width:90cqw;} }
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6cqmin; margin-top: 3cqh; }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="wrap"><div class="panel" id="s-{{ scene_id }}-panel"><div class="p-head"><span class="p-title" id="s-{{ scene_id }}-ptitle">{{ fields.headline }}</span><span class="p-co">{{ fields.kicker }}</span></div>{% for raw in fields.get("quests", []) %}{% set parts = raw.split("|") %}<div class="q {{ parts[1] if parts|length > 1 else 'todo' }}" id="s-{{ scene_id }}-q-{{ loop.index0 }}"><span class="st" id="s-{{ scene_id }}-st-{{ loop.index0 }}">{% if parts|length > 1 and parts[1] == 'done' %}✓{% elif parts|length > 1 and parts[1] == 'locked' %}🔒{% else %}▶{% endif %}</span><span class="qn">{{ parts[0] }}</span><span class="rw">{{ parts[2] if parts|length > 2 else "" }}</span></div>{% endfor %}<div class="lv"><span class="lvtag" id="s-{{ scene_id }}-lv">{{ fields.level_label }}</span><div class="xpbar"><div class="xf" id="s-{{ scene_id }}-xp"></div></div></div></div></div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+          var N={{ fields.get("quests", []) | length }};
+          var t0=Math.min(0.9,D*0.16);
+          tl.fromTo("#"+SID+"-panel",{opacity:0,x:-36*AD.flip,rotation:-1},{opacity:1,x:0,rotation:0,duration:0.7,ease:"back.out(1.5)"},t0);
+          for(var i=0;i<N;i++){var at=t0+0.5+0.4*i;
+            tl.fromTo("#"+SID+"-q-"+i,{opacity:0,y:18},{opacity:1,y:0,duration:0.4,ease:"power3.out"},at);
+            AM.pop(tl,"#"+SID+"-st-"+i,at+0.2,0.4);}
+          tl.fromTo("#"+SID+"-xp",{scaleX:0},{scaleX:1,duration:0.9,ease:"power2.out"},Math.min(t0+0.5+0.4*N+0.2,D*0.7));
+          AM.pulse(tl,"#"+SID+"-lv",Math.min(t0+0.5+0.4*N+0.6,D*0.76));
+          if(document.getElementById(SID+"-note")){AM.wipe(tl,"#"+SID+"-note",Math.min(t0+0.5+0.4*N+1.1,D*0.84),0.6,"bottom");}
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, #" + SID + "-panel, [id^='" + SID + "-q-'], #" + SID + "-lv, #" + SID + "-xp", D);{% endif %}
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

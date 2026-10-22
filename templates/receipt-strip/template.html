@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .wrap{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;width:92cqw;}
+        #f-{{ scene_id }} .receipt{width:34cqw;background:var(--cream);border:1px solid var(--hairline-strong);box-shadow:0 1cqh 2cqw color-mix(in srgb,var(--ink) 12%,transparent);padding:2.4cqh 2cqw 3cqh;font-family:var(--font-mono);position:relative;}
+        #f-{{ scene_id }} .r-shop{text-align:center;font-size:2.6cqmin;font-weight:700;color:var(--ink);letter-spacing:0.18em;}
+        #f-{{ scene_id }} .r-head{text-align:center;font-size:2cqmin;color:var(--ink-faint);margin-top:0.4cqh;letter-spacing:0.1em;}
+        #f-{{ scene_id }} .r-sep{border-top:1.5px dashed var(--hairline-strong);margin:1.4cqh 0;}
+        #f-{{ scene_id }} .r-item{display:flex;justify-content:space-between;font-size:2.4cqmin;color:var(--ink);padding:0.5cqh 0;font-variant-numeric:tabular-nums;}
+        #f-{{ scene_id }} .r-total{display:flex;justify-content:space-between;font-size:3.4cqmin;font-weight:700;color:var(--coral-deep);padding:1cqh 0 0.4cqh;font-variant-numeric:tabular-nums;}
+        #f-{{ scene_id }} .r-foot{text-align:center;font-size:1.9cqmin;color:var(--ink-faint);margin-top:1.4cqh;letter-spacing:0.08em;}
+        #f-{{ scene_id }} .r-bar{height:3.4cqh;margin-top:1.4cqh;background:repeating-linear-gradient(90deg,var(--ink) 0 0.2cqw,transparent 0.2cqw 0.55cqw,var(--ink) 0.55cqw 0.75cqw,transparent 0.75cqw 1.3cqw);}
+        #f-{{ scene_id }} .receipt::after{content:"";position:absolute;left:0;right:0;bottom:-1cqh;height:1cqh;background:linear-gradient(45deg,transparent 33.33%,var(--cream) 33.33%,var(--cream) 66.66%,transparent 66.66%),linear-gradient(-45deg,transparent 33.33%,var(--cream) 33.33%,var(--cream) 66.66%,transparent 66.66%);background-size:1.6cqw 1cqh;background-position:0 0;}
+        @container frame (max-aspect-ratio: 10/16){ #f-{{ scene_id }} .receipt{width:56cqw;} }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="wrap"><div class="receipt" id="s-{{ scene_id }}-receipt"><div class="r-shop">{{ fields.kicker }}</div><div class="r-head">{{ fields.headline }}</div><div class="r-sep"></div>{% for raw in fields.get("items", []) %}{% set parts = raw.split("|") %}<div class="r-item" id="s-{{ scene_id }}-it-{{ loop.index0 }}"><span>{{ parts[0] }}</span><span>{{ parts[1] if parts|length > 1 else "" }}</span></div>{% endfor %}<div class="r-sep"></div><div class="r-total" id="s-{{ scene_id }}-total"><span>{{ fields.total_label }}</span><span id="s-{{ scene_id }}-tv">{{ fields.total }}</span></div>{% if fields.get('footer') %}<div class="r-foot" id="s-{{ scene_id }}-foot">{{ fields.get('footer') }}</div>{% endif %}<div class="r-bar" id="s-{{ scene_id }}-bar"></div></div></div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+          var N={{ fields.get("items", []) | length }};
+          var t0=Math.min(0.9,D*0.18);
+          tl.fromTo("#"+SID+"-receipt",{opacity:0,y:"-42%"},{opacity:1,y:"0%",duration:0.8,ease:"power3.out"},t0);
+          for(var i=0;i<N;i++){tl.fromTo("#"+SID+"-it-"+i,{opacity:0},{opacity:1,duration:0.3},t0+0.5+0.28*i);}
+          AM.pop(tl,"#"+SID+"-total",t0+0.5+0.28*N+0.2,0.45);
+          AM.pulse(tl,"#"+SID+"-total",t0+0.5+0.28*N+0.7);
+          if(document.getElementById(SID+"-foot")){tl.fromTo("#"+SID+"-foot",{opacity:0},{opacity:1,duration:0.4},Math.min(t0+1.6,D*0.62));}
+          tl.fromTo("#"+SID+"-bar",{scaleX:0},{scaleX:1,duration:0.5,ease:"power2.out",transformOrigin:"0% 50%"},Math.min(t0+1.8,D*0.68));
+          if(document.getElementById(SID+"-note")){AM.wipe(tl,"#"+SID+"-note",Math.min(t0+2.2,D*0.8),0.6,"bottom");}
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, #" + SID + "-receipt", D);{% endif %}
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,1 @@
+{"id":"word-slot","name":"词语槽翻转机","role":"body","description":"句子里一个词槽依次翻转，一句话讲出三种阶段：换词叙事装置。","aspects":["16:9","9:16","1:1"],"motion":"word-flip","min_duration_s":6,"max_duration_s":16,"field_order":["kicker","headline","sentence","variants","note"],"example":{"kicker":"换词实验","headline":"一个词改变一句话","sentence":"我[想要]一台新电脑","variants":["想要|理性期","买了|冲动期","退了|冷静期"],"note":""}}

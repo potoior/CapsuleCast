@@ -1,0 +1,37 @@
+{
+  "type": "object",
+  "properties": {
+    "kicker": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "顶部小标，航站楼/站台语境的引导词，2-16 字"
+    },
+    "headline": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "主标题，登机牌式宣告句，2-16 字"
+    },
+    "message": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 8,
+      "description": "翻牌目标短语，2-8 字"
+    },
+    "subline": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 20,
+      "description": "底部等宽信息行，如登机口/状态代码，2-20 字"
+    },
+    "note": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 22,
+      "description": "可选脚注，补充说明或落款，最长 22 字"
+    }
+  },
+  "required": ["kicker", "headline", "message", "subline"],
+  "additionalProperties": false
+}

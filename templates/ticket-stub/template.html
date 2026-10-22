@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .wrap { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 0; width: 92cqw; }
+        #f-{{ scene_id }} .ticket { display: grid; grid-template-columns: 1fr 16cqw; width: 64cqw; background: var(--cream); border: 1.5px solid var(--ink); border-radius: 1cqw; position: relative; box-shadow: 0.6cqh 0.8cqw 0 color-mix(in srgb, var(--ink) 18%, transparent); }
+        #f-{{ scene_id }} .main { padding: 2.6cqh 2.4cqw; display: flex; flex-direction: column; gap: 1.4cqh; border-right: 2px dashed var(--hairline-strong); position: relative; }
+        #f-{{ scene_id }} .main::before, #f-{{ scene_id }} .main::after { content: ""; position: absolute; right: -1.3cqw; width: 2.4cqw; height: 2.4cqw; border-radius: 50%; background: var(--paper, #FAF9F5); border: 1.5px solid var(--ink); }
+        #f-{{ scene_id }} .main::before { top: -1.3cqw; }
+        #f-{{ scene_id }} .main::after { bottom: -1.3cqw; }
+        #f-{{ scene_id }} .road { display: flex; align-items: center; gap: 1.6cqw; }
+        #f-{{ scene_id }} .st { font-family: var(--font-display); font-size: 4.2cqmin; font-weight: 700; color: var(--ink); line-height: 1.2; }
+        #f-{{ scene_id }} .st.to { color: var(--coral-deep); }
+        #f-{{ scene_id }} .rail { flex: 1; height: 1.5px; background: repeating-linear-gradient(90deg, var(--ink) 0 1.2cqw, transparent 1.2cqw 2cqw); position: relative; }
+        #f-{{ scene_id }} .rail::after { content: "▶"; position: absolute; right: -0.4cqw; top: 50%; transform: translateY(-54%); color: var(--coral-deep); font-size: 2cqmin; }
+        #f-{{ scene_id }} .meta { display: flex; gap: 2.4cqw; flex-wrap: wrap; font-family: var(--font-mono); font-size: 2cqmin; color: var(--ink-faint); }
+        #f-{{ scene_id }} .price { font-family: var(--font-mono); font-size: 2.6cqmin; font-weight: 700; color: var(--ink); margin-top: 0.4cqh; }
+        #f-{{ scene_id }} .stub { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1cqh; padding: 1.4cqw 0.8cqw; text-align: center; }
+        #f-{{ scene_id }} .stub .co { font-family: var(--font-mono); font-size: 1.8cqmin; font-weight: 700; letter-spacing: 0.3em; color: var(--ink); writing-mode: vertical-rl; }
+        #f-{{ scene_id }} .stub .codebar { width: 70%; height: 2.4cqh; background: repeating-linear-gradient(0deg, var(--ink) 0 0.2cqh, transparent 0.2cqh 0.5cqh); }
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .ticket { grid-template-columns: 1fr 12cqw; width: 86cqw; }
+        }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="wrap"><div class="ticket" id="s-{{ scene_id }}-ticket"><div class="main"><div class="road"><span class="st" id="s-{{ scene_id }}-from">{{ fields.from_station }}</span><span class="rail" id="s-{{ scene_id }}-rail"></span><span class="st to" id="s-{{ scene_id }}-to">{{ fields.to_station }}</span></div><div class="meta"><span>{{ fields.seat_label }}</span>{% if fields.get('memo') %}<span>{{ fields.get('memo') }}</span>{% endif %}</div><div class="price" id="s-{{ scene_id }}-price">{{ fields.price_label }}</div></div><div class="stub" id="s-{{ scene_id }}-stub"><span class="co">{{ fields.kicker }}</span><span class="codebar" id="s-{{ scene_id }}-bar"></span></div></div></div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+          var t0 = Math.min(0.9, D * 0.18);
+          tl.fromTo("#" + SID + "-ticket", { opacity: 0, rotation: -3, scale: 0.94 },
+            { opacity: 1, rotation: 0, scale: 1, duration: 0.7, ease: "back.out(1.6)" }, t0);
+          tl.fromTo("#" + SID + "-rail", { scaleX: 0 },
+            { scaleX: 1, duration: 0.6, ease: "power2.inOut", transformOrigin: "0% 50%" }, t0 + 0.4);
+          AM.pop(tl, "#" + SID + "-to", t0 + 0.8, 0.45);
+          tl.fromTo("#" + SID + "-price", { opacity: 0 }, { opacity: 1, duration: 0.5 }, t0 + 1.1);
+          tl.fromTo("#" + SID + "-bar", { scaleY: 0 }, { scaleY: 1, duration: 0.4, ease: "power2.out" }, t0 + 1.3);
+          AM.pulse(tl, "#" + SID + "-ticket", t0 + 1.6);
+          if (document.getElementById(SID + "-note")) {
+            AM.wipe(tl, "#" + SID + "-note", Math.min(t0 + 2.0, D * 0.78), 0.6, "bottom");
+          }
+          {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, #" + SID + "-ticket", D);{% endif %}
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

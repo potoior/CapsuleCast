@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .wrap{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;width:92cqw;}
+        #f-{{ scene_id }} .term{width:72cqw;background:#101318;border-radius:1.2cqw;overflow:hidden;box-shadow:0.8cqh 1cqw 0 color-mix(in srgb,var(--ink) 15%,transparent);}
+        #f-{{ scene_id }} .bar{display:flex;align-items:center;gap:0.7cqw;padding:1cqh 1.4cqw;background:#1a1f27;}
+        #f-{{ scene_id }} .bar i{width:1.2cqw;height:1.2cqw;border-radius:50%;}
+        #f-{{ scene_id }} .bar i:nth-child(1){background:#ff5f57;}
+        #f-{{ scene_id }} .bar i:nth-child(2){background:#febc2e;}
+        #f-{{ scene_id }} .bar i:nth-child(3){background:#28c840;}
+        #f-{{ scene_id }} .bar .ttl{margin-left:1cqw;font-family:var(--font-mono);font-size:1.9cqmin;color:#8b93a3;}
+        #f-{{ scene_id }} .scr{padding:2cqh 1.8cqw;font-family:var(--font-mono);display:flex;flex-direction:column;gap:0.9cqh;min-height:26cqh;}
+        #f-{{ scene_id }} .cmd{font-size:2.6cqmin;color:#e8ecf3;}
+        #f-{{ scene_id }} .cmd .pr{color:#28c840;font-weight:700;}
+        #f-{{ scene_id }} .out{font-size:2.3cqmin;color:#9aa4b5;}
+        #f-{{ scene_id }} .out b{color:#e8ecf3;font-weight:400;}
+        #f-{{ scene_id }} .vd{font-size:2.5cqmin;color:#ff6f6f;font-weight:700;}
+        #f-{{ scene_id }} .cur{display:inline-block;width:1.1cqw;height:2.8cqmin;background:#e8ecf3;vertical-align:middle;}
+        @container frame (max-aspect-ratio:10/16){ #f-{{ scene_id }} .term{width:90cqw;} }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="wrap"><div class="term" id="s-{{ scene_id }}-term"><div class="bar"><i></i><i></i><i></i><span class="ttl">{{ fields.kicker }} — zsh</span></div><div class="scr"><div class="cmd" id="s-{{ scene_id }}-cmdline"><span class="pr">$ </span><span id="s-{{ scene_id }}-cmdtxt"></span><span class="cur" id="s-{{ scene_id }}-cur"></span></div>{% for raw in fields.get("outputs", []) %}<div class="out" id="s-{{ scene_id }}-out-{{ loop.index0 }}"><b>›</b> {{ raw }}</div>{% endfor %}<div class="vd" id="s-{{ scene_id }}-vd">{{ fields.verdict }}</div></div></div></div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+          var CMD="{{ fields.command }}";
+          var NOUT={{ fields.get("outputs", []) | length }};
+          var t0=Math.min(0.9,D*0.16);
+          tl.fromTo("#"+SID+"-term",{opacity:0,y:26,scale:0.97},{opacity:1,y:0,scale:1,duration:0.6,ease:"power3.out"},t0);
+          var o={n:0};
+          tl.fromTo(o,{n:0},{n:CMD.length,duration:Math.min(1.0,D*0.22),ease:"none",onUpdate:function(){document.getElementById(SID+"-cmdtxt").textContent=CMD.slice(0,Math.round(o.n));}},t0+0.3);
+          for(var i=0;i<NOUT;i++){tl.fromTo("#"+SID+"-out-"+i,{opacity:0},{opacity:1,duration:0.25},t0+0.5+(Math.min(1.0,D*0.22))+0.35*i);}
+          tl.fromTo("#"+SID+"-cur",{opacity:1},{opacity:0,duration:0.35,ease:"none",yoyo:true,repeat:11},t0);
+          var tV=t0+0.5+Math.min(1.0,D*0.22)+0.35*NOUT+0.3;
+          AM.pop(tl,"#"+SID+"-vd",Math.min(tV,D*0.72),0.5);
+          AM.pulse(tl,"#"+SID+"-vd",Math.min(tV+0.5,D*0.78));
+          if(document.getElementById(SID+"-note")){tl.fromTo("#"+SID+"-note",{opacity:0},{opacity:1,duration:0.5},Math.min(tV+0.9,D*0.85));}
+          AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, #" + SID + "-term", D);
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,55 @@
+{
+  "type": "object",
+  "properties": {
+    "kicker": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "顶部引导词，如「人生铁路」"
+    },
+    "headline": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "主标题，如「一张转行的车票」"
+    },
+    "from_station": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 10,
+      "description": "出发站名，代表现状，如「安逸号站台」"
+    },
+    "to_station": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 10,
+      "description": "目的站名，代表新阶段，如「未知冒险」"
+    },
+    "seat_label": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 12,
+      "description": "座位与车票类型标注，如「硬座·无退票」"
+    },
+    "price_label": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 14,
+      "description": "票价文案，常为勇气的隐喻，如「票价：三分钟勇气」"
+    },
+    "memo": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 14,
+      "description": "票据备注行，如检票口信息，可留空"
+    },
+    "note": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 22,
+      "description": "底部补充注解，可留空"
+    }
+  },
+  "required": ["kicker", "headline", "from_station", "to_station", "seat_label", "price_label"],
+  "additionalProperties": false
+}

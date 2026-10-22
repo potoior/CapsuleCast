@@ -1,0 +1,43 @@
+{
+  "type": "object",
+  "properties": {
+    "kicker": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "顶部小字标签，游戏名或世界观光标"
+    },
+    "headline": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "面板主标题，主线任务名"
+    },
+    "quests": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 4,
+      "items": {
+        "type": "string",
+        "minLength": 6,
+        "maxLength": 22,
+        "description": "任务名|状态done/todo/locked|奖励"
+      },
+      "description": "任务列表，每项格式：任务名|状态done/todo/locked|奖励"
+    },
+    "level_label": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 14,
+      "description": "等级徽章文字，如 LV.29 · 经验 62%"
+    },
+    "note": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 22,
+      "description": "底部备注，可留空"
+    }
+  },
+  "required": ["kicker", "headline", "quests", "level_label"],
+  "additionalProperties": false
+}

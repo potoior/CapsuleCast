@@ -1,0 +1,55 @@
+{
+  "type": "object",
+  "properties": {
+    "kicker": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "顶部小字标签，如店铺名或场景名，2-16字"
+    },
+    "headline": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "主标题，如「一次深夜购物记录」，2-16字"
+    },
+    "items": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 5,
+      "description": "账目行列表，3-5条，逐行打印出来",
+      "items": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 12,
+        "description": "品名|金额"
+      }
+    },
+    "total_label": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 6,
+      "description": "合计行左侧标签，如「合计」，1-6字"
+    },
+    "total": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 10,
+      "description": "合计金额字符串，如 44.5"
+    },
+    "footer": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 16,
+      "description": "小票底部一句话，可为空"
+    },
+    "note": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 22,
+      "description": "底部备注小字，可为空"
+    }
+  },
+  "required": ["kicker", "headline", "items", "total_label", "total"],
+  "additionalProperties": false
+}

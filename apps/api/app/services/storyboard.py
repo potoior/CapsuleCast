@@ -550,6 +550,23 @@ def _choose_body_template(text: str) -> str:
         return "quiz-reveal"
     if re.search(r"聊天记录|微信对话|当我说|老板说|爸妈的对话", text):
         return "chat-bubbles"
+    # ── 第 10 批视觉装置位 ──
+    if re.search(r"换个词|一词之差|只改一个词|这个词改成", text):
+        return "word-slot"
+    if re.search(r"账单|小票|合计|这笔账|消费记录|结账", text):
+        return "receipt-strip"
+    if re.search(r"车票|登机|出发到|开往|启程|下一站", text):
+        return "ticket-stub"
+    if re.search(r"成分表|成分检测|含量|配比检测|成分分析", text):
+        return "nutrition-label"
+    if re.search(r"命令行|终端|报错|exit|debug|诊断一下", text, re.I):
+        return "terminal-window"
+    if re.search(r"翻牌|登机口|航班|终点站|人生航站", text):
+        return "split-flap"
+    if re.search(r"主线任务|打怪|升级|任务面板|经验值", text):
+        return "game-quest"
+    if re.search(r"四格|漫画|吐槽剧场|名场面还原", text):
+        return "comic-panel"
     # 公式卡 / 冰山 / 排行榜
     if re.search(r"公式|心法|法门|成功[的方程式]*=", text):
         return "formula-card"
@@ -751,6 +768,11 @@ def _fields_batch8(text: str) -> dict:
 def _fields_batch9(text: str) -> dict:
     """第 9 批语义位（点阵/温度计/三对比/多进度/分桶/传话/猜猜看/气泡）：交给 LLM 合成。"""
     raise _NoFit("第 9 批结构化字段交给 LLM 合成")
+
+
+def _fields_batch10(text: str) -> dict:
+    """第 10 批视觉装置位（换词/小票/车票/成分表/终端/翻牌/任务面板/四格）：交给 LLM 合成。"""
+    raise _NoFit("第 10 批结构化字段交给 LLM 合成")
 
 
 def _fields_rank(text: str) -> dict:
@@ -980,6 +1002,10 @@ _EXTRACTORS = {
     "compare-trio": _fields_batch9, "progress-bundle": _fields_batch9,
     "sort-bins": _fields_batch9, "chain-distort": _fields_batch9,
     "quiz-reveal": _fields_batch9, "chat-bubbles": _fields_batch9,
+    "word-slot": _fields_batch10, "receipt-strip": _fields_batch10,
+    "ticket-stub": _fields_batch10, "nutrition-label": _fields_batch10,
+    "terminal-window": _fields_batch10, "split-flap": _fields_batch10,
+    "game-quest": _fields_batch10, "comic-panel": _fields_batch10,
     "rank-list": _fields_rank,
     "diagram-fishbone": _fields_fishbone,
     "diagram-journey": _fields_journey,

@@ -46,6 +46,8 @@ TEMPLATE_HINTS = [
     "experiment-log", "bio-timeline",
     "stat-dotmatrix", "stat-thermometer", "compare-trio", "progress-bundle",
     "sort-bins", "chain-distort", "quiz-reveal", "chat-bubbles",
+    "word-slot", "receipt-strip", "ticket-stub", "nutrition-label",
+    "terminal-window", "split-flap", "game-quest", "comic-panel",
 ]
 
 _MAX = {"title": 24, "beat_title": 12, "point": 14, "narration": 64,
@@ -251,6 +253,14 @@ def _llm_outline(base: str, s, topic: str, duration_target_s: int) -> dict:
         "传话/谣言变味过程优先 chain-distort（steps 恰好 4 条「转述人|话」逐级变形）；"
         "猜猜看悬念钩子优先 quiz-reveal（question + options 恰好 3 项 + answer 正确项 + explain）；"
         "情景对话还原优先 chat-bubbles（messages 2-4 条「L|内容」或「R|内容」左右气泡）；"
+        "换一个词改变句义优先 word-slot（sentence 用[]括住词槽 + variants 3 个「词|阶段注」）；"
+        "记账/消费复盘的小票美学用 receipt-strip（items「品名|金额」3-5 + total 合计）；"
+        "人生转折/启程时刻用 ticket-stub（from/to 站名 + price_label 票价是勇气）；"
+        "成分检测戏仿优先 nutrition-label（rows「成分|占比%|小注」3-6 + daily_label 建议值）；"
+        "程序员/命令行叙事优先 terminal-window（command + outputs 输出行 2-4 + verdict）；"
+        "宣言/预告的翻牌时刻用 split-flap（message 短语 2-8 字 + subline 航班信息风格）；"
+        "人生游戏化盘点用 game-quest（quests「任务|done/todo/locked|奖励」3-4 + level_label）；"
+        "日常吐槽四格剧场用 comic-panel（panels 恰好 4 格「画面|台词」+ punchline 爆点）；"
         "TOP N/排行/最快最值得优先 rank-list（items 按名次「条目|小注」3-5 条）；"
         "多因归因/为什么出问题优先 diagram-fishbone（problem 鱼头 + bones「类别|原因」4-6 根）；"
         "阶段旅程/心理变化优先 diagram-journey（stages「阶段|事件|情绪0-100」3-5 段，情绪值必须给）；"

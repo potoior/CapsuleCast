@@ -1,0 +1,1 @@
+{"id":"split-flap","name":"机场翻牌屏","role":"body","description":"机场翻牌显示屏逐格翻到目标短语：命运登机口的机械浪漫。适合预告、宣言、转折时刻。","aspects":["16:9","9:16","1:1"],"motion":"flap-roll","min_duration_s":5,"max_duration_s":14,"field_order":["kicker","headline","message","subline","note"],"example":{"kicker":"人生航站楼","headline":"下一班 destiny 航班","message":"该登机了","subline":"GATE 07 · ON TIME","note":""}}

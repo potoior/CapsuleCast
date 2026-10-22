@@ -1,0 +1,34 @@
+{
+  "id": "terminal-window",
+  "name": "终端敲字机",
+  "role": "body",
+  "description": "黑底终端窗口逐行敲出诊断结果，程序员的浪漫。适合科技梗、用命令行讲人生。",
+  "aspects": [
+    "16:9",
+    "9:16",
+    "1:1"
+  ],
+  "motion": "type-output",
+  "min_duration_s": 6,
+  "max_duration_s": 16,
+  "field_order": [
+    "kicker",
+    "headline",
+    "command",
+    "outputs",
+    "verdict",
+    "note"
+  ],
+  "example": {
+    "kicker": "程序员日常",
+    "headline": "用命令行诊断周一",
+    "command": "diagnose monday --deep",
+    "outputs": [
+      "载入日程表……失败",
+      "检测到 3 个会议冲突",
+      "找到元凶：10:00 站会"
+    ],
+    "verdict": "EXIT 1 · 周一没救，建议重启",
+    "note": ""
+  }
+}

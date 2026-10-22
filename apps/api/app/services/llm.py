@@ -233,6 +233,8 @@ DIAGRAM_TIDS = frozenset({
     "experiment-log", "bio-timeline",
     "stat-dotmatrix", "stat-thermometer", "compare-trio", "progress-bundle",
     "sort-bins", "chain-distort", "quiz-reveal", "chat-bubbles",
+    "word-slot", "receipt-strip", "ticket-stub", "nutrition-label",
+    "terminal-window", "split-flap", "game-quest", "comic-panel",
 })
 
 

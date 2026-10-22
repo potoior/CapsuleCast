@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+  <body>
+    <template>
+      <style>
+        {{ base_css }}
+        #f-{{ scene_id }} .headline { font-family: var(--font-display); font-size: 6cqmin; margin-top: 3cqh; }
+        #f-{{ scene_id }} .wrap{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;width:92cqw;}
+        #f-{{ scene_id }} .comic{display:grid;grid-template-columns:1fr 1fr;gap:1.6cqw;width:76cqw;}
+        #f-{{ scene_id }} .cell{position:relative;border:0.45cqw solid var(--ink);background:var(--cream);aspect-ratio:16/10;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;}
+        #f-{{ scene_id }} .cell .desc{position:absolute;top:1cqh;left:1.2cqw;font-size:2.6cqmin;font-weight:600;color:var(--ink);writing-mode:horizontal-tb;}
+        #f-{{ scene_id }} .cell .bub{position:relative;margin-bottom:1.6cqh;max-width:82%;background:#fff;border:0.25cqw solid var(--ink);border-radius:1.2cqw;padding:0.9cqh 1.2cqw;font-size:2.4cqmin;color:var(--ink);line-height:1.35;text-align:center;}
+        #f-{{ scene_id }} .cell .bub::after{content:"";position:absolute;bottom:-0.9cqh;left:24%;width:1.8cqw;height:1.8cqw;background:#fff;border-right:0.25cqw solid var(--ink);border-bottom:0.25cqw solid var(--ink);transform:rotate(45deg);}
+        #f-{{ scene_id }} .cell.last{border-color:var(--coral-deep);}
+        #f-{{ scene_id }} .burst{position:absolute;right:-1.2cqw;top:-2.4cqh;background:var(--coral);color:var(--cream);font-size:2.2cqmin;font-weight:900;padding:0.8cqh 1.2cqw;transform:rotate(-8deg);border:0.25cqw solid var(--ink);white-space:nowrap;}
+        @container frame (max-aspect-ratio: 10/16) {
+          #f-{{ scene_id }} .comic{grid-template-columns:1fr;width:88cqw;}
+        }
+      </style>
+      <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+        data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+        <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+        <div class="hf-safe">
+          <div class="hf-kicker" id="s-{{ scene_id }}-kicker"><span class="hf-spike"></span> {{ fields.kicker }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+          <div class="wrap"><div class="comic">{% for raw in fields.get("panels", []) %}{% set parts = raw.split("|") %}<div class="cell{% if loop.last %} last{% endif %}" id="s-{{ scene_id }}-cell-{{ loop.index0 }}"><span class="desc">{{ parts[0] }}</span><span class="bub" id="s-{{ scene_id }}-bub-{{ loop.index0 }}">{{ parts[1] if parts|length > 1 else "" }}</span>{% if loop.last %}<span class="burst" id="s-{{ scene_id }}-burst">{{ fields.punchline }}</span>{% endif %}</div>{% endfor %}</div></div>
+          {% if fields.get('note') %}<div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>{% endif %}
+        </div>
+      </div>
+      <script>
+        (function () {
+          var SID = "s-{{ scene_id }}";
+          var D = {{ duration }};
+          var AD = window.__AD || { flip: 1, pace: 1 };
+          var tl = gsap.timeline({ paused: true });
+          tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: -14 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+          tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 },
+            { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.28);
+          var t0=Math.min(0.9,D*0.16);
+          for(var i=0;i<4;i++){var at=t0+0.35*i;
+            tl.fromTo("#"+SID+"-cell-"+i,{opacity:0,scale:1.14,rotation:1.5},{opacity:1,scale:1,rotation:0,duration:0.45,ease:"back.out(1.8)"},at);
+            AM.pop(tl,"#"+SID+"-bub-"+i,at+0.25,0.4);}
+          AM.pop(tl,"#"+SID+"-burst",t0+0.35*3+0.6,0.5);
+          tl.fromTo("#"+SID+"-cell-3",{x:0},{x:6,y:-4,duration:0.08,ease:"none",yoyo:true,repeat:5},t0+0.35*3+0.75);
+          AM.pulse(tl,"#"+SID+"-cell-3",t0+2.4);
+          if(document.getElementById(SID+"-note")){AM.wipe(tl,"#"+SID+"-note",Math.min(t0+3.0,D*0.82),0.6,"bottom");}
+          AM.exitSoft(tl, "#" + SID + "-kicker, #" + SID + "-headline, [id^='" + SID + "-cell-'], [id^='" + SID + "-bub-'], #" + SID + "-burst", D);
+          tl.to({}, { duration: D }, 0);
+          window.__timelines = window.__timelines || {};
+          window.__timelines["{{ scene_id }}"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>
