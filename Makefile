@@ -17,6 +17,9 @@ worker: ## 启动 RQ 渲染 worker
 web: ## 启动 Next.js 控制台 (127.0.0.1:3300)
 	cd apps/web && npx next dev -p 3300
 
+previews: ## 重新生成模板库预览图（118 张 webp → apps/web/public/tpl）
+	.venv/bin/python scripts/render_template_previews.py
+
 lint: ## ruff 检查（PR 前请跑）
 	$(VENV)/ruff check apps/api scripts
 

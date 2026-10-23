@@ -58,7 +58,10 @@ pytest apps/api/tests -q                     # 57 条回归必须全绿
 ```bash
 .venv/bin/python /tmp/tpl-check.py your-template   # lint/运行时/布局/对比度四道检
 pytest apps/api/tests -q                            # 全绿
+.venv/bin/python scripts/render_template_previews.py your-template   # 生成模板库预览图
 ```
+
+模板库页面（/templates）读 `apps/web/public/tpl/index.json` + 同名 webp 缩略图；新模板记得重新生成预览，否则画廊里没有它的图。全量重生成用 `make previews`（约 2-3 分钟）。
 
 渲染出真帧肉眼看一遍（ComposeResult.project_dir 用 `hf.snapshot_frames`），别只信 check。
 

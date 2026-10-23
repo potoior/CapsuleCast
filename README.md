@@ -94,6 +94,8 @@ CapsuleCast 是一台**口播解说视频的自动流水线**：你说一句主�
 | 行业单据 | finance-candle · medical-report · legal-clause · grade-card · resume-card · itinerary-card · waybill-track · monitor-dash · menu-board · floor-plan · payslip-stub · invoice-sheet · boarding-pass · certificate-award · pricing-table |
 | 结构与钩子 | title-hook · bullet-list · big-stat · quote-cta · image-focus · free-blocks · chapter-card · process-steps · timeline-events · concept-compare · term-demo · term-explainer | 开场 / 收尾 / 万能兜底 |
 
+控制台的[模板库](/templates)是可视化画廊：每套模板都有真实渲染缩略图、分类/动效筛选、搜索与字段详情弹窗；缩略图由 `make previews` 批量生成（`scripts/render_template_previews.py`）。
+
 **模板三件套约定**：每套模板 = `meta.json`（元信息+示例）+ `schema.json`（字段约束）+ `template.html`（Jinja + CSS + GSAP）。示例字段必须过自身 schema，动画一律 `fromTo`，可选字段必须 `fields.get()`——违反约定会被 [57 条回归测试](apps/api/tests) 拦下。
 
 ## 🏗️ 架构

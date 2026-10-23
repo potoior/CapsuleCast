@@ -1,0 +1,1772 @@
+[
+ {
+  "id": "before-after",
+  "name": "改造前后",
+  "category": "叙事",
+  "motion": "split-clash",
+  "role": "body",
+  "description": "左「之前」右「之后」大卡对撞：改造/优化/转变类叙事的视觉判决书。适合「用了X之后怎么样」「改造前后」。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/before-after.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "big-stat",
+  "name": "大数字",
+  "category": "数据",
+  "motion": "count-up",
+  "role": "body",
+  "description": "巨型数字从 0 或对照值滚动到目标值，配结论与注释行。适合“倍数 / 百分比 / 价格”类冲击性数据。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/big-stat.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "bio-card",
+  "name": "人物卡",
+  "category": "叙事",
+  "motion": "name-first",
+  "role": "body",
+  "description": "人物速写卡：大名 + 头衔 + 标签胶囊 + 金句。适合讲人物、创始人、科学家故事。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/bio-card.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "bio-timeline",
+  "name": "人物生平时间线",
+  "category": "叙事",
+  "motion": "life-dots",
+  "role": "body",
+  "description": "一个人的一生切成 4-5 段里程碑：左人物名牌，右时间线逐段点亮。适合人物故事、传奇逆袭。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/bio-timeline.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "boarding-pass",
+  "name": "登机牌",
+  "category": "单据",
+  "motion": "unfold",
+  "role": "body",
+  "description": "一张登机牌：出发地 → 目的地、航班/时间/登机口/座位四格信息，中间打孔虚线撕票线。适合「从 A 到 B 的旅程」、迁移路线、阶段转换、出发与抵达。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/boarding-pass.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "bullet-list",
+  "name": "要点清单",
+  "category": "钩子",
+  "motion": "list-cascade",
+  "role": "body",
+  "description": "标题 + 3-5 条编号要点，逐条滑入，重点行有珊瑚色下划线。适合列举型内容。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/bullet-list.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "certificate-award",
+  "name": "奖状证书",
+  "category": "单据",
+  "motion": "seal-press",
+  "role": "body",
+  "description": "一张烫边奖状：双线边框 + 获得者 + 奖项 + 颁发方，最后一枚红色印章重重盖下。适合「认证/达标/荣誉/里程碑」的仪式感收尾。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/certificate-award.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "chain-distort",
+  "name": "传话变形",
+  "category": "叙事",
+  "motion": "chain-drift",
+  "role": "body",
+  "description": "一句话经几手转述越来越离谱的传话链：谣言怎么长歪的现场还原。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/chain-distort.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "chapter-card",
+  "name": "章节卡",
+  "category": "钩子",
+  "motion": "numeral-slam",
+  "role": "body",
+  "description": "章节转场卡：巨型序号 Part N/M + 章节标题，快速过场（3-6 秒）。长视频分节处使用，配 chime 音效。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/chapter-card.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "chart-area",
+  "name": "面积趋势图",
+  "category": "数据",
+  "motion": "area-sweep",
+  "role": "body",
+  "description": "面积折线图：一条趋势线自左向右擦出，线下面积同步铺开，峰值点高亮标注。适合累积量、增长曲线、总量变化。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/chart-area.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "chart-bars",
+  "name": "数据条形图",
+  "category": "数据",
+  "motion": "bars-rise",
+  "role": "body",
+  "description": "标题 + 3-4 条横向条形，从左生长并逐条点亮，最大值高亮珊瑚色。适合占比/对比/调研数据。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/chart-bars.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "chart-bubble",
+  "name": "气泡图",
+  "category": "数据",
+  "motion": "bubble-pop",
+  "role": "body",
+  "description": "三维气泡散点图：横轴、纵轴、气泡大小各表达一个维度，气泡依次弹出并轻微漂浮。适合「两个指标 + 一个体量」的三维对比（市场、人群、项目组合）。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/chart-bubble.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "chart-bump",
+  "name": "排名变化图",
+  "category": "数据",
+  "motion": "bump-lines",
+  "role": "body",
+  "description": "排名随时间变化的凹凸折线图（bump chart）：多条折线在 4 个时间列间穿插换位，标签跟随线头。适合「谁超过了谁」的排名洗牌、赛道变化、地位更替。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/chart-bump.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "chart-donut",
+  "name": "占比环图",
+  "category": "数据",
+  "motion": "arcs-sweep",
+  "role": "body",
+  "description": "环形占比图：弧段依次扫开 + 右侧图例逐行浮现 + 中心大字。适合「成分构成、百分比分布、市场占比」。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/chart-donut.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "chart-heatmap",
+  "name": "热力图",
+  "category": "数据",
+  "motion": "cells-fill",
+  "role": "body",
+  "description": "行列网格热力图：每个格子按强度上色，右侧一条低→高图例。适合「一周什么时段最忙」「哪些组合最常出现」的分布洞察。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/chart-heatmap.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "chart-histogram",
+  "name": "分布直方图",
+  "category": "数据",
+  "motion": "shape-emerge",
+  "role": "body",
+  "description": "人群分布的竖柱形态 + 「你在哪」标记：正态、长尾一眼看懂。适合「大部分人是这样，你是哪样」的分布话题。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/chart-histogram.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "chart-kpi",
+  "name": "数据卡片组",
+  "category": "数据",
+  "motion": "cards-rise",
+  "role": "body",
+  "description": "2-4 张数据卡并列：大数字 + 标签 + 可选涨跌角标，复盘/成绩单式快节奏展示。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/chart-kpi.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "chart-line",
+  "name": "折线趋势图",
+  "category": "数据",
+  "motion": "line-grow",
+  "role": "body",
+  "description": "时序趋势折线：坐标轴 + 折线生长 + 数据点弹出，峰值高亮。适合「逐年上升/下滑/波动」的时间序列数据。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/chart-line.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "chart-poll",
+  "name": "民意二选一",
+  "category": "数据",
+  "motion": "bar-duel",
+  "role": "body",
+  "description": "两条百分比横条对垒 + 你站哪边：投票结果和站队时刻的仪式感。适合「多数人选了X」「你选哪个」。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/chart-poll.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "chart-sankey",
+  "name": "桑基图",
+  "category": "数据",
+  "motion": "flow-draw",
+  "role": "body",
+  "description": "最常见的两段式桑基图：左边来源节点、右边去向节点，带宽代表流量。适合「钱/人/时间都去哪了」的流向拆解。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/chart-sankey.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "chart-scatter",
+  "name": "散点图",
+  "category": "数据",
+  "motion": "dots-drop",
+  "role": "body",
+  "description": "双变量散点：X/Y 轴各一指标，3-6 个实体按数值定位，首点高亮。适合相关性、城市/产品定位。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/chart-scatter.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "chart-splitbar",
+  "name": "比例分割条",
+  "category": "数据",
+  "motion": "segment-fill",
+  "role": "body",
+  "description": "一条横棒按占比分色切段：钱的去向、时间的瓜分一图说清。适合「XX 都花在哪了」。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/chart-splitbar.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "chart-stackedbar",
+  "name": "堆叠柱状图",
+  "category": "数据",
+  "motion": "segments-rise",
+  "role": "body",
+  "description": "堆叠柱状图：每根柱子由几段构成，段与段颜色区分，底部图例说明构成。适合「总量在涨，但结构变了」的构成对比。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/chart-stackedbar.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "chart-table",
+  "name": "对比表",
+  "category": "数据",
+  "motion": "rows-stagger",
+  "role": "body",
+  "description": "结构化数据表：表头行 + 数据行逐行浮现，末行高亮。适合参数对照、费用明细、多维度清单。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/chart-table.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "chart-waterfall",
+  "name": "瀑布图",
+  "category": "数据",
+  "motion": "step-drain",
+  "role": "body",
+  "description": "逐级扣减/累加的瀑布：起点满格，一步一栏浮空增减，落到终值。适合「工资到手」「预算层层扣」「成本拆解」。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/chart-waterfall.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "chat-bubbles",
+  "name": "聊天气泡",
+  "category": "叙事",
+  "motion": "bubble-pop",
+  "role": "body",
+  "description": "IM 风左右聊天气泡对话：情景还原、聊天记录名场面。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/chat-bubbles.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "checklist",
+  "name": "打勾清单",
+  "category": "叙事",
+  "motion": "tick-stamp",
+  "role": "body",
+  "description": "行动清单逐项打勾：✓ 圆章依次盖下，末项高亮。适合自查动作、行动指南、照着做系列。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/checklist.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "comic-panel",
+  "name": "四格漫画",
+  "category": "装置",
+  "motion": "panel-slam",
+  "role": "body",
+  "description": "四格漫画分镜：黑框白缝、对话气泡、末格爆点星爆。日常吐槽的漫画语法。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/comic-panel.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "compare-trio",
+  "name": "三方对比",
+  "category": "叙事",
+  "motion": "trio-verdict",
+  "role": "body",
+  "description": "三个方案卡并排、胜者高亮加徽章：三路决策时刻。适合「三种方案怎么选」。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/compare-trio.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "concept-compare",
+  "name": "概念对比",
+  "category": "叙事",
+  "motion": "split-reveal",
+  "role": "body",
+  "description": "左右两卡片对比两个概念（竖屏自动上下堆叠），中缝 VS 徽章，底部结论条。适合“而 / 相比 / 但是”类对比句。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/concept-compare.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-balance",
+  "name": "天平权衡",
+  "category": "图解",
+  "motion": "beam-tilt",
+  "role": "body",
+  "description": "天平称量两方：横梁向重方倾斜、吊盘落定、底部裁决。适合利弊权衡、值不值、二选一比较。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-balance.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-blocks",
+  "name": "拼图构成",
+  "category": "图解",
+  "motion": "converge-merge",
+  "role": "body",
+  "description": "积木拼成整体：分块从四周聚拢堆叠，整体大卡压顶登场。适合「A+B+C=X」的构成、要素组合。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-blocks.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-bottleneck",
+  "name": "卡点图",
+  "category": "图解",
+  "motion": "break-find",
+  "role": "body",
+  "description": "流程里找堵点：环节照常流动，一处标红断裂 + 代价说明。适合「系统卡在哪」「哪里拖慢了全局」。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-bottleneck.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-callouts",
+  "name": "标注解剖",
+  "category": "图解",
+  "motion": "teardown-lines",
+  "role": "body",
+  "description": "中央主体 + 四周引线标注：把一个东西摊开讲清楚每一部分。适合「拆解 X」「配置单」「组成部分」。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-callouts.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-cycle",
+  "name": "循环图",
+  "category": "图解",
+  "motion": "cycle-draw",
+  "role": "body",
+  "description": "环形循环/飞轮图：环节绕圈排布、弧形箭头顺时针衔接。适合飞轮效应、反馈回路、PDCA、生态循环。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-cycle.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-daywheel",
+  "name": "24小时日轮",
+  "category": "图解",
+  "motion": "arc-spin",
+  "role": "body",
+  "description": "一天切成弧段的时间轮：环上按小时占比分弧，中心是主题。适合「我的一天」「作息表」「24小时怎么过」。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-daywheel.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-domino",
+  "name": "多米诺连锁",
+  "category": "图解",
+  "motion": "cascade-fall",
+  "role": "body",
+  "description": "一排依次倒下的骨牌：一环扣一环的因果连锁故事。适合「因为A所以B导致C」的连锁反应科普。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-domino.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-fishbone",
+  "name": "鱼骨图",
+  "category": "图解",
+  "motion": "spine-then-bones",
+  "role": "body",
+  "description": "归因鱼骨：主骨指向问题头，成因按类别上下分刺。适合「为什么X」的多因分析、问题拆解。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-fishbone.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-flow",
+  "name": "流程图解",
+  "category": "图解",
+  "motion": "flow-draw",
+  "role": "body",
+  "description": "节点卡片 + 箭头生长动画的流程/原理图。适合讲机制、步骤链、数据流。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-flow.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-funnel",
+  "name": "漏斗图",
+  "category": "图解",
+  "motion": "tiers-drop",
+  "role": "body",
+  "description": "层层收窄的转化漏斗：3-4 层梯形逐层下落，末层高亮为「幸存者」。适合转化率、筛选过程、层层淘汰。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-funnel.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-gantt",
+  "name": "甘特图",
+  "category": "图解",
+  "motion": "bars-grow",
+  "role": "body",
+  "description": "多轨道时间分配：横向时间轴 + 每轨一条按起止定位的条。适合排期、日程、多角色分工。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-gantt.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-gauge",
+  "name": "仪表盘",
+  "category": "图解",
+  "motion": "needle-sweep",
+  "role": "body",
+  "description": "半环仪表 + 指针扫动 + 大数字：单指标的程度/得分/完成度。适合评分、指数、健康度。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-gauge.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-hub",
+  "name": "辐射图",
+  "category": "图解",
+  "motion": "hub-radiate",
+  "role": "body",
+  "description": "中心概念向外辐射多个因素的关系图。适合「影响 X 的 N 个因素」、多方面拆解、生态系统。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-hub.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-iceberg",
+  "name": "冰山图",
+  "category": "图解",
+  "motion": "waterline-split",
+  "role": "body",
+  "description": "水面上下两界：可见的表象在水面之上，看不见的代价/机制在水面之下依次点亮。适合「你看到的X vs 背后的Y」。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-iceberg.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-journey",
+  "name": "用户旅程",
+  "category": "图解",
+  "motion": "curve-draw",
+  "role": "body",
+  "description": "阶段旅程 + 情绪曲线：触点在基线上，曲线随情绪值起伏。适合购物旅程、使用体验、心理变化。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-journey.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-layers",
+  "name": "网络层级图",
+  "category": "图解",
+  "motion": "layers-draw",
+  "role": "body",
+  "description": "SVG 神经网络层级图：节点逐列点亮、连线绘制、一条数据流高亮。适合讲网络结构、深度、层数。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-layers.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-loop-duo",
+  "name": "双环对比",
+  "category": "图解",
+  "motion": "dual-spin",
+  "role": "body",
+  "description": "恶性循环 vs 良性循环左右并排：两个闭环各自转，一眼看懂为什么越陷越深/越跑越顺。适合行为改变、习惯养成话题。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-loop-duo.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-mindmap",
+  "name": "思维导图",
+  "category": "图解",
+  "motion": "branch-grow",
+  "role": "body",
+  "description": "中心主题向四周发散的思维导图：中心大节点 + 3-5 个分支节点 + 连线生长。适合拆解一个概念的分类、要素、思路分支。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-mindmap.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-onion",
+  "name": "洋葱剥层",
+  "category": "图解",
+  "motion": "peel-core",
+  "role": "body",
+  "description": "同心圆层层向内：表象一层层剥开，核心是真相。适合「X的本质其实是Y」「别被表象骗了」的层层递进话题。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-onion.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-orbit",
+  "name": "轨道图",
+  "category": "图解",
+  "motion": "orbit",
+  "role": "body",
+  "description": "中心核心 + 外围卫星的轨道图：中心大圆，2-4 颗卫星沿椭圆轨道分布并缓慢公转。适合「一个核心 + 若干外围要素」（平台与生态、模型与能力、主因与副作用）。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-orbit.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-orgchart",
+  "name": "组织架构图",
+  "category": "图解",
+  "motion": "org-grow",
+  "role": "body",
+  "description": "上层一个根节点、中层 2-3 个部门、下层成员的架构图，连线自上而下生长。适合「团队怎么分工」「一个系统分几层」「职责归属」。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-orgchart.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-pyramid",
+  "name": "金字塔图",
+  "category": "图解",
+  "motion": "stack-up",
+  "role": "body",
+  "description": "层级金字塔：从底到顶逐层堆叠，顶层高亮。适合需求层次、知识体系、优先级构成。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-pyramid.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-quadrant",
+  "name": "象限图",
+  "category": "图解",
+  "motion": "axes-then-cells",
+  "role": "body",
+  "description": "2×2 象限矩阵：坐标轴 + 四格，重点格高亮。适合四象限法则、矩阵分析、权衡取舍。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-quadrant.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-radar",
+  "name": "雷达图",
+  "category": "图解",
+  "motion": "polygon-grow",
+  "role": "body",
+  "description": "多维能力雷达：3-5 个维度的数值对比，多边形生长动画。适合评测打分、多维对比、优劣势分析。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-radar.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-sequence",
+  "name": "时序图",
+  "category": "图解",
+  "motion": "messages-draw",
+  "role": "body",
+  "description": "横向排列 2-3 个角色，纵向虚线生命线，消息箭头在角色之间来回穿梭。适合「一次请求经历了什么」「两个系统怎么对话」的调用过程。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-sequence.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-spectrum",
+  "name": "光谱轴",
+  "category": "图解",
+  "motion": "axis-then-dots",
+  "role": "body",
+  "description": "一维两极光谱：左极 ↔ 右极的横轴，2-5 个概念按位置落点，首点高亮。适合立场光谱、产品定位、程度分布。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-spectrum.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-stairs",
+  "name": "进阶阶梯",
+  "category": "图解",
+  "motion": "steps-climb",
+  "role": "body",
+  "description": "逐级升高的阶梯：3-4 个递进阶段依次点亮，末级高亮为「登顶」。适合进阶路径、成长阶段、难度爬升。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-stairs.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-swimlane",
+  "name": "泳道协作",
+  "category": "图解",
+  "motion": "lane-flow",
+  "role": "body",
+  "description": "多角色泳道并行：每条道一个角色，步骤块沿道流动，虚线是交接。适合「X和Y怎么配合」「一件事经过谁的手」的流程协作话题。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-swimlane.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-tree",
+  "name": "树状展开",
+  "category": "图解",
+  "motion": "root-then-branches",
+  "role": "body",
+  "description": "左根右枝的分类树：一个概念拆成 3-5 个分支，连接线生长、分支带序号徽章、首支高亮。适合分类学、拆解结构、「一分为N」。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-tree.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-triangle",
+  "name": "铁三角",
+  "category": "图解",
+  "motion": "triangle-draw",
+  "role": "body",
+  "description": "三个顶点 + 中心结论的三角关系图：三条边生长连成三角，三个要素依次盖章到场，中心给出取舍结论。适合「快好省」式三难取舍、三方制衡、三要素模型。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-triangle.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-tug",
+  "name": "拔河对抗",
+  "category": "图解",
+  "motion": "rope-pull",
+  "role": "body",
+  "description": "绳结中点的拔河：两种力量往两边拉，绳结偏向哪边。适合「X和Y在拉扯」「身体里两个小人打架」的对抗类话题。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-tug.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-venn",
+  "name": "交集图",
+  "category": "图解",
+  "motion": "circles-merge",
+  "role": "body",
+  "description": "两圆交叠的韦恩图：左侧概念、右侧概念、交集处高亮。适合「既是…又是…」「共同点」「重合地带」类内容。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-venn.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "diagram-venn-3",
+  "name": "三圆维恩",
+  "category": "图解",
+  "motion": "circles-merge",
+  "role": "body",
+  "description": "三个圆交叠的维恩图：三个概念在交叠处给出共同结论。适合「三者交集/缺一不可/共同点」的关系说明。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/diagram-venn-3.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "dialogue-quotes",
+  "name": "对话卡",
+  "category": "叙事",
+  "motion": "bubbles-clash",
+  "role": "body",
+  "description": "两方声音对撞：左右对话气泡各持立场，底部裁决。适合观点冲突、甲乙方、支持反对派。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/dialogue-quotes.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "email-client",
+  "name": "邮件界面",
+  "category": "装置",
+  "motion": "mail-open",
+  "role": "body",
+  "description": "一封打开的邮件：发件人头像 + 主题 + 正文段落，像邮箱客户端。适合「收到一封通知/拒信/offer」「一纸通知改变一切」的叙事时刻。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/email-client.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "experiment-log",
+  "name": "实验复盘",
+  "category": "叙事",
+  "motion": "log-reveal",
+  "role": "body",
+  "description": "猜想→操作→结果→反常识四段实验日志：科学口播的经典叙事骨架，最后一张牌必须反转。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/experiment-log.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "facts-trio",
+  "name": "反直觉三连",
+  "category": "叙事",
+  "motion": "trio-punch",
+  "role": "body",
+  "description": "三张编号冷知识卡连击：每张一个反直觉事实+一句纠正。适合「你不知道的X」「冷知识轰炸」的钩子段。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/facts-trio.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "finance-candle",
+  "name": "金融K线",
+  "category": "单据",
+  "motion": "candle-rise",
+  "role": "body",
+  "description": "涨跌蜡烛图讲行情：红绿蜡烛带影线，金融科普的行业装备。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/finance-candle.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "floor-plan",
+  "name": "户型图",
+  "category": "单据",
+  "motion": "blueprint-draw",
+  "role": "body",
+  "description": "蓝图风户型图：房间白线框逐间画出、尺寸标注感。房产家装的行业装备。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/floor-plan.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "formula-card",
+  "name": "公式卡",
+  "category": "叙事",
+  "motion": "equation-build",
+  "role": "body",
+  "description": "心法公式：N 个要素卡片用运算符串联，等号后高亮结果卡。适合方法论、心法、成功要素。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/formula-card.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "free-blocks",
+  "name": "自由拼装",
+  "category": "叙事",
+  "motion": "blocks-stagger",
+  "role": "body",
+  "description": "可组合版式引擎：标题区 + 2-4 个内容块（清单/大数字/金句/标签）自由拼装，四种布局（左右分栏/横幅/居中）。适合要点、数字、金句混排的综合页。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/free-blocks.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "game-quest",
+  "name": "游戏任务面板",
+  "category": "装置",
+  "motion": "quest-check",
+  "role": "body",
+  "description": "RPG 任务面板：主线任务打勾、经验条充能、等级徽章。人生游戏的任务清单美学。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/game-quest.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "grade-card",
+  "name": "成绩单",
+  "category": "单据",
+  "motion": "report-out",
+  "role": "body",
+  "description": "期末成绩单：科目分行带大分数，平均分压轴、评语+红章。教育放榜的行业装备。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/grade-card.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "habit-grid",
+  "name": "打卡热力格",
+  "category": "数据",
+  "motion": "grid-lightup",
+  "role": "body",
+  "description": "习惯打卡日历格：7×5 方格阵按完成度点亮，末尾连续段珊瑚色高亮 + 连击统计。适合「坚持 X 天」「习惯养成」。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/habit-grid.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "headline-barrage",
+  "name": "大字三连砸",
+  "category": "叙事",
+  "motion": "slam-sequence",
+  "role": "body",
+  "description": "三个短句依次全屏砸落的连击页：中段 re-hook、强观点连发的节奏器。每句一屏，编号角标。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/headline-barrage.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "image-focus",
+  "name": "图片特写",
+  "category": "钩子",
+  "motion": "ken-burns",
+  "role": "body",
+  "description": "全幅图片 + 缓慢推拉运镜（ken-burns）+ 底部渐变压字。需要上传图片，适合产品图/截图/场景图。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/image-focus.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "invoice-sheet",
+  "name": "发票",
+  "category": "单据",
+  "motion": "stamp-slam",
+  "role": "body",
+  "description": "一张增值税发票：票据头 + 两行项目明细 + 合计金额 + 一枚旋转盖下的红色发票专用章。适合「一笔账的构成」「成本明细」「付款清单」。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/invoice-sheet.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "itinerary-card",
+  "name": "行程单",
+  "category": "单据",
+  "motion": "route-stamp",
+  "role": "body",
+  "description": "旅行行程单：出发到达大字、Day 卡逐日排开、预算压轴。旅行攻略的行业装备。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/itinerary-card.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "legal-clause",
+  "name": "合同条款",
+  "category": "单据",
+  "motion": "clause-mark",
+  "role": "body",
+  "description": "合同纸上的条款卡：条款正文加红色重点线，末尾盖章提醒。法律避坑的行业装备。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/legal-clause.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "medical-report",
+  "name": "体检报告",
+  "category": "单据",
+  "motion": "lab-report",
+  "role": "body",
+  "description": "体检报告单：指标行带参考范围和上下箭头，异常项标红。医疗健话题的行业装备。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/medical-report.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "menu-board",
+  "name": "菜单板",
+  "category": "单据",
+  "motion": "chalk-write",
+  "role": "body",
+  "description": "深夜食堂手写菜单板：菜名点线引价格、标签药丸、特价粉笔框。餐饮探店的行业装备。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/menu-board.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "monitor-dash",
+  "name": "监控面板",
+  "category": "单据",
+  "motion": "dashboard-boot",
+  "role": "body",
+  "description": "运维监控面板：指标卡大数字、状态灯、告警结论。IT 夜话的行业装备。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/monitor-dash.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "myth-buster",
+  "name": "误区粉碎",
+  "category": "叙事",
+  "motion": "strike-then-reveal",
+  "role": "body",
+  "description": "先立误区再粉碎：✗ 误区卡被划掉，✓ 真相卡接管。适合辟谣、「你以为…其实…」类反常识内容。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/myth-buster.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "news-card",
+  "name": "快讯组",
+  "category": "叙事",
+  "motion": "feed-scroll",
+  "role": "body",
+  "description": "2-3 条快讯纵排：序号 + 标题 + 来源胶囊，信息流节奏。适合资讯摘要、行业动态、一周大事。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/news-card.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "nutrition-label",
+  "name": "人生成分表",
+  "category": "装置",
+  "motion": "label-scan",
+  "role": "body",
+  "description": "营养成分表式戏仿：给一周、一份工作做成分检测，粗黑边框的经典标签美学。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/nutrition-label.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "payslip-stub",
+  "name": "工资条",
+  "category": "单据",
+  "motion": "rows-stagger",
+  "role": "body",
+  "description": "一张工资条：抬头 + 若干明细行（点线对齐金额）+ 粗实线隔开的实发总额。适合「总收入怎么被一项项扣掉」、成本拆解、预算去向。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/payslip-stub.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "price-compare",
+  "name": "定价卡",
+  "category": "叙事",
+  "motion": "tiers-rise",
+  "role": "body",
+  "description": "2-3 档定价对比：档名 + 大价格 + ✓ 特性清单，推荐档高亮抬升 + 顶部缎带。适合产品定价、套餐、会员档位。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/price-compare.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "pricing-table",
+  "name": "价目表",
+  "category": "单据",
+  "motion": "tiers-flip",
+  "role": "body",
+  "description": "三档套餐价目表：中间档高亮推荐，下方逐条权益用对勾/横线标注覆盖档位。适合「三个版本怎么选」「服务分档」「会员权益」。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/pricing-table.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "process-steps",
+  "name": "流程步骤",
+  "category": "钩子",
+  "motion": "step-chain",
+  "role": "body",
+  "description": "3-5 步横向步进条（竖屏自动纵向），序号节点依次点亮、连接线生长。适合“首先 / 然后 / 最后”类流程。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/process-steps.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "progress-bundle",
+  "name": "多项目进度",
+  "category": "叙事",
+  "motion": "multi-fill",
+  "role": "body",
+  "description": "一组目标各自的进度条盘点：季度 OKR、习惯养成率一览。适合「多目标进度汇报」。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/progress-bundle.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "pros-cons",
+  "name": "利弊清单",
+  "category": "叙事",
+  "motion": "weigh-scale",
+  "role": "body",
+  "description": "天平式两列对照：✓利 vs ✗弊 + 底部裁决条。适合「X值不值得」「要不要做X」的权衡决策话题。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/pros-cons.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "qa-card",
+  "name": "问答卡",
+  "category": "叙事",
+  "motion": "q-then-a",
+  "role": "body",
+  "description": "问题先行、答案延迟揭示：大 Q 问题卡压场，A 答案卡随后推入。适合 FAQ、为什么体、悬念讲解。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/qa-card.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "quiz-reveal",
+  "name": "猜猜看翻牌",
+  "category": "叙事",
+  "motion": "suspense-flip",
+  "role": "body",
+  "description": "三选一悬念揭晓：选项齐亮相，停一拍，错的变暗答案高亮。开头钩子神器。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/quiz-reveal.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "quote-cta",
+  "name": "金句收尾",
+  "category": "钩子",
+  "motion": "slow-settle",
+  "role": "outro",
+  "description": "大引号金句居中浮现 + 珊瑚色 CTA 行 + 底部脚注。用于最后一镜：点题 + 行动号召。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/quote-cta.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "rank-list",
+  "name": "排行榜",
+  "category": "叙事",
+  "motion": "champion-first",
+  "role": "body",
+  "description": "TOP N 排行榜：巨大名次数字 + 条目，冠军行高亮放大。适合「涨粉最快的三个动作」「年度十大」。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/rank-list.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "receipt-strip",
+  "name": "复古小票",
+  "category": "装置",
+  "motion": "paper-print",
+  "role": "body",
+  "description": "热敏纸小票撕下来：一行行账目打出来合计压轴，撕边+条码装饰。适合记账、复盘、消费解剖。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/receipt-strip.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "resume-card",
+  "name": "简历卡",
+  "category": "单据",
+  "motion": "cv-unfold",
+  "role": "body",
+  "description": "一页简历卡：姓名职位、技能条、经历时间轴。求职转型的行业装备。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/resume-card.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "search-results",
+  "name": "搜索结果页",
+  "category": "装置",
+  "motion": "results-stagger",
+  "role": "body",
+  "description": "搜索引擎结果页样式：搜索框 + 结果统计 + 3 条结果（蓝标题/灰网址/黑摘要）。适合「一搜发现全是坑」「信息怎么筛选」的场景。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/search-results.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "sort-bins",
+  "name": "分类收纳",
+  "category": "叙事",
+  "motion": "flow-into-bins",
+  "role": "body",
+  "description": "一堆杂项分流进两三个箱子：信息怎么分类、任务怎么分桶的俯视收纳图。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/sort-bins.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "split-flap",
+  "name": "机场翻牌屏",
+  "category": "装置",
+  "motion": "flap-roll",
+  "role": "body",
+  "description": "机场翻牌显示屏逐格翻到目标短语：命运登机口的机械浪漫。适合预告、宣言、转折时刻。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/split-flap.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "stat-clash",
+  "name": "数字对撞",
+  "category": "数据",
+  "motion": "number-duel",
+  "role": "body",
+  "description": "两个大数字左右对撞 + VS 徽章 + 裁决条：数字碾压时刻的仪式感。适合「X 是 Y 的 N 倍」「相差多少」。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/stat-clash.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "stat-dotmatrix",
+  "name": "点阵百分比",
+  "category": "数据",
+  "motion": "dot-wave",
+  "role": "body",
+  "description": "百分比画成 10×10 点阵配大数字滚动：比例冲击时刻。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/stat-dotmatrix.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "stat-equivalent",
+  "name": "数字具象化",
+  "category": "数据",
+  "motion": "number-translate",
+  "role": "body",
+  "description": "把抽象大数字翻译成看得懂的等价物：左边巨号数字，右边两三张「相当于」卡。适合「X 到底有多大 / 有多少」。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/stat-equivalent.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "stat-row",
+  "name": "多指标横排",
+  "category": "数据",
+  "motion": "counts-in",
+  "role": "body",
+  "description": "3-4 个关键指标横向并排，每个大数字 + 标签 + 小注，中间竖线分隔。适合「一组数据一起看」的盘点、年度总结、体检式指标墙。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/stat-row.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "stat-thermometer",
+  "name": "目标温度计",
+  "category": "数据",
+  "motion": "mercury-rise",
+  "role": "body",
+  "description": "温度计式目标进度：当前值对目标值，里程碑刻度逐个点亮。适合存钱、减肥这类目标追踪。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/stat-thermometer.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "sticky-notes",
+  "name": "便利贴墙",
+  "category": "装置",
+  "motion": "notes-pin",
+  "role": "body",
+  "description": "一面便利贴墙：3-6 张歪斜的便签依次贴上，每张一句短要点，顶部一条胶带。适合头脑风暴、待办清单、灵感碎片、复盘要点。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/sticky-notes.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "term-demo",
+  "name": "终端演示",
+  "category": "钩子",
+  "motion": "typewriter",
+  "role": "body",
+  "description": "仿 macOS 终端窗口：命令打字机逐字敲入 + 输出行逐行亮起 + 光标闪烁。适合演示命令、代码、工具用法。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/term-demo.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "term-explainer",
+  "name": "术语解释",
+  "category": "钩子",
+  "motion": "card-lift",
+  "role": "body",
+  "description": "一张居中术语卡：大术语 + 定义 + 等宽英文注解，卡片升起后珊瑚下划线绘出。适合“X 是指 / 叫做”类定义句。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/term-explainer.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "terminal-window",
+  "name": "终端敲字机",
+  "category": "装置",
+  "motion": "type-output",
+  "role": "body",
+  "description": "黑底终端窗口逐行敲出诊断结果，程序员的浪漫。适合科技梗、用命令行讲人生。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/terminal-window.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "ticket-stub",
+  "name": "人生车票",
+  "category": "装置",
+  "motion": "punch-in",
+  "role": "body",
+  "description": "一张开往新阶段的车票：出发站到目的站、票价是勇气的票据美学。适合人生转折、职业切换。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/ticket-stub.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "tier-list",
+  "name": "分级档位表",
+  "category": "叙事",
+  "motion": "rank-slots",
+  "role": "body",
+  "description": "S/A/B 档横条分卡：把一串东西按档位归堆。适合「评级」「梯队」「红黑榜」的网感内容。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/tier-list.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "timeline-events",
+  "name": "时间线",
+  "category": "钩子",
+  "motion": "spine-grow",
+  "role": "body",
+  "description": "竖直脊柱时间线，3-4 个事件节点依次弹出（阶段/年份 + 描述）。适合演进过程、里程碑、阶段划分。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/timeline-events.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "title-hook",
+  "name": "开场钩子",
+  "category": "钩子",
+  "motion": "word-stagger-rise",
+  "role": "hook",
+  "description": "大标题逐字上浮 + 角标 + 副题，背景有缓慢漂移的 token 流。用于视频第一镜，抛出反直觉的问题或结论。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/title-hook.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "trading-card",
+  "name": "卡牌",
+  "category": "装置",
+  "motion": "card-unfold",
+  "role": "body",
+  "description": "一张收藏卡牌：卡名 + 稀有度色带 + 三条属性数值 + 底部一句卡面描述，卡牌微微悬浮。适合把产品/角色/版本做成「属性卡」来对比，或做能力盘点。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/trading-card.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "versus-table",
+  "name": "双列对比表",
+  "category": "叙事",
+  "motion": "rows-compare",
+  "role": "body",
+  "description": "左右两个选项的对比表：表头两列、逐行维度对比、底部裁决。适合「A 和 B 到底选哪个」「旧方案 vs 新方案」的逐项对照。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/versus-table.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "waybill-track",
+  "name": "快递面单",
+  "category": "单据",
+  "motion": "track-line",
+  "role": "body",
+  "description": "快递运单追踪：单号条码、路由城市、节点时间线、预计送达。网购物流的行业装备。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/waybill-track.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "word-cloud",
+  "name": "词云",
+  "category": "叙事",
+  "motion": "words-pop",
+  "role": "body",
+  "description": "错落排布的词云：6-9 个词按权重分级字号，依次弹出，主词高亮。适合「大家都在聊什么」「关键词全景」「标签分布」。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/word-cloud.webp",
+  "theme": "warm"
+ },
+ {
+  "id": "word-slot",
+  "name": "词语槽翻转机",
+  "category": "装置",
+  "motion": "word-flip",
+  "role": "body",
+  "description": "句子里一个词槽依次翻转，一句话讲出三种阶段：换词叙事装置。",
+  "aspects": [
+   "16:9",
+   "9:16",
+   "1:1"
+  ],
+  "preview": "/tpl/word-slot.webp",
+  "theme": "warm"
+ }
+]
