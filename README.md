@@ -70,7 +70,7 @@ CapsuleCast 是一台**口播解说视频的自动流水线**：你说一句主�
 - 顶部进度条、创作者铭牌、logo 水印（三位置/透明度可调）、栏目 EP 角标（「栏目 · EP.03」）
 
 **声音**
-- 中文旁白 + 英文音色：默认 Microsoft Edge TTS（标准普通话，含小晓/云希等 8 个中文音色），离线环境自动回落到 Kokoro；内容哈希缓存，重渲不重算
+- 中文旁白：默认 Qwen3-TTS（OpenAI 兼容接口，9 个音色、支持语速），失败依次回落 Edge TTS → 本地 Kokoro；内容哈希缓存，重渲不重算
 - 词级卡拉OK字幕，三档字幕样式（standard / large / high）
 - 程序化 BGM 生成 + numpy 合成音效层（whoosh / pop / ding / tick / chime，按转场、要点、章节事件自动铺设）
 
@@ -110,7 +110,7 @@ CapsuleCast 是一台**口播解说视频的自动流水线**：你说一句主�
         RQ Worker（看门狗：僵死任务 15min 回收 + 僵尸浏览器 30min 清理）
             ├─ 1 大纲    LLM 扩写，json_schema 约束；瞬时抖动重试 + 零 hint 自愈
             ├─ 2 分镜    启发式选模板 → LLM 字段合成（数量忠实校验）→ 规则抽取器兜底
-            ├─ 3 TTS     Edge TTS（标准普通话，失败回落 Kokoro）+ 缓存；词级对齐 → 卡拉OK字幕
+            ├─ 3 TTS     Qwen3-TTS（失败回落 Edge → Kokoro）+ 缓存；词级对齐 → 卡拉OK字幕
             ├─ 4 组装    HTML 模板 → HyperFrames 时间线（GSAP）
             │            AD 层注入（版式/方向/节奏）+ 进度条/铭牌/logo/EP 角标
             ├─ 5 检查    hyperframes check：lint / 运行时 / 布局 / 对比度

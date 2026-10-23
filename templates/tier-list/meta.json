@@ -10,7 +10,7 @@
   ],
   "motion": "rank-slots",
   "min_duration_s": 6,
-  "max_duration_s": 16,
+  "max_duration_s": 20,
   "field_order": [
     "kicker",
     "headline",

@@ -46,9 +46,15 @@ class Settings(BaseSettings):
     hf_tts_timeout_s: int = 600
 
     # TTS：edge（微软 Edge TTS，标准普通话，需外网/代理）| kokoro（本地离线）
-    tts_provider: str = "edge"
+    tts_provider: str = "gateway"    # gateway | edge | kokoro
     tts_proxy: str = ""              # Edge TTS 专用代理（留空则用 http(s)_proxy）
     edge_tts_timeout_s: int = 90
+    # OpenAI 兼容 TTS（Qwen3-TTS / CosyVoice 等）
+    tts_base_url: str = ""
+    tts_api_key: str = ""
+    tts_model: str = "Qwen3-TTS"
+    tts_voice: str = "vivian"        # 项目 voice 是旧别名时的默认音色
+    tts_timeout_s: int = 180
 
     # LLM（可选）
     llm_base_url: str = ""

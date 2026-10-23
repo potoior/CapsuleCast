@@ -1,11 +1,33 @@
 {
-  "id": "diagram-callouts", "name": "标注解剖", "role": "body",
+  "id": "diagram-callouts",
+  "name": "标注解剖",
+  "role": "body",
   "description": "中央主体 + 四周引线标注：把一个东西摊开讲清楚每一部分。适合「拆解 X」「配置单」「组成部分」。",
-  "aspects": ["16:9", "9:16", "1:1"], "motion": "teardown-lines",
-  "min_duration_s": 6, "max_duration_s": 16,
-  "field_order": ["kicker", "headline", "subject", "callouts", "note"],
-  "example": {"kicker": "装备拆解", "headline": "一把人体工学椅值在哪",
-              "subject": "工学椅",
-              "callouts": ["腰托|撑住腰椎曲线", "网布|透气不闷汗", "底盘|后仰可锁定", "气压杆|安全认证看钢印"],
-              "note": "椅子是耐用品，别在支撑上省钱"}
+  "aspects": [
+    "16:9",
+    "9:16",
+    "1:1"
+  ],
+  "motion": "teardown-lines",
+  "min_duration_s": 6,
+  "max_duration_s": 20,
+  "field_order": [
+    "kicker",
+    "headline",
+    "subject",
+    "callouts",
+    "note"
+  ],
+  "example": {
+    "kicker": "装备拆解",
+    "headline": "一把人体工学椅值在哪",
+    "subject": "工学椅",
+    "callouts": [
+      "腰托|撑住腰椎曲线",
+      "网布|透气不闷汗",
+      "底盘|后仰可锁定",
+      "气压杆|安全认证看钢印"
+    ],
+    "note": "椅子是耐用品，别在支撑上省钱"
+  }
 }

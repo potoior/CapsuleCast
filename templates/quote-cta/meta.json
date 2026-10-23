@@ -10,7 +10,7 @@
   ],
   "motion": "slow-settle",
   "min_duration_s": 4,
-  "max_duration_s": 16,
+  "max_duration_s": 20,
   "field_order": [
     "kicker",
     "quote",

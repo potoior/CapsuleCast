@@ -17,8 +17,11 @@ router = APIRouter(prefix="/api/system", tags=["system"])
 def voices():
     """全部可用旁白音色（中文优先）。"""
     from ..config import get_settings
-    from ..services.tts import EDGE_LABELS, KOKORO_VOICES, ZH_VOICES
+    from ..services.tts import EDGE_LABELS, KOKORO_VOICES, QWEN_VOICES, ZH_VOICES
     provider = (get_settings().tts_provider or "kokoro").lower()
+    if provider == "gateway":
+        return {"zh": [{"id": k, "label": v} for k, v in QWEN_VOICES.items()],
+                "en": [], "provider": provider}
     labels = EDGE_LABELS if provider == "edge" else KOKORO_VOICES
     zh = [{"id": v, "label": labels.get(v, KOKORO_VOICES[v])} for v in ZH_VOICES]
     en = [{"id": v, "label": KOKORO_VOICES[v]}
@@ -33,7 +36,8 @@ def voice_preview(body: dict):
 
     from ..services.tts import KOKORO_VOICES, synthesize_cached
     voice = (body or {}).get("voice", "zf_xiaobei")
-    if voice not in KOKORO_VOICES:
+    from ..services.tts import QWEN_VOICES
+    if voice not in KOKORO_VOICES and voice not in QWEN_VOICES:
         from fastapi import HTTPException
 
         raise HTTPException(422, f"未知音色: {voice}")

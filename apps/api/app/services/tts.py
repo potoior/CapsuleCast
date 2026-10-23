@@ -49,6 +49,24 @@ KOKORO_VOICES = {
 }
 ZH_VOICES = [k for k in KOKORO_VOICES if k.startswith(("zf_", "zm_"))]
 
+# Qwen3-TTS（OpenAI 兼容 /v1/audio/speech）音色
+QWEN_VOICES = {
+    "vivian": "薇薇安 · 女声（默认）",
+    "serena": "塞丽娜 · 女声，温暖",
+    "sohee": "素熙 · 女声，清亮",
+    "ono_anna": "小安娜 · 女声，轻快",
+    "aiden": "艾登 · 男声",
+    "dylan": "迪伦 · 男声，年轻",
+    "eric": "埃里克 · 男声，沉稳",
+    "ryan": "瑞安 · 男声，清朗",
+    "uncle_fu": "傅叔 · 男声，浑厚",
+}
+_QWEN_ALIAS = {   # 旧项目里的 Kokoro 别名 → Qwen 音色（平滑迁移）
+    "zf_xiaobei": "vivian", "zf_xiaoni": "serena", "zf_xiaoxiao": "vivian",
+    "zf_xiaoyi": "serena", "zm_yunjian": "eric", "zm_yunxi": "ryan",
+    "zm_yunxia": "dylan", "zm_yunyang": "uncle_fu",
+}
+
 # Edge TTS 音色映射（标准普通话；zf_xiaobei/xiaoni 本身是方言音色，保留原样但默认不用）
 EDGE_VOICE_MAP = {
     "zf_xiaobei": "zh-CN-liaoning-XiaobeiNeural",
@@ -120,6 +138,48 @@ def _split_for_retry(value: str) -> tuple[str, str]:
 
 def _edge_voice(voice: str) -> str:
     return EDGE_VOICE_MAP.get(voice, voice)
+
+
+def _gateway_voice(voice: str) -> str:
+    if voice in QWEN_VOICES:
+        return voice
+    return _QWEN_ALIAS.get(voice, get_settings().tts_voice or "vivian")
+
+
+def _synthesize_gateway(text: str, *, voice: str, speed: float, out_wav: Path) -> None:
+    """OpenAI 兼容 TTS（Qwen3-TTS）：POST /v1/audio/speech，返回 wav/mp3 → 统一 24k 单声道。"""
+    import subprocess
+
+    import httpx
+
+    s = get_settings()
+    if not s.tts_base_url:
+        raise RuntimeError("TTS_BASE_URL 未配置")
+    url = f"{s.tts_base_url.rstrip('/')}/audio/speech"
+    body = {
+        "model": s.tts_model or "Qwen3-TTS",
+        "input": text,
+        "voice": _gateway_voice(voice),
+        "response_format": "wav",
+    }
+    if abs(speed - 1.0) > 0.01:
+        body["speed"] = round(speed, 3)
+    headers = {"Authorization": f"Bearer {s.tts_api_key}"} if s.tts_api_key else {}
+    with httpx.Client(timeout=s.tts_timeout_s) as c:
+        r = c.post(url, json=body, headers=headers)
+    if r.status_code != 200:
+        raise RuntimeError(f"TTS {r.status_code}: {r.text[:200]}")
+    raw = out_wav.with_suffix(".raw")
+    raw.write_bytes(r.content)
+    if r.content[:4] == b"RIFF" and r.headers.get("content-type", "").startswith("audio/wav"):
+        subprocess.run(["/home/nv5000/.local/bin/ffmpeg", "-hide_banner", "-loglevel", "error",
+                        "-y", "-i", str(raw), "-ar", "24000", "-ac", "1",
+                        "-c:a", "pcm_s16le", str(out_wav)], check=True, timeout=120)
+    else:
+        subprocess.run(["/home/nv5000/.local/bin/ffmpeg", "-hide_banner", "-loglevel", "error",
+                        "-y", "-i", str(raw), "-ar", "24000", "-ac", "1",
+                        "-c:a", "pcm_s16le", str(out_wav)], check=True, timeout=120)
+    raw.unlink(missing_ok=True)
 
 
 def _synthesize_edge(text: str, *, voice: str, speed: float, out_wav: Path) -> None:
@@ -200,8 +260,13 @@ def synthesize_cached(
     """合成一行并落缓存；命中直接返回。"""
     s = get_settings()
     provider = (s.tts_provider or "kokoro").strip().lower()
-    # Edge 的自然语速偏慢（实弹：16.5s 撞模板 16s 上限）→ 统一 +10%
-    eff_speed = speed * 1.10 if provider == "edge" else speed
+    # 云/Edge 的自然语速偏慢（实弹：16-17s 撞模板 16s 上限）→ 统一加基准语速
+    if provider == "edge":
+        eff_speed = speed * 1.10
+    elif provider == "gateway":
+        eff_speed = speed * 1.08
+    else:
+        eff_speed = speed
     key = hashlib.sha256(
         f"{provider}|{voice}|{eff_speed:.3f}|{text}".encode("utf-8")
     ).hexdigest()[:24]
@@ -217,7 +282,13 @@ def synthesize_cached(
             pass
 
     used = provider
-    if provider == "edge":
+    if provider == "gateway":
+        try:
+            _synthesize_gateway(text.strip(), voice=voice, speed=eff_speed, out_wav=wav)
+        except Exception as e:  # noqa: BLE001
+            log.warning("Qwen3-TTS 失败，回落 Edge: %s", str(e)[:200])
+            used = "edge"
+    if used == "edge":
         try:
             _synthesize_edge(text.strip(), voice=voice, speed=eff_speed, out_wav=wav)
         except Exception as e:  # noqa: BLE001
