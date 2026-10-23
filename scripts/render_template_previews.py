@@ -97,7 +97,7 @@ def main() -> int:
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     manifest = []
-    for t, png in zip(tpls, pngs):
+    for t, png in zip(tpls, pngs, strict=False):
         out = OUT_DIR / f"{t.id}.webp"
         subprocess.run([FFMPEG, "-hide_banner", "-loglevel", "error", "-y", "-i", str(png),
                         "-vf", "scale=720:405", "-quality", "82", str(out)], check=True)
