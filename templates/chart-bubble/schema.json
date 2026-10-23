@@ -1,6 +1,12 @@
 {
   "type": "object",
-  "required": ["kicker", "headline", "x_label", "y_label", "bubbles"],
+  "required": [
+    "kicker",
+    "headline",
+    "x_label",
+    "y_label",
+    "bubbles"
+  ],
   "properties": {
     "kicker": {
       "type": "string",
@@ -24,7 +30,7 @@
     },
     "bubbles": {
       "type": "array",
-      "minItems": 3,
+      "minItems": 2,
       "maxItems": 4,
       "items": {
         "type": "string",

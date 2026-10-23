@@ -15,7 +15,7 @@
     },
     "notes": {
       "type": "array",
-      "minItems": 3,
+      "minItems": 2,
       "maxItems": 6,
       "items": {
         "type": "string",
@@ -29,6 +29,10 @@
       "maxLength": 22
     }
   },
-  "required": ["kicker", "headline", "notes"],
+  "required": [
+    "kicker",
+    "headline",
+    "notes"
+  ],
   "additionalProperties": false
 }

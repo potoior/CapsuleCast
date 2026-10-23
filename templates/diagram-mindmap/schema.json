@@ -1,17 +1,42 @@
 {
   "type": "object",
   "properties": {
-    "kicker": { "type": "string", "minLength": 2, "maxLength": 16 },
-    "headline": { "type": "string", "minLength": 2, "maxLength": 16 },
-    "center": { "type": "string", "minLength": 2, "maxLength": 20 },
+    "kicker": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16
+    },
+    "headline": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16
+    },
+    "center": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 20
+    },
     "branches": {
       "type": "array",
-      "minItems": 3,
+      "minItems": 2,
       "maxItems": 5,
-      "items": { "type": "string", "minLength": 2, "maxLength": 18 }
+      "items": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 18
+      }
     },
-    "note": { "type": "string", "minLength": 0, "maxLength": 22 }
+    "note": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 22
+    }
   },
-  "required": ["kicker", "headline", "center", "branches"],
+  "required": [
+    "kicker",
+    "headline",
+    "center",
+    "branches"
+  ],
   "additionalProperties": false
 }

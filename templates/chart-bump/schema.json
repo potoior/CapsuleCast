@@ -25,7 +25,7 @@
     },
     "series": {
       "type": "array",
-      "minItems": 3,
+      "minItems": 2,
       "maxItems": 4,
       "items": {
         "type": "string",
@@ -40,5 +40,10 @@
       "maxLength": 22
     }
   },
-  "required": ["kicker", "headline", "columns", "series"]
+  "required": [
+    "kicker",
+    "headline",
+    "columns",
+    "series"
+  ]
 }

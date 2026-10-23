@@ -14,7 +14,7 @@
     },
     "points": {
       "type": "array",
-      "minItems": 4,
+      "minItems": 3,
       "maxItems": 6,
       "items": {
         "type": "string",
@@ -34,5 +34,10 @@
       "maxLength": 22
     }
   },
-  "required": ["kicker", "headline", "points", "peak"]
+  "required": [
+    "kicker",
+    "headline",
+    "points",
+    "peak"
+  ]
 }
