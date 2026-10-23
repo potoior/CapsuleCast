@@ -60,8 +60,8 @@ ROOT_SEL {
   --navy: #181715;
   --hairline: color-mix(in srgb, var(--ink) 12%, transparent);
   --hairline-strong: color-mix(in srgb, var(--ink) 20%, transparent);
-  --ink-soft: color-mix(in srgb, var(--ink) 68%, var(--cream));
-  --ink-faint: color-mix(in srgb, var(--ink) 40%, var(--cream));
+  --ink-soft: color-mix(in srgb, var(--ink) 74%, var(--cream));
+  --ink-faint: color-mix(in srgb, var(--ink) 55%, var(--cream));
   --font-display: "EB Garamond", Georgia, serif;
   --font-body: "Inter", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", monospace;

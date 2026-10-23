@@ -50,6 +50,11 @@
           fill: var(--ink);
           text-anchor: middle;
         }
+        #f-{{ scene_id }} .layer-sub {
+          font-size: 21px;
+          font-weight: 500;
+          fill: var(--ink-soft);
+        }
         #f-{{ scene_id }} .flow-note {
           margin-top: 1.6cqh;
           font-family: var(--font-mono);
@@ -129,8 +134,9 @@
               {#- 层标签 #}
               {%- for li in range(L) %}
               {%- set cx = xs[li] if li < 4 else 1460 %}
-              <text class="layer-label" x="{{ cx }}" y="600"
-                id="s-{{ scene_id }}-l-{{ li }}" opacity="0">{{ fields.layer_labels[li] }}</text>
+              {%- set lp = fields.layer_labels[li].split("|") %}
+              <text class="layer-label" x="{{ cx }}" y="584"
+                id="s-{{ scene_id }}-l-{{ li }}" opacity="0"><tspan>{{ lp[0] }}</tspan>{% if lp | length > 1 %}<tspan class="layer-sub" x="{{ cx }}" dy="26">{{ lp[1] }}</tspan>{% endif %}</text>
               {%- endfor %}
             </svg>
           </div>

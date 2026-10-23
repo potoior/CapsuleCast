@@ -287,6 +287,14 @@ def theme_tokens(theme: str, brand_accent: str | None = None) -> dict[str, str]:
     else:
         out = {}
     out.update(_PLATE_OVERRIDES.get(theme, {}))
+    # 深色主题：--ink-faint 若沿用「40% ink + 60% cream」会糊进底色
+    # （实弹：blueprint 的下层标签几乎不可读）→ 按底色明度自动提亮。
+    ink = out.get("ink", _DEFAULTS["ink"])
+    if _hex_ok(ink):
+        r, g, b = (int(ink[i:i + 2], 16) for i in (1, 3, 5))
+        if (0.2126 * r + 0.7152 * g + 0.0722 * b) > 140:  # 亮字（深底主题）
+            out.setdefault("ink-soft", "color-mix(in srgb, var(--ink) 80%, var(--cream))")
+            out.setdefault("ink-faint", "color-mix(in srgb, var(--ink) 62%, var(--cream))")
     return out
 
 
