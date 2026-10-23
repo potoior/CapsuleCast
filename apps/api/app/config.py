@@ -45,6 +45,11 @@ class Settings(BaseSettings):
     hf_check_timeout_s: int = 300
     hf_tts_timeout_s: int = 600
 
+    # TTS：edge（微软 Edge TTS，标准普通话，需外网/代理）| kokoro（本地离线）
+    tts_provider: str = "edge"
+    tts_proxy: str = ""              # Edge TTS 专用代理（留空则用 http(s)_proxy）
+    edge_tts_timeout_s: int = 90
+
     # LLM（可选）
     llm_base_url: str = ""
     llm_api_key: str = ""

@@ -16,11 +16,14 @@ router = APIRouter(prefix="/api/system", tags=["system"])
 @router.get("/voices")
 def voices():
     """全部可用旁白音色（中文优先）。"""
-    from ..services.tts import KOKORO_VOICES, ZH_VOICES
-    zh = [{"id": v, "label": KOKORO_VOICES[v]} for v in ZH_VOICES]
+    from ..config import get_settings
+    from ..services.tts import EDGE_LABELS, KOKORO_VOICES, ZH_VOICES
+    provider = (get_settings().tts_provider or "kokoro").lower()
+    labels = EDGE_LABELS if provider == "edge" else KOKORO_VOICES
+    zh = [{"id": v, "label": labels.get(v, KOKORO_VOICES[v])} for v in ZH_VOICES]
     en = [{"id": v, "label": KOKORO_VOICES[v]}
           for v in KOKORO_VOICES if v not in ZH_VOICES]
-    return {"zh": zh, "en": en}
+    return {"zh": zh, "en": en, "provider": provider}
 
 
 @router.post("/voices/preview")

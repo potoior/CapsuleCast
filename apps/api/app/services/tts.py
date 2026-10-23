@@ -11,7 +11,9 @@ import hashlib
 import json
 import logging
 import re
+import sys
 import threading
+import time
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -46,6 +48,28 @@ KOKORO_VOICES = {
     "bm_lewis": "Lewis · EN 男声（英音）",
 }
 ZH_VOICES = [k for k in KOKORO_VOICES if k.startswith(("zf_", "zm_"))]
+
+# Edge TTS 音色映射（标准普通话；zf_xiaobei/xiaoni 本身是方言音色，保留原样但默认不用）
+EDGE_VOICE_MAP = {
+    "zf_xiaobei": "zh-CN-liaoning-XiaobeiNeural",
+    "zf_xiaoni": "zh-CN-shaanxi-XiaoniNeural",
+    "zf_xiaoxiao": "zh-CN-XiaoxiaoNeural",
+    "zf_xiaoyi": "zh-CN-XiaoyiNeural",
+    "zm_yunjian": "zh-CN-YunjianNeural",
+    "zm_yunxi": "zh-CN-YunxiNeural",
+    "zm_yunxia": "zh-CN-YunxiaNeural",
+    "zm_yunyang": "zh-CN-YunyangNeural",
+}
+EDGE_LABELS = {
+    "zf_xiaobei": "小北 · 女声（东北口音）",
+    "zf_xiaoni": "小妮 · 女声（陕西口音）",
+    "zf_xiaoxiao": "小晓 · 女声，标准普通话",
+    "zf_xiaoyi": "小依 · 女声，标准普通话，知性",
+    "zm_yunjian": "云间 · 男声，标准普通话，沉稳",
+    "zm_yunxi": "云希 · 男声，标准普通话，清晰",
+    "zm_yunxia": "云夏 · 男声，标准普通话，年轻",
+    "zm_yunyang": "云扬 · 男声，标准普通话，浑厚",
+}
 
 
 @dataclass
@@ -94,6 +118,44 @@ def _split_for_retry(value: str) -> tuple[str, str]:
     return value[:split_at], value[split_at:]
 
 
+def _edge_voice(voice: str) -> str:
+    return EDGE_VOICE_MAP.get(voice, voice)
+
+
+def _synthesize_edge(text: str, *, voice: str, speed: float, out_wav: Path) -> None:
+    """微软 Edge TTS（标准普通话）。经 --proxy 走外网；产物统一转 24k 单声道 wav。"""
+    import subprocess
+
+    s = get_settings()
+    proxy = (s.tts_proxy or s.https_proxy or s.http_proxy or "").strip()
+    rate = f"{round((speed - 1) * 100):+d}%"
+    cmd = [
+        sys.executable, "-m", "edge_tts",
+        "--voice", _edge_voice(voice),
+        "--text", text,
+        "--rate", rate,
+        "--write-media", str(out_wav.with_suffix(".mp3")),
+    ]
+    if proxy:
+        cmd += ["--proxy", proxy]
+    mp3 = out_wav.with_suffix(".mp3")
+    last_err = ""
+    for attempt in range(3):
+        p = subprocess.run(cmd, capture_output=True, text=True,
+                           timeout=s.edge_tts_timeout_s)
+        if p.returncode == 0 and mp3.exists() and mp3.stat().st_size > 1024:
+            break
+        last_err = (p.stderr or str(p.returncode))[-300:]
+        mp3.unlink(missing_ok=True)
+        time.sleep(0.9 * (attempt + 1))
+    if not mp3.exists() or mp3.stat().st_size <= 1024:
+        raise RuntimeError(f"edge-tts 失败: {last_err}")
+    subprocess.run(["/home/nv5000/.local/bin/ffmpeg", "-hide_banner", "-loglevel", "error",
+                    "-y", "-i", str(mp3), "-ar", "24000", "-ac", "1",
+                    "-c:a", "pcm_s16le", str(out_wav)], check=True, timeout=60)
+    mp3.unlink(missing_ok=True)
+
+
 def _synthesize_text(model, value: str, *, voice: str, speed: float, lang: str):
     try:
         return model.create(value, voice=voice, speed=speed, lang=lang)
@@ -136,9 +198,12 @@ def synthesize_cached(
     line_id: str = "01",
 ) -> TTSResult:
     """合成一行并落缓存；命中直接返回。"""
-    get_settings()
+    s = get_settings()
+    provider = (s.tts_provider or "kokoro").strip().lower()
+    # Edge 的自然语速偏慢（实弹：16.5s 撞模板 16s 上限）→ 统一 +10%
+    eff_speed = speed * 1.10 if provider == "edge" else speed
     key = hashlib.sha256(
-        f"{voice}|{speed}|{text}".encode("utf-8")
+        f"{provider}|{voice}|{eff_speed:.3f}|{text}".encode("utf-8")
     ).hexdigest()[:24]
     cache_dir.mkdir(parents=True, exist_ok=True)
     wav = cache_dir / f"{line_id}-{key}.wav"
@@ -151,14 +216,28 @@ def synthesize_cached(
         except Exception:
             pass
 
-    import soundfile as sf
+    used = provider
+    if provider == "edge":
+        try:
+            _synthesize_edge(text.strip(), voice=voice, speed=eff_speed, out_wav=wav)
+        except Exception as e:  # noqa: BLE001
+            log.warning("Edge TTS 失败，回落 Kokoro: %s", str(e)[:200])
+            used = "kokoro"
 
-    model = _get_model()
-    lang = _lang_for_voice(voice)
-    samples, rate = _synthesize_text(model, text.strip(), voice=voice, speed=speed, lang=lang)
-    sf.write(str(wav), samples, rate)
-    dur = len(samples) / rate
+    if used == "kokoro":
+        import soundfile as sf
+
+        model = _get_model()
+        lang = _lang_for_voice(voice)
+        samples, rate = _synthesize_text(model, text.strip(), voice=voice, speed=speed, lang=lang)
+        sf.write(str(wav), samples, rate)
+
+    import soundfile as sf  # noqa: F811
+
+    info = sf.info(str(wav))
+    dur = info.frames / info.samplerate
     meta.write_text(json.dumps({"duration_s": round(dur, 3), "voice": voice,
-                                "speed": speed, "text": text}), encoding="utf-8")
-    log.info("TTS %s: %.2fs (cache %s)", line_id, dur, key[:8])
+                                "speed": speed, "provider": used, "text": text}),
+                    encoding="utf-8")
+    log.info("TTS %s: %.2fs via %s (cache %s)", line_id, dur, used, key[:8])
     return TTSResult(wav_path=wav, duration_s=round(dur, 3), cache_hit=False)
