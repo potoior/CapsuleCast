@@ -1,0 +1,18 @@
+{
+  "id": "chart-bump",
+  "name": "排名变化图",
+  "role": "body",
+  "motion": "bump-lines",
+  "description": "排名随时间变化的凹凸折线图（bump chart）：多条折线在 4 个时间列间穿插换位，标签跟随线头。适合「谁超过了谁」的排名洗牌、赛道变化、地位更替。",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "min_duration_s": 6,
+  "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "columns", "series", "note"],
+  "example": {
+    "kicker": "排名洗牌",
+    "headline": "四年里谁上谁下",
+    "columns": ["2022", "2023", "2024", "2025"],
+    "series": ["甲|4,3,2,1", "乙|1,2,3,3", "丙|2,1,4,2", "丁|3,4,1,4"],
+    "note": "每条线都换过位置"
+  }
+}

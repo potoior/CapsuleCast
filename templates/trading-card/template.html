@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+<body><template>
+  <style>
+    {{ base_css }}
+    #f-{{ scene_id }} .tc-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      padding: 3cqh 4cqw 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.2cqh;
+    }
+    #f-{{ scene_id }} .tc-head {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.8cqh;
+      text-align: center;
+    }
+    #f-{{ scene_id }} .tc-kicker {
+      font-family: var(--font-mono);
+      font-size: 2.2cqmin;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+    }
+    #f-{{ scene_id }} .tc-headline {
+      font-family: var(--font-display);
+      font-size: 5cqmin;
+      line-height: 1.08;
+      color: var(--ink);
+    }
+    #f-{{ scene_id }} .card-tilt {
+      position: relative;
+      width: 30cqw;
+      height: 62cqh;
+      transform: rotate(-2deg);
+      flex: none;
+    }
+    #f-{{ scene_id }} .card {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: linear-gradient(160deg, var(--tile), color-mix(in srgb, var(--coral) 8%, var(--tile)));
+      border: 2px solid var(--hairline-strong);
+      border-radius: calc(var(--tile-radius) * 1.4);
+      box-shadow:
+        inset 0 0 0 1px color-mix(in srgb, var(--cream) 55%, transparent),
+        inset 0 2cqh 5cqh rgba(0, 0, 0, 0.06),
+        0 18px 40px rgba(0, 0, 0, 0.18);
+      transform-origin: 50% 0%;
+    }
+    #f-{{ scene_id }} .card-band {
+      flex: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1cqw;
+      padding: 1.2cqh 3.6cqw 1.2cqh 1.6cqw;
+      background: var(--ink);
+      color: var(--cream);
+    }
+    #f-{{ scene_id }} .cb-name {
+      font-family: var(--font-display);
+      font-size: 3.4cqmin;
+      line-height: 1.1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    #f-{{ scene_id }} .cb-rarity {
+      flex: none;
+      font-family: var(--font-mono);
+      font-size: 1.5cqmin;
+      letter-spacing: 0.08em;
+      color: var(--coral-soft);
+      white-space: nowrap;
+    }
+    #f-{{ scene_id }} .card-rarity-bar {
+      flex: none;
+      height: 0.8cqh;
+      background: var(--coral);
+    }
+    #f-{{ scene_id }} .card-stats {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      padding: 1.4cqh 1.6cqw;
+      min-height: 0;
+    }
+    #f-{{ scene_id }} .stat-item {
+      width: 100%;
+    }
+    #f-{{ scene_id }} .stat-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1cqw;
+      padding: 0.6cqh 0;
+    }
+    #f-{{ scene_id }} .stat-item + .stat-item .stat-row {
+      border-top: 1px dashed var(--hairline);
+    }
+    #f-{{ scene_id }} .st-k {
+      font-family: var(--font-body);
+      font-size: 2cqmin;
+      color: var(--ink-soft);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    #f-{{ scene_id }} .st-v {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 3cqmin;
+      font-variant-numeric: tabular-nums;
+      color: var(--ink);
+    }
+    #f-{{ scene_id }} .st-bar {
+      width: 100%;
+      height: 0.6cqh;
+      margin-top: 0.5cqh;
+      background: var(--hairline);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    #f-{{ scene_id }} .st-fill {
+      display: block;
+      height: 100%;
+      background: var(--coral);
+      border-radius: 999px;
+      transform-origin: left center;
+    }
+    #f-{{ scene_id }} .card-flavor {
+      flex: none;
+      padding: 0 1.8cqw 2cqh;
+      text-align: center;
+      font-family: var(--font-body);
+      font-size: 1.8cqmin;
+      line-height: 1.35;
+      color: var(--ink-soft);
+    }
+    #f-{{ scene_id }} .card-star {
+      position: absolute;
+      top: 0.7cqh;
+      right: 1cqw;
+      z-index: 2;
+      font-family: var(--font-mono);
+      font-size: 2.4cqmin;
+      line-height: 1;
+      color: var(--coral);
+    }
+    #f-{{ scene_id }} .tc-note {
+      font-family: var(--font-mono);
+      font-size: 1.6cqmin;
+      letter-spacing: 0.08em;
+      color: var(--ink-faint);
+      text-align: center;
+    }
+    @container frame (max-aspect-ratio: 10/16) {
+      #f-{{ scene_id }} .tc-inner {
+        padding: 2.4cqh 4cqw 0;
+        gap: 1cqh;
+      }
+      #f-{{ scene_id }} .tc-headline {
+        font-size: 4.4cqmin;
+      }
+      #f-{{ scene_id }} .card-tilt {
+        width: 68cqw;
+        height: 56cqh;
+      }
+      #f-{{ scene_id }} .st-k {
+        font-size: 1.6cqmin;
+      }
+      #f-{{ scene_id }} .st-v {
+        font-size: 2.4cqmin;
+      }
+      #f-{{ scene_id }} .cb-name {
+        font-size: 3cqmin;
+      }
+    }
+  </style>
+  <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+       data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+    <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+    <div class="hf-safe">
+      <div class="tc-inner">
+        <header class="tc-head">
+          <div class="tc-kicker" id="s-{{ scene_id }}-kicker">{{ fields.get('kicker', '') }}</div>
+          <div class="tc-headline" id="s-{{ scene_id }}-headline">{{ fields.get('headline', '') }}</div>
+        </header>
+        <div class="card-tilt">
+          <div class="card" id="s-{{ scene_id }}-card">
+            <div class="card-band" id="s-{{ scene_id }}-band">
+              <span class="cb-name" id="s-{{ scene_id }}-name">{{ (fields.get('card_name', '') or '').split('|')[0] }}</span>
+              <span class="cb-rarity" id="s-{{ scene_id }}-rarity">◆ {{ fields.get('rarity', '') }}</span>
+            </div>
+            <div class="card-rarity-bar"></div>
+            <div class="card-star" id="s-{{ scene_id }}-star">✦</div>
+            <div class="card-stats">
+              {% for st in fields.get('stats', []) %}
+              {% set parts = st.split('|') %}
+              <div class="stat-item" id="s-{{ scene_id }}-stat-{{ loop.index }}">
+                <div class="stat-row">
+                  <span class="st-k">{{ parts[0] }}</span>
+                  <span class="st-v">{{ parts[1] if parts | length > 1 else '0' }}</span>
+                </div>
+                <div class="st-bar">
+                  <span class="st-fill" id="s-{{ scene_id }}-fill-{{ loop.index }}"
+                        style="width: {{ [parts[1] | int, 100] | min }}%;"></span>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+            <div class="card-flavor" id="s-{{ scene_id }}-flavor">{{ fields.get('flavor', '') }}</div>
+          </div>
+        </div>
+        {% if fields.get('note') %}
+        <div class="tc-note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var SID = "s-{{ scene_id }}";
+      var D = {{ duration }};
+      var tl = gsap.timeline({ paused: true });
+      AM.maskRise(tl, "#" + SID + "-kicker", 0.1);
+      AM.maskRise(tl, "#" + SID + "-headline", 0.25);
+      AM.unfold(tl, "#" + SID + "-card", 0.42);
+      AM.wipe(tl, "#" + SID + "-band", 0.62);
+      AM.stagger(tl, "#" + SID + "-stat-1, #" + SID + "-stat-2, #" + SID + "-stat-3", 0.7, 0.12);
+      {% for st in fields.get('stats', []) %}
+      AM.growX(tl, "#" + SID + "-fill-{{ loop.index }}", {{ 0.7 + loop.index0 * 0.12 }});
+      {% endfor %}
+      tl.fromTo("#" + SID + "-flavor", { opacity: 0 }, { opacity: 1, duration: 0.6 }, 0.82);
+      AM.float(tl, "#" + SID + "-card", 0.9, D * 0.9);
+      {% if fields.get('note') %}
+      tl.fromTo("#" + SID + "-note", { opacity: 0 }, { opacity: 1, duration: 0.5 }, D * 0.88);
+      {% endif %}
+      {% if not is_last %}
+      AM.exitSoft(tl, "#" + SID + "-card", D);
+      {% endif %}
+      tl.to({}, { duration: D }, 0);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["{{ scene_id }}"] = tl;
+    })();
+  </script>
+</template></body></html>

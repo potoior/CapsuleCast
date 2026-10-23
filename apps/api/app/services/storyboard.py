@@ -561,6 +561,31 @@ def _choose_body_template(text: str) -> str:
         return "nutrition-label"
     if re.search(r"命令行|终端|报错|exit|debug|诊断一下", text, re.I):
         return "terminal-window"
+    # ── 第 12 批（思维导图/轨道/三角/秩变/气泡/面积/单据/证书/便签/卡牌）──
+    if re.search(r"思维导图|发散|拆解成|分成几块|要素拆", text):
+        return "diagram-mindmap"
+    if re.search(r"生态系统|围绕|外围|轨道|能力圈|一圈", text):
+        return "diagram-orbit"
+    if re.search(r"三角|三难|不可能三角|只能选两|三者只能", text):
+        return "diagram-triangle"
+    if re.search(r"排名变化|洗牌|反超|名次|谁上谁下|掉队", text):
+        return "chart-bump"
+    if re.search(r"气泡图|客单价|复购率|三维对比|人群气泡", text):
+        return "chart-bubble"
+    if re.search(r"增长曲线|累积|总面积|总量趋势|面积图", text):
+        return "chart-area"
+    if re.search(r"工资条|到手多少|实发|五险一金|扣完", text):
+        return "payslip-stub"
+    if re.search(r"发票|开票|报销|费用明细单", text):
+        return "invoice-sheet"
+    if re.search(r"登机牌|起飞|单程|落地.{0,6}转机", text):
+        return "boarding-pass"
+    if re.search(r"证书|奖状|认证|荣誉|颁发|达标", text):
+        return "certificate-award"
+    if re.search(r"便利贴|便签|头脑风暴|贴满|灵感墙", text):
+        return "sticky-notes"
+    if re.search(r"卡牌|属性卡|稀有度|抽卡|能力值|这张牌", text):
+        return "trading-card"
     if re.search(r"翻牌|登机口|航班|终点站|人生航站", text):
         return "split-flap"
     if re.search(r"主线任务|打怪|升级|任务面板|经验值", text):
@@ -801,6 +826,11 @@ def _fields_batch11(text: str) -> dict:
     raise _NoFit("第 11 批结构化字段交给 LLM 合成")
 
 
+def _fields_batch12(text: str) -> dict:
+    """第 12 批（导图/轨道/三角/秩变/气泡/面积/工资条/发票/登机牌/证书/便签/卡牌）：交给 LLM 合成。"""
+    raise _NoFit("第 12 批结构化字段交给 LLM 合成")
+
+
 def _fields_rank(text: str) -> dict:
     """排行榜：名次节点对（3-5 条）。"""
     items = _pair_nodes(text, min_n=3, max_n=5)
@@ -1037,6 +1067,18 @@ _EXTRACTORS = {
     "resume-card": _fields_batch11, "itinerary-card": _fields_batch11,
     "waybill-track": _fields_batch11, "monitor-dash": _fields_batch11,
     "menu-board": _fields_batch11, "floor-plan": _fields_batch11,
+    "diagram-mindmap": _fields_batch12,
+    "diagram-orbit": _fields_batch12,
+    "diagram-triangle": _fields_batch12,
+    "chart-bump": _fields_batch12,
+    "chart-bubble": _fields_batch12,
+    "chart-area": _fields_batch12,
+    "payslip-stub": _fields_batch12,
+    "invoice-sheet": _fields_batch12,
+    "boarding-pass": _fields_batch12,
+    "certificate-award": _fields_batch12,
+    "sticky-notes": _fields_batch12,
+    "trading-card": _fields_batch12,
     "rank-list": _fields_rank,
     "diagram-fishbone": _fields_fishbone,
     "diagram-journey": _fields_journey,

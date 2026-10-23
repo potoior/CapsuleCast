@@ -1,0 +1,18 @@
+{
+  "id": "diagram-mindmap",
+  "name": "思维导图",
+  "role": "body",
+  "motion": "branch-grow",
+  "description": "中心主题向四周发散的思维导图：中心大节点 + 3-5 个分支节点 + 连线生长。适合拆解一个概念的分类、要素、思路分支。",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "min_duration_s": 6,
+  "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "center", "branches", "note"],
+  "example": {
+    "kicker": "思维导图",
+    "headline": "一个话题怎么拆开看",
+    "center": "AI 写作|中心",
+    "branches": ["选题|找角度", "结构|搭骨架", "表达|磨句子", "校对|去硬伤"],
+    "note": "先发散，再收拢"
+  }
+}

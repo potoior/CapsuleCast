@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["kicker", "headline", "core", "moons"],
+  "properties": {
+    "kicker": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16
+    },
+    "headline": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16
+    },
+    "core": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 18
+    },
+    "moons": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 4,
+      "items": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 16
+      }
+    },
+    "note": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 22
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "id": "chart-area",
+  "name": "面积趋势图",
+  "role": "body",
+  "motion": "area-sweep",
+  "description": "面积折线图：一条趋势线自左向右擦出，线下面积同步铺开，峰值点高亮标注。适合累积量、增长曲线、总量变化。",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "min_duration_s": 6,
+  "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "points", "peak", "note"],
+  "example": {
+    "kicker": "增长曲线",
+    "headline": "五年，从零到一千万",
+    "points": ["2021|120", "2022|260", "2023|480", "2024|760", "2025|1000"],
+    "peak": "2024 拐点|增长换了引擎",
+    "note": "斜率变了，故事也变了"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "sticky-notes",
+  "name": "便利贴墙",
+  "role": "body",
+  "motion": "notes-pin",
+  "description": "一面便利贴墙：3-6 张歪斜的便签依次贴上，每张一句短要点，顶部一条胶带。适合头脑风暴、待办清单、灵感碎片、复盘要点。",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "min_duration_s": 6,
+  "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "notes", "note"],
+  "example": {
+    "kicker": "头脑风暴",
+    "headline": "今晚先写满这面墙",
+    "notes": ["先别评判", "越多越好", "组合旧点子", "最后再收拢"],
+    "note": "便签不嫌多"
+  }
+}

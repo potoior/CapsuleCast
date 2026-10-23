@@ -1,0 +1,19 @@
+{
+  "id": "chart-bubble",
+  "name": "气泡图",
+  "role": "body",
+  "motion": "bubble-pop",
+  "description": "三维气泡散点图：横轴、纵轴、气泡大小各表达一个维度，气泡依次弹出并轻微漂浮。适合「两个指标 + 一个体量」的三维对比（市场、人群、项目组合）。",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "min_duration_s": 6,
+  "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "x_label", "y_label", "bubbles", "note"],
+  "example": {
+    "kicker": "人群气泡",
+    "headline": "两个指标看清一群人",
+    "x_label": "客单价 →",
+    "y_label": "复购率 →",
+    "bubbles": ["白领|62,74,34", "学生|28,42,52", "家庭|74,58,46"],
+    "note": "气泡越大，人越多"
+  }
+}

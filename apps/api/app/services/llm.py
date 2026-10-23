@@ -238,6 +238,18 @@ DIAGRAM_TIDS = frozenset({
     "finance-candle", "medical-report", "legal-clause", "grade-card",
     "resume-card", "itinerary-card", "waybill-track", "monitor-dash",
     "menu-board", "floor-plan",
+    "diagram-mindmap",
+    "diagram-orbit",
+    "diagram-triangle",
+    "chart-bump",
+    "chart-bubble",
+    "chart-area",
+    "payslip-stub",
+    "invoice-sheet",
+    "boarding-pass",
+    "certificate-award",
+    "sticky-notes",
+    "trading-card",
 })
 
 

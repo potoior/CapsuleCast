@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+<body><template>
+  <style>
+    {{ base_css }}
+    #f-{{ scene_id }} .stage {
+      position: absolute;
+      inset: 0;
+    }
+    #f-{{ scene_id }} .kicker {
+      position: absolute;
+      left: 0;
+      top: 8cqh;
+      width: 100%;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 2.2cqmin;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      color: var(--coral-deep);
+    }
+    #f-{{ scene_id }} .headline {
+      position: absolute;
+      left: 0;
+      top: 13.5cqh;
+      width: 100%;
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: 5.2cqmin;
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--ink);
+    }
+    #f-{{ scene_id }} .wall {
+      position: absolute;
+      left: 50%;
+      top: 24%;
+      width: 84cqw;
+      height: 54cqh;
+      translate: -50% 0;
+    }
+    #f-{{ scene_id }} .wall-bg {
+      position: absolute;
+      inset: 0;
+      opacity: 0.5;
+      background-image:
+        repeating-linear-gradient(90deg, transparent 0 3cqw, var(--hairline) 3cqw calc(3cqw + 1px)),
+        repeating-linear-gradient(0deg, transparent 0 3cqh, var(--hairline) 3cqh calc(3cqh + 1px));
+    }
+    #f-{{ scene_id }} .note {
+      position: absolute;
+      width: 20cqw;
+      height: 16cqh;
+      translate: -50% -50%;
+    }
+    #f-{{ scene_id }} .note-inner {
+      position: absolute;
+      inset: 0;
+      border: 1px solid var(--hairline);
+      border-radius: 0.4cqmin;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2cqmin;
+    }
+    #f-{{ scene_id }} .n-text {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 2.1cqmin;
+      line-height: 1.5;
+      text-align: center;
+      color: var(--ink);
+      overflow-wrap: anywhere;
+    }
+    #f-{{ scene_id }} .n-tape {
+      position: absolute;
+      top: -0.8cqh;
+      left: 35%;
+      width: 30%;
+      height: 1.6cqh;
+      background: rgba(255, 255, 255, 0.55);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      transform: rotate(-2deg);
+    }
+    {% set n = fields.get('notes')|length %}
+    {% if n == 3 %}
+      {% set xs = [26, 72, 50] %}
+      {% set ys = [30, 28, 66] %}
+      {% set rots = [-4, 3, -2] %}
+    {% elif n == 4 %}
+      {% set xs = [28, 72, 28, 72] %}
+      {% set ys = [28, 28, 64, 64] %}
+      {% set rots = [-4, 3, -2, 4] %}
+    {% elif n == 5 %}
+      {% set xs = [20, 50, 80, 34, 66] %}
+      {% set ys = [26, 26, 26, 64, 64] %}
+      {% set rots = [-4, 3, -2, 4, -3] %}
+    {% else %}
+      {% set xs = [20, 50, 80, 20, 50, 80] %}
+      {% set ys = [26, 26, 26, 64, 64, 64] %}
+      {% set rots = [-4, 3, -2, 4, -3, 2] %}
+    {% endif %}
+    {% for i in range(n) %}
+    #f-{{ scene_id }} .note-{{ i }} {
+      left: {{ xs[i] }}%;
+      top: {{ ys[i] }}%;
+    }
+    #f-{{ scene_id }} .note-{{ i }} .note-inner {
+      transform: rotate({{ rots[i] }}deg);
+      {% if i % 3 == 0 %}
+      background: var(--coral-soft);
+      {% elif i % 3 == 1 %}
+      background: var(--tile);
+      {% else %}
+      background: color-mix(in srgb, var(--coral) 10%, var(--cream));
+      {% endif %}
+    }
+    {% endfor %}
+    {% if n == 3 %}
+    #f-{{ scene_id }} .note {
+      width: 24cqw;
+      height: 18cqh;
+    }
+    {% endif %}
+    #f-{{ scene_id }} .note + .note {
+      mix-blend-mode: normal;
+    }
+    #f-{{ scene_id }} .footnote {
+      position: absolute;
+      left: 0;
+      top: 78.5cqh;
+      width: 100%;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 1.9cqmin;
+      color: var(--ink-faint);
+    }
+    @container frame (max-aspect-ratio: 10/16) {
+      #f-{{ scene_id }} .wall {
+        width: 92cqw;
+        height: 46cqh;
+        top: 26%;
+      }
+      #f-{{ scene_id }} .note {
+        width: 28cqw;
+        height: 14cqh;
+      }
+      {% if n == 3 %}
+      #f-{{ scene_id }} .note { width: 28cqw; height: 14cqh; }
+      #f-{{ scene_id }} .note-0 { left: 50%; top: 22%; }
+      #f-{{ scene_id }} .note-1 { left: 50%; top: 50%; }
+      #f-{{ scene_id }} .note-2 { left: 50%; top: 78%; }
+      {% endif %}
+    }
+  </style>
+  <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+       data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+    <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+    <div class="hf-safe">
+      <div class="stage">
+        <div class="kicker" id="s-{{ scene_id }}-kicker">{{ fields.get('kicker') }}</div>
+        <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.get('headline') }}</div>
+        <div class="wall" id="s-{{ scene_id }}-wall">
+          <div class="wall-bg" id="s-{{ scene_id }}-wall-bg"></div>
+          {% for item in fields.get('notes') %}
+          <div class="note note-{{ loop.index0 }}" id="s-{{ scene_id }}-note-{{ loop.index0 }}">
+            <div class="note-inner" id="s-{{ scene_id }}-note-inner-{{ loop.index0 }}">
+              <div class="n-tape"></div>
+              <div class="n-text">{{ item }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% if fields.get('note') %}
+        <div class="footnote" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var SID = "s-{{ scene_id }}";
+      var D = {{ duration }};
+      var N = {{ n }};
+      var tl = gsap.timeline({ paused: true });
+      tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0.1);
+      tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0.25);
+      tl.fromTo("#" + SID + "-wall-bg", { opacity: 0 }, { opacity: 0.5, duration: 0.7, ease: "power1.out" }, 0.4);
+      for (var i = 0; i < N; i++) {
+        AM.unfold(tl, "#" + SID + "-note-" + i, 0.5 + i * 0.16);
+      }
+      {% if fields.get('note') %}
+      tl.fromTo("#" + SID + "-note", { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0.85 * D);
+      {% endif %}
+      {% if not is_last %}
+      {% set ex = [] %}
+      {% for i in range(n) %}{% set _ = ex.append("#s-" ~ scene_id ~ "-note-" ~ i) %}{% endfor %}
+      AM.exitSoft(tl, "{{ ex|join(', ') }}", D);
+      {% endif %}
+      tl.to({}, { duration: D }, 0);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["{{ scene_id }}"] = tl;
+    })();
+  </script>
+</template></body></html>

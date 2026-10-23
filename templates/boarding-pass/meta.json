@@ -1,0 +1,20 @@
+{
+  "id": "boarding-pass",
+  "name": "登机牌",
+  "role": "body",
+  "motion": "unfold",
+  "description": "一张登机牌：出发地 → 目的地、航班/时间/登机口/座位四格信息，中间打孔虚线撕票线。适合「从 A 到 B 的旅程」、迁移路线、阶段转换、出发与抵达。",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "min_duration_s": 6,
+  "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "route", "flight", "gate", "seat", "note"],
+  "example": {
+    "kicker": "迁移时刻",
+    "headline": "从旧系统登机",
+    "route": ["旧架构|PVG", "新架构|NRT"],
+    "flight": "MU523|08:40",
+    "gate": "A12|登机口",
+    "seat": "32K|座位",
+    "note": "单程，不回头"
+  }
+}

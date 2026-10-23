@@ -1,0 +1,41 @@
+{
+  "type": "object",
+  "required": ["kicker", "headline", "x_label", "y_label", "bubbles"],
+  "properties": {
+    "kicker": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16
+    },
+    "headline": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16
+    },
+    "x_label": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 12
+    },
+    "y_label": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 12
+    },
+    "bubbles": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 4,
+      "items": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 20
+      }
+    },
+    "note": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 22
+    }
+  }
+}

@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+<body><template>
+  {% set pts = fields.points %}
+  {% set n = pts|length %}
+  {% set step = 88.0 / (n - 1) %}
+  {% set mx = namespace(v=0) %}
+  {% for p in pts %}
+    {% set pv = p.split("|")[1]|int %}
+    {% if pv > mx.v %}{% set mx.v = pv %}{% endif %}
+  {% endfor %}
+  {% if mx.v == 0 %}{% set mx.v = 1 %}{% endif %}
+  {% set pk = namespace(i=0) %}
+  {% for p in pts %}
+    {% if p.split("|")[1]|int == mx.v %}{% set pk.i = loop.index0 %}{% endif %}
+  {% endfor %}
+  {% set geo = namespace(xs=[], ys=[], area="", line="") %}
+  {% for p in pts %}
+    {% set x = 6 + loop.index0 * step %}
+    {% set y = 92 - (p.split("|")[1]|int / mx.v) * 78 %}
+    {% set geo.xs = geo.xs + [x] %}
+    {% set geo.ys = geo.ys + [y] %}
+    {% if loop.first %}
+      {% set geo.area = "M " ~ ("%.2f"|format(x)) ~ " " ~ ("%.2f"|format(y)) %}
+      {% set geo.line = "M " ~ ("%.2f"|format(x)) ~ " " ~ ("%.2f"|format(y)) %}
+    {% else %}
+      {% set geo.area = geo.area ~ " L " ~ ("%.2f"|format(x)) ~ " " ~ ("%.2f"|format(y)) %}
+      {% set geo.line = geo.line ~ " L " ~ ("%.2f"|format(x)) ~ " " ~ ("%.2f"|format(y)) %}
+    {% endif %}
+  {% endfor %}
+  {% set area_d = geo.area ~ " L 94 100 L 6 100 Z" %}
+  {% set px = geo.xs[pk.i] %}
+  {% set py = geo.ys[pk.i] %}
+  <style>
+    {{ base_css }}
+    #f-{{ scene_id }} .hf-safe {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-sizing: border-box;
+      padding-top: 5.5cqh;
+    }
+    #f-{{ scene_id }} .top {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    #f-{{ scene_id }} .kicker {
+      font-family: var(--font-mono);
+      font-size: 1.9cqmin;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--coral-deep);
+    }
+    #f-{{ scene_id }} .headline {
+      margin-top: 1cqh;
+      font-family: var(--font-display);
+      font-size: 5.4cqmin;
+      font-weight: 600;
+      line-height: 1.12;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+    #f-{{ scene_id }} .area-zone {
+      position: relative;
+      width: 80cqw;
+      height: 54cqh;
+      margin-top: 2cqh;
+      flex: 0 0 auto;
+    }
+    #f-{{ scene_id }} .grid-line {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 0;
+      border-top: 1px dashed var(--hairline);
+      transform: scaleX(0);
+      transform-origin: left center;
+    }
+    #f-{{ scene_id }} .area-clip {
+      position: absolute;
+      inset: 0;
+    }
+    #f-{{ scene_id }} .area-clip svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+    #f-{{ scene_id }} .pt-label {
+      position: absolute;
+      top: 94%;
+      transform: translate(-50%, 0);
+      font-family: var(--font-mono);
+      font-size: 1.6cqmin;
+      color: var(--ink-faint);
+      white-space: nowrap;
+    }
+    #f-{{ scene_id }} .chart-dot {
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+    #f-{{ scene_id }} .peak-ring {
+      position: absolute;
+      width: 3.6cqmin;
+      height: 3.6cqmin;
+      margin-left: -1.8cqmin;
+      margin-top: -1.8cqmin;
+      border: 1px solid var(--coral);
+      border-radius: 50%;
+      opacity: 0;
+    }
+    #f-{{ scene_id }} .peak-note {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3cqh;
+      padding: 0.8cqh 1.2cqw;
+      background: var(--tile);
+      border: 1px solid var(--hairline-strong);
+      border-radius: 0.8cqmin;
+      white-space: nowrap;
+      box-sizing: border-box;
+    }
+    #f-{{ scene_id }} .pn-main {
+      font-family: var(--font-body);
+      font-size: 2cqmin;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    #f-{{ scene_id }} .pn-sub {
+      font-family: var(--font-mono);
+      font-size: 1.5cqmin;
+      color: var(--ink-faint);
+    }
+    #f-{{ scene_id }} .note {
+      margin-top: 1.4cqh;
+      font-family: var(--font-mono);
+      font-size: 1.7cqmin;
+      color: var(--ink-faint);
+      text-align: center;
+    }
+    @container frame (max-aspect-ratio: 10/16) {
+      #f-{{ scene_id }} .area-zone {
+        width: 92cqw;
+        height: 48cqh;
+      }
+      #f-{{ scene_id }} .headline {
+        font-size: 4.8cqmin;
+      }
+      #f-{{ scene_id }} .note {
+        font-size: 1.8cqmin;
+      }
+    }
+  </style>
+  <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+       data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+    <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+    <div class="hf-safe">
+      <div class="top">
+        <div class="kicker" id="s-{{ scene_id }}-kicker">{{ fields.kicker }}</div>
+        <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.headline }}</div>
+      </div>
+      <div class="area-zone" id="s-{{ scene_id }}-zone">
+        {% for gy in [0, 50, 100] %}
+        <div class="grid-line" id="s-{{ scene_id }}-grid-{{ loop.index0 }}" style="top: {{ gy }}%"></div>
+        {% endfor %}
+        <div class="area-clip" id="s-{{ scene_id }}-area-clip">
+          <svg id="s-{{ scene_id }}-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+            <path id="s-{{ scene_id }}-area" d="{{ area_d }}"
+                  fill="color-mix(in srgb, var(--coral) 16%, transparent)" stroke="none"></path>
+            <path id="s-{{ scene_id }}-line" d="{{ geo.line }}"
+                  fill="none" stroke="var(--coral)" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"></path>
+            {% for p in pts %}
+            <circle class="chart-dot" id="s-{{ scene_id }}-dot-{{ loop.index0 }}"
+                    cx="{{ '%.2f'|format(geo.xs[loop.index0]) }}" cy="{{ '%.2f'|format(geo.ys[loop.index0]) }}"
+                    r="{% if loop.index0 == pk.i %}2.2{% else %}1.5{% endif %}" fill="var(--coral)"></circle>
+            {% endfor %}
+          </svg>
+        </div>
+        {% for p in pts %}
+        <div class="pt-label" id="s-{{ scene_id }}-pt-label-{{ loop.index0 }}"
+             style="left: {{ '%.3f'|format(geo.xs[loop.index0]) }}%">{{ p.split("|")[0] }}</div>
+        {% endfor %}
+        <div class="peak-ring" id="s-{{ scene_id }}-peak-ring"
+             style="left: {{ '%.2f'|format(px) }}%; top: {{ '%.2f'|format(py) }}%"></div>
+        <div class="peak-note" id="s-{{ scene_id }}-peak-note"
+             style="left: {{ '%.2f'|format(px) }}%; top: calc({{ '%.2f'|format(py) }}% - 2.6cqh); transform: {% if px > 72 %}translate(-88%, -100%){% elif px < 28 %}translate(-12%, -100%){% else %}translate(-50%, -100%){% endif %};">
+          <div class="pn-main">{{ fields.peak.split("|")[0] }}</div>
+          <div class="pn-sub">{{ fields.peak.split("|")[1] }}</div>
+        </div>
+      </div>
+      {% if fields.get('note') %}
+      <div class="foot">
+        <div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  <script>
+    (function () {
+      var SID = "s-{{ scene_id }}";
+      var D = {{ duration }};
+      var tl = gsap.timeline({ paused: true });
+
+      AM.maskRise(tl, "#" + SID + "-kicker", 0.1);
+      AM.maskRise(tl, "#" + SID + "-headline", 0.25);
+
+      {% for gy in [0, 50, 100] %}
+      AM.growX(tl, "#" + SID + "-grid-{{ loop.index0 }}", {{ '%.2f'|format(0.35 + loop.index0 * 0.06) }});
+      {% endfor %}
+
+      AM.wipe(tl, "#" + SID + "-area-clip", 0.5, 0.9, "left");
+
+      {% for p in pts %}
+      AM.pop(tl, "#" + SID + "-dot-{{ loop.index0 }}", {{ '%.2f'|format(0.9 + loop.index0 * 0.1) }});
+      {% endfor %}
+
+      var peakAt = 1.3 * D * 0.62;
+      tl.fromTo("#" + SID + "-peak-ring", { opacity: 0 }, { opacity: 1, duration: 0.3 }, peakAt);
+      AM.pulse(tl, "#" + SID + "-peak-ring", peakAt + 0.3);
+      AM.pop(tl, "#" + SID + "-peak-note", peakAt);
+
+      {% if fields.get('note') %}
+      tl.fromTo("#" + SID + "-note", { opacity: 0 }, { opacity: 1, duration: 0.6 }, 0.82 * D);
+      {% endif %}
+
+      {% if not is_last %}
+      AM.exitSoft(tl, "#" + SID + "-area, #" + SID + "-line, #" + SID + "-peak-note", D);
+      {% endif %}
+
+      tl.to({}, { duration: D }, 0);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["{{ scene_id }}"] = tl;
+    })();
+  </script>
+</template></body></html>

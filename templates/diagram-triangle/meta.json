@@ -1,0 +1,18 @@
+{
+  "id": "diagram-triangle",
+  "name": "铁三角",
+  "role": "body",
+  "motion": "triangle-draw",
+  "description": "三个顶点 + 中心结论的三角关系图：三条边生长连成三角，三个要素依次盖章到场，中心给出取舍结论。适合「快好省」式三难取舍、三方制衡、三要素模型。",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "min_duration_s": 6,
+  "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "vertices", "center", "note"],
+  "example": {
+    "kicker": "不可能三角",
+    "headline": "三个都想要，只能选俩",
+    "vertices": ["快|三天上线", "好|零缺陷", "省|不花钱"],
+    "center": "每次只能保两个",
+    "note": "剩下一个必然打折"
+  }
+}

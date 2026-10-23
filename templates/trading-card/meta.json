@@ -1,0 +1,20 @@
+{
+  "id": "trading-card",
+  "name": "卡牌",
+  "role": "body",
+  "motion": "card-unfold",
+  "description": "一张收藏卡牌：卡名 + 稀有度色带 + 三条属性数值 + 底部一句卡面描述，卡牌微微悬浮。适合把产品/角色/版本做成「属性卡」来对比，或做能力盘点。",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "min_duration_s": 6,
+  "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "card_name", "rarity", "stats", "flavor", "note"],
+  "example": {
+    "kicker": "能力卡牌",
+    "headline": "这张牌强在什么地方",
+    "card_name": "推理引擎|SSR",
+    "rarity": "传说级",
+    "stats": ["算力|92", "速度|68", "稳定|85"],
+    "flavor": "每张牌都有自己的打法。",
+    "note": "属性没有全满的牌"
+  }
+}

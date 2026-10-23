@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+<body><template>
+  <style>
+    {{ base_css }}
+    #f-{{ scene_id }} .hf-safe { position: absolute; inset: 0; }
+    #f-{{ scene_id }} .scene-body {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      padding: 5cqh 4cqw 0;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #f-{{ scene_id }} .orbit-head {
+      text-align: center;
+      width: 100%;
+      z-index: 6;
+    }
+    #f-{{ scene_id }} .kicker {
+      font-family: var(--font-mono);
+      font-size: 2cqmin;
+      letter-spacing: 0.28em;
+      color: var(--coral-deep);
+      text-transform: uppercase;
+    }
+    #f-{{ scene_id }} .headline {
+      margin-top: 1.2cqh;
+      font-family: var(--font-display);
+      font-size: 5.4cqmin;
+      line-height: 1.12;
+      color: var(--ink);
+      font-weight: 600;
+    }
+    #f-{{ scene_id }} .orbit-zone {
+      position: relative;
+      width: 84cqw;
+      height: 52cqh;
+      margin: 1cqh auto 0;
+      flex: 0 0 auto;
+    }
+    #f-{{ scene_id }} .ring {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      border: 1px dashed var(--hairline);
+      border-radius: 50%;
+      z-index: 1;
+    }
+    #f-{{ scene_id }} .ring-1 { width: 56cqw; height: 46cqh; }
+    #f-{{ scene_id }} .ring-2 { width: 38cqw; height: 30cqh; }
+    #f-{{ scene_id }} .orbiter {
+      position: absolute;
+      inset: 0;
+      transform-origin: 50% 50%;
+      z-index: 2;
+    }
+    #f-{{ scene_id }} .core-halo {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 36cqw;
+      height: 36cqw;
+      transform: translate(-50%, -50%);
+      border: 1px solid var(--coral);
+      border-radius: 50%;
+      opacity: 0.25;
+      z-index: 3;
+      pointer-events: none;
+    }
+    #f-{{ scene_id }} .orbit-core {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 30cqw;
+      padding: 2.2cqh 1.4cqw;
+      box-sizing: border-box;
+      transform: translate(-50%, -50%);
+      border-radius: var(--tile-radius);
+      background: var(--tile);
+      border: 2px solid var(--coral);
+      text-align: center;
+      z-index: 4;
+      box-shadow: 0 1.4cqh 4cqh color-mix(in srgb, var(--coral) 14%, transparent);
+    }
+    #f-{{ scene_id }} .oc-name {
+      font-family: var(--font-display);
+      font-size: 4.2cqmin;
+      line-height: 1.12;
+      color: var(--ink);
+      font-weight: 600;
+    }
+    #f-{{ scene_id }} .oc-sub {
+      margin-top: 0.8cqh;
+      font-family: var(--font-mono);
+      font-size: 1.9cqmin;
+      color: var(--ink-faint);
+      letter-spacing: 0.04em;
+    }
+    #f-{{ scene_id }} .moon {
+      position: absolute;
+      width: 20cqw;
+      padding: 1.2cqh 0.9cqw;
+      box-sizing: border-box;
+      transform: translate(-50%, -50%);
+      border-radius: 999px;
+      background: var(--tile);
+      border: 1px solid var(--hairline-strong);
+      text-align: center;
+      box-shadow: 0 0.8cqh 2.4cqh color-mix(in srgb, var(--ink) 6%, transparent);
+    }
+    #f-{{ scene_id }} .mn-name {
+      font-family: var(--font-body);
+      font-size: 2.3cqmin;
+      font-weight: 600;
+      line-height: 1.2;
+      color: var(--ink);
+    }
+    #f-{{ scene_id }} .mn-sub {
+      margin-top: 0.4cqh;
+      font-family: var(--font-mono);
+      font-size: 1.6cqmin;
+      line-height: 1.25;
+      color: var(--ink-faint);
+    }
+    #f-{{ scene_id }} .orbit-note {
+      position: absolute;
+      left: 8cqw;
+      right: 8cqw;
+      top: 62cqh;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 1.9cqmin;
+      color: var(--ink-soft);
+      letter-spacing: 0.04em;
+      z-index: 5;
+    }
+    {% set moons = fields.get('moons') %}
+    {% set pos_map = {2: [[78, 50], [22, 50]], 3: [[74.2, 61.5], [25.8, 61.5], [50, 27]], 4: [[78, 50], [50, 73], [22, 50], [50, 27]]} %}
+    {% set pos = pos_map[moons|length] %}
+    {% for m in moons %}
+    #f-{{ scene_id }} .moon-{{ loop.index }} { left: {{ pos[loop.index0][0] }}%; top: {{ pos[loop.index0][1] }}%; }
+    {% endfor %}
+    @container frame (max-aspect-ratio: 10/16) {
+      #f-{{ scene_id }} .scene-body { padding-top: 6cqh; }
+      #f-{{ scene_id }} .headline { font-size: 6cqmin; }
+      #f-{{ scene_id }} .orbit-zone { width: 92cqw; height: 56cqh; }
+      #f-{{ scene_id }} .orbit-core { width: 40cqw; }
+      #f-{{ scene_id }} .moon { width: 26cqw; }
+      #f-{{ scene_id }} .ring-1 { width: 64cqw; height: 44cqh; }
+      #f-{{ scene_id }} .ring-2 { width: 44cqw; height: 26cqh; }
+      #f-{{ scene_id }} .orbit-note { top: 62cqh; left: 5cqw; right: 5cqw; }
+    }
+  </style>
+  <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+       data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+    <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+    <div class="hf-safe">
+      <div class="scene-body">
+        <div class="orbit-head">
+          <div class="kicker" id="s-{{ scene_id }}-kicker">{{ fields.get('kicker') }}</div>
+          <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.get('headline') }}</div>
+        </div>
+        <div class="orbit-zone">
+          <div class="ring ring-1" id="s-{{ scene_id }}-ring-1"></div>
+          <div class="ring ring-2" id="s-{{ scene_id }}-ring-2"></div>
+          <div class="orbiter" id="s-{{ scene_id }}-orbiter">
+            {% for m in moons %}
+            {% set parts = m.split('|') %}
+            <div class="moon moon-{{ loop.index }}" id="s-{{ scene_id }}-moon-{{ loop.index }}">
+              <div class="mn-name">{{ parts[0] }}</div>
+              {% if parts|length > 1 %}<div class="mn-sub">{{ parts[1] }}</div>{% endif %}
+            </div>
+            {% endfor %}
+          </div>
+          <div class="core-halo" id="s-{{ scene_id }}-halo"></div>
+          {% set core_parts = fields.get('core').split('|') %}
+          <div class="orbit-core" id="s-{{ scene_id }}-core">
+            <div class="oc-name">{{ core_parts[0] }}</div>
+            {% if core_parts|length > 1 %}<div class="oc-sub">{{ core_parts[1] }}</div>{% endif %}
+          </div>
+        </div>
+        {% if fields.get('note') %}
+        <div class="orbit-note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var SID = "s-{{ scene_id }}";
+      var D = {{ duration }};
+      var tl = gsap.timeline({ paused: true });
+      AM.maskRise(tl, "#" + SID + "-kicker", 0.1 * D);
+      AM.maskRise(tl, "#" + SID + "-headline", 0.16 * D);
+      AM.pop(tl, "#" + SID + "-ring-1", 0.28 * D);
+      AM.pop(tl, "#" + SID + "-ring-2", 0.34 * D);
+      AM.focus(tl, "#" + SID + "-core", 0.35);
+      AM.pulse(tl, "#" + SID + "-halo", 0.6, 2.4);
+      var nMoons = {{ moons|length }};
+      for (var i = 0; i < nMoons; i++) {
+        AM.pop(tl, "#" + SID + "-moon-" + (i + 1), 0.5 + i * 0.12);
+      }
+      AM.orbit(tl, "#" + SID + "-orbiter", 0.5, D * 0.85, 24);
+      {% if fields.get('note') %}
+      AM.maskRise(tl, "#" + SID + "-note", 0.78 * D);
+      {% endif %}
+      {% if not is_last %}
+      AM.exitSoft(tl, "#" + SID + "-core, #" + SID + "-note", D);
+      {% endif %}
+      tl.to({}, { duration: D }, 0);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["{{ scene_id }}"] = tl;
+    })();
+  </script>
+</template></body></html>

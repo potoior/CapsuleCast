@@ -103,6 +103,66 @@ window.AM = (function () {
       at || 0.4);
   }
 
+  /* ── 进阶元素（第二批，108 模板时代扩充）──────────────── */
+
+  // 逐项淡入（列表/卡片：统一 y+opacity 错峰，最通用的入场）
+  function stagger(tl, sel, at, dur, st) {
+    tl.fromTo(sel, { opacity: 0, y: 22 },
+      { opacity: 1, y: 0, duration: dur || 0.55, ease: "power3.out", stagger: st || 0.09 }, at);
+  }
+
+  // 横向滑入（dir=-1 左进 / 1 右进）
+  function slideX(tl, sel, at, dur, dir, st) {
+    var d = (dir || 1);
+    tl.fromTo(sel, { opacity: 0, x: 56 * d },
+      { opacity: 1, x: 0, duration: dur || 0.65, ease: "power3.out", stagger: st || 0.08 }, at);
+  }
+
+  // 生长线（进度条/分隔线：scaleX 0→1，需在 CSS 里给 transform-origin:left）
+  function growX(tl, sel, at, dur, st) {
+    tl.fromTo(sel, { scaleX: 0, opacity: 0.6 },
+      { scaleX: 1, opacity: 1, duration: dur || 0.8, ease: "power3.inOut", stagger: st || 0.1 }, at);
+  }
+
+  // 盖章（印章/认证：放大下砸 + 落定微倾，冲击感）
+  function stamp(tl, sel, at, dur) {
+    tl.fromTo(sel, { opacity: 0, scale: 2.6, rotation: -16 },
+      { opacity: 1, scale: 1, rotation: -6, duration: dur || 0.45, ease: "power4.in" }, at);
+  }
+
+  // 轨道环绕（卫星/装饰：绕自身中心匀速转固定角度；配合外层容器定位）
+  function orbit(tl, sel, at, D, deg) {
+    tl.fromTo(sel, { rotation: 0 },
+      { rotation: (deg === undefined ? 360 : deg), duration: D || 6, ease: "none",
+        transformOrigin: "50% 50%", stagger: 0 }, at || 0);
+  }
+
+  // 走马灯（滚动条/公告：匀速平推，距离按内容宽度给）
+  function marquee(tl, sel, at, D, dist) {
+    tl.fromTo(sel, { x: 0 },
+      { x: -(dist || 900), duration: D || 8, ease: "none", stagger: 0 }, at || 0);
+  }
+
+  // 光标闪烁（终端/输入框：固定轮次，确定性）
+  function blink(tl, sel, at) {
+    tl.fromTo(sel, { opacity: 1 },
+      { opacity: 0, duration: 0.46, ease: "steps(1)", yoyo: true, repeat: 11, stagger: 0 },
+      at || 0);
+  }
+
+  // 涟漪（强调点：圆环外扩消散，多次错峰）
+  function ripple(tl, sel, at, dur) {
+    tl.fromTo(sel, { scale: 0.5, opacity: 0.7 },
+      { scale: 2.2, opacity: 0, duration: dur || 1.0, ease: "power1.out", stagger: 0.35 }, at);
+  }
+
+  // 展开（票券/卡片：3D 翻起落定，需父级 perspective 或内置 transformPerspective）
+  function unfold(tl, sel, at, dur) {
+    tl.fromTo(sel,
+      { opacity: 0, rotationX: -70, y: 26, transformPerspective: 900, transformOrigin: "50% 0%" },
+      { opacity: 1, rotationX: 0, y: 0, duration: dur || 0.7, ease: "power3.out", stagger: 0.1 }, at);
+  }
+
   /* ── 出场（为转场让路，非全隐）──────────────────────────── */
 
   function exitSoft(tl, sel, D) {
@@ -113,5 +173,8 @@ window.AM = (function () {
 
   return { q: q, pop: pop, maskRise: maskRise, wipe: wipe, focus: focus,
            draw: draw, countUp: countUp, kenburns: kenburns, pulse: pulse,
-           shimmer: shimmer, float: float, exitSoft: exitSoft };
+           shimmer: shimmer, float: float, exitSoft: exitSoft,
+           stagger: stagger, slideX: slideX, growX: growX, stamp: stamp,
+           orbit: orbit, marquee: marquee, blink: blink, ripple: ripple,
+           unfold: unfold };
 })();

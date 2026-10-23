@@ -1,0 +1,18 @@
+{
+  "id": "payslip-stub",
+  "name": "工资条",
+  "role": "body",
+  "motion": "rows-stagger",
+  "description": "一张工资条：抬头 + 若干明细行（点线对齐金额）+ 粗实线隔开的实发总额。适合「总收入怎么被一项项扣掉」、成本拆解、预算去向。",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "min_duration_s": 6,
+  "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "items", "total", "note"],
+  "example": {
+    "kicker": "月度工资条",
+    "headline": "工资没变，怎么到手少了",
+    "items": ["基本工资|12000", "绩效奖金|3000", "五险一金|-2400", "个税|-890"],
+    "total": "实发工资|11710",
+    "note": "每一行都有去处"
+  }
+}

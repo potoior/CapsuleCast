@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+<body><template>
+  <style>
+    {{ base_css }}
+    #f-{{ scene_id }} .tri-wrap {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      padding: 3cqh 4cqw 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #f-{{ scene_id }} .tri-kicker {
+      font-family: var(--font-mono);
+      font-size: 1.8cqmin;
+      color: var(--coral-deep);
+      letter-spacing: 0.18em;
+      text-align: center;
+    }
+    #f-{{ scene_id }} .tri-headline {
+      margin-top: 0.9cqh;
+      font-family: var(--font-display);
+      font-size: 5.6cqmin;
+      line-height: 1.05;
+      color: var(--ink);
+      text-align: center;
+    }
+    #f-{{ scene_id }} .tri-zone {
+      position: relative;
+      width: 80cqw;
+      height: 56cqh;
+      margin-top: 2cqh;
+      flex: 0 0 auto;
+    }
+    #f-{{ scene_id }} .tri-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+    #f-{{ scene_id }} .tri-svg path {
+      fill: none;
+      stroke: var(--coral);
+      stroke-width: 0.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+      stroke-dasharray: 100;
+      stroke-dashoffset: 100;
+    }
+    #f-{{ scene_id }} .tri-vertex {
+      position: absolute;
+      width: 30cqw;
+      box-sizing: border-box;
+      background: var(--tile);
+      border: 1px solid var(--hairline-strong);
+      border-radius: var(--tile-radius);
+      padding: 1.2cqh 1.6cqw;
+      text-align: center;
+      transform: translate(-50%, -100%);
+      transform-origin: 50% 100%;
+      z-index: 3;
+    }
+    #f-{{ scene_id }} .vertex-0 { left: 50%; top: 10%; }
+    #f-{{ scene_id }} .vertex-1 { left: 16%; top: 80%; }
+    #f-{{ scene_id }} .vertex-2 { left: 84%; top: 80%; }
+    #f-{{ scene_id }} .v-name {
+      font-family: var(--font-display);
+      font-size: 3.2cqmin;
+      line-height: 1.08;
+      color: var(--ink);
+    }
+    #f-{{ scene_id }} .v-sub {
+      margin-top: 0.35cqh;
+      font-family: var(--font-mono);
+      font-size: 1.7cqmin;
+      line-height: 1.15;
+      color: var(--ink-faint);
+    }
+    #f-{{ scene_id }} .tri-center {
+      position: absolute;
+      left: 50%;
+      top: 58%;
+      width: 34cqw;
+      transform: translate(-50%, -50%);
+      transform-origin: 50% 50%;
+      text-align: center;
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 2.6cqmin;
+      line-height: 1.35;
+      color: var(--coral-deep);
+      background: var(--tile);
+      border: 1px solid var(--hairline-strong);
+      border-radius: var(--tile-radius);
+      padding: 0.9cqh 1.3cqw;
+      box-shadow: 0 0.6cqh 1.6cqh color-mix(in srgb, var(--ink) 10%, transparent);
+      z-index: 3;
+    }
+    #f-{{ scene_id }} .tri-center::before,
+    #f-{{ scene_id }} .tri-center::after {
+      content: "";
+      display: block;
+      width: 6cqw;
+      height: 1px;
+      margin: 0.85cqh auto;
+      background: var(--coral);
+      opacity: 0.55;
+    }
+    #f-{{ scene_id }} .tri-note {
+      margin-top: 1.4cqh;
+      font-family: var(--font-mono);
+      font-size: 1.8cqmin;
+      line-height: 1.35;
+      color: var(--ink-faint);
+      text-align: center;
+    }
+    @container frame (max-aspect-ratio: 10/16) {
+      #f-{{ scene_id }} .tri-wrap { padding: 4cqh 3cqw 0; }
+      #f-{{ scene_id }} .tri-headline { font-size: 5cqmin; }
+      #f-{{ scene_id }} .tri-zone {
+        width: 92cqw;
+        height: 50cqh;
+        margin-top: 1.5cqh;
+      }
+      #f-{{ scene_id }} .tri-vertex {
+        width: 36cqw;
+        padding: 1.2cqh 1.2cqw;
+      }
+      #f-{{ scene_id }} .v-name { font-size: 3.4cqmin; }
+      #f-{{ scene_id }} .v-sub { font-size: 1.8cqmin; }
+      #f-{{ scene_id }} .tri-center {
+        width: 52cqw;
+        font-size: 3cqmin;
+      }
+      #f-{{ scene_id }} .tri-note { font-size: 2cqmin; }
+    }
+  </style>
+  <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+       data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+    <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+    <div class="hf-safe">
+      <div class="tri-wrap">
+        <div class="tri-kicker" id="s-{{ scene_id }}-kicker">{{ fields.get('kicker', '') }}</div>
+        <div class="tri-headline" id="s-{{ scene_id }}-headline">{{ fields.get('headline', '') }}</div>
+        <div class="tri-zone">
+          <svg class="tri-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+            <polygon id="s-{{ scene_id }}-tri-fill" points="50,10 16,80 84,80"
+                     fill="var(--coral-soft)" opacity="0"></polygon>
+            <path id="s-{{ scene_id }}-edge-0" d="M50 10 L16 80"></path>
+            <path id="s-{{ scene_id }}-edge-1" d="M16 80 L84 80"></path>
+            <path id="s-{{ scene_id }}-edge-2" d="M84 80 L50 10"></path>
+          </svg>
+          {% for v in fields.get('vertices', []) %}
+          {% set parts = v.split('|') %}
+          <div class="tri-vertex vertex-{{ loop.index0 }}" id="s-{{ scene_id }}-vertex-{{ loop.index0 }}">
+            <div class="v-name">{{ parts[0].strip() }}</div>
+            {% if parts|length > 1 %}<div class="v-sub">{{ parts[1].strip() }}</div>{% endif %}
+          </div>
+          {% endfor %}
+          <div class="tri-center" id="s-{{ scene_id }}-tri-center">{{ fields.get('center', '') }}</div>
+        </div>
+        {% if fields.get('note') %}
+        <div class="tri-note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var SID = "s-{{ scene_id }}";
+      var D = {{ duration }};
+      var tl = gsap.timeline({ paused: true });
+
+      tl.fromTo("#" + SID + "-kicker", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.out" }, 0.1);
+      tl.fromTo("#" + SID + "-headline", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "power3.out" }, 0.25);
+      tl.fromTo("#" + SID + "-tri-fill", { opacity: 0 }, { opacity: 0.1, duration: 0.7, ease: "power2.out" }, 0.4);
+
+      for (var i = 0; i < 3; i++) {
+        AM.draw(tl, "#" + SID + "-edge-" + i, 0.5 + i * 0.16, 0.55);
+      }
+
+      for (var j = 0; j < 3; j++) {
+        var vt = D * 0.28 + j * D * 0.1;
+        AM.stamp(tl, "#" + SID + "-vertex-" + j, vt, 0.45);
+      }
+
+      AM.focus(tl, "#" + SID + "-tri-center", D * 0.62, 0.6);
+
+      {% if fields.get('note') %}
+      tl.fromTo("#" + SID + "-note", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.out" }, D * 0.8);
+      {% endif %}
+
+      {% if not is_last %}
+      AM.exitSoft(tl, "#" + SID + "-vertex-0, #" + SID + "-vertex-1, #" + SID + "-vertex-2, #" + SID + "-tri-center", D);
+      {% endif %}
+
+      tl.to({}, { duration: D }, 0);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["{{ scene_id }}"] = tl;
+    })();
+  </script>
+</template></body></html>

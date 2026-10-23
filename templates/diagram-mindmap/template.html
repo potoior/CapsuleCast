@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+<body><template>
+  <style>
+    {{ base_css }}
+    #f-{{ scene_id }} .dm-wrap { position: absolute; inset: 0; }
+    #f-{{ scene_id }} .dm-kicker {
+      position: absolute; left: 4cqw; top: 3.2cqh;
+      font-family: var(--font-mono); font-size: 1.7cqmin; letter-spacing: .16em;
+      text-transform: uppercase; color: var(--ink-faint);
+    }
+    #f-{{ scene_id }} .dm-headline {
+      position: absolute; left: 4cqw; right: 4cqw; top: 7cqh;
+      text-align: center; font-family: var(--font-display);
+      font-size: 5.6cqmin; line-height: 1.1; color: var(--ink);
+    }
+    #f-{{ scene_id }} .mind {
+      position: absolute; left: 50%; top: 17cqh;
+      width: 84cqw; height: 60cqh; margin-left: -42cqw;
+    }
+    #f-{{ scene_id }} .mind-svg {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      overflow: visible; z-index: 1;
+    }
+    #f-{{ scene_id }} .mind-svg path {
+      fill: none; stroke: var(--hairline-strong); stroke-width: .5;
+      stroke-linecap: round;
+    }
+    #f-{{ scene_id }} .mind-dot {
+      position: absolute; left: 50%; top: 50%; width: 8cqmin; height: 8cqmin;
+      margin-left: -4cqmin; margin-top: -4cqmin;
+      border: .22cqmin solid var(--coral); border-radius: 50%;
+      opacity: .5; z-index: 2; pointer-events: none;
+    }
+    #f-{{ scene_id }} .mc-pos {
+      position: absolute; left: 50%; top: 50%; width: 26cqw;
+      transform: translate(-50%, -50%); z-index: 3;
+    }
+    #f-{{ scene_id }} .mind-core {
+      position: relative; width: 100%; box-sizing: border-box;
+      padding: 2cqh 1.4cqw; text-align: center;
+      background: color-mix(in srgb, var(--tile) 94%, transparent);
+      border: .12cqmin solid var(--hairline-strong);
+      border-radius: var(--tile-radius);
+      box-shadow: 0 .6cqh 2.4cqh color-mix(in srgb, var(--ink) 8%, transparent);
+    }
+    #f-{{ scene_id }} .mc-name {
+      display: block; font-family: var(--font-display);
+      font-size: 3.6cqmin; line-height: 1.1; color: var(--ink);
+    }
+    #f-{{ scene_id }} .mc-sub {
+      display: block; margin-top: .5cqh; font-family: var(--font-mono);
+      font-size: 1.9cqmin; letter-spacing: .06em; color: var(--ink-faint);
+    }
+    #f-{{ scene_id }} .mb-pos {
+      position: absolute; width: 24cqw;
+      transform: translate(-50%, -50%); z-index: 4;
+    }
+    #f-{{ scene_id }} .mind-branch {
+      width: 100%; box-sizing: border-box;
+      padding: 1.4cqh 1.2cqw; text-align: left;
+      background: var(--tile);
+      border: .12cqmin solid var(--hairline);
+      border-radius: var(--tile-radius);
+    }
+    #f-{{ scene_id }} .mb-name {
+      display: block; font-family: var(--font-body); font-weight: 600;
+      font-size: 2.6cqmin; line-height: 1.15; color: var(--ink);
+    }
+    #f-{{ scene_id }} .mb-sub {
+      display: block; margin-top: .4cqh; font-family: var(--font-mono);
+      font-size: 1.8cqmin; letter-spacing: .04em; color: var(--ink-faint);
+    }
+    #f-{{ scene_id }} .dm-note {
+      position: absolute; left: 4cqw; right: 4cqw; top: 77.6cqh;
+      text-align: center; font-family: var(--font-mono);
+      font-size: 1.9cqmin; letter-spacing: .08em; color: var(--ink-faint);
+    }
+    @container frame (max-aspect-ratio: 10/16) {
+      #f-{{ scene_id }} .mind { width: 92cqw; margin-left: -46cqw; }
+      #f-{{ scene_id }} .mb-pos { width: 34cqw; }
+    }
+  </style>
+  <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+       data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+    <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+    <div class="hf-safe">
+      {% set POS = [(72, 22), (82, 50), (72, 78), (28, 78), (18, 50), (28, 22)] %}
+      {% set cparts = fields.get('center', '').split('|') %}
+      {% set branch_list = fields.get('branches') or [] %}
+      <div class="dm-wrap">
+        <div class="dm-kicker" id="s-{{ scene_id }}-kicker">{{ fields.get('kicker') }}</div>
+        <div class="dm-headline" id="s-{{ scene_id }}-headline">{{ fields.get('headline') }}</div>
+        <div class="mind">
+          <svg class="mind-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+            {% for b in branch_list %}
+            {% set p = POS[loop.index0] %}
+            <path id="s-{{ scene_id }}-line-{{ loop.index0 }}"
+                  d="M 50 50 Q {{ (50 + p[0]) / 2 }} {{ p[1] }} {{ p[0] }} {{ p[1] }}" />
+            {% endfor %}
+          </svg>
+          <div class="mind-dot" id="s-{{ scene_id }}-dot"></div>
+          <div class="mc-pos">
+            <div class="mind-core" id="s-{{ scene_id }}-mind-core">
+              <span class="mc-name">{{ cparts[0] }}</span>
+              {% if cparts|length > 1 %}<span class="mc-sub">{{ cparts[1] }}</span>{% endif %}
+            </div>
+          </div>
+          {% for b in branch_list %}
+          {% set p = POS[loop.index0] %}
+          {% set bp = b.split('|') %}
+          <div class="mb-pos" style="left: {{ p[0] }}%; top: {{ p[1] }}%;">
+            <div class="mind-branch" id="s-{{ scene_id }}-branch-{{ loop.index0 }}">
+              <span class="mb-name">{{ bp[0] }}</span>
+              {% if bp|length > 1 %}<span class="mb-sub">{{ bp[1] }}</span>{% endif %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% if fields.get('note') %}
+        <div class="dm-note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var SID = "s-{{ scene_id }}";
+      var D = {{ duration }};
+      var tl = gsap.timeline({ paused: true });
+
+      tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: .5, ease: "power2.out" }, 0.1);
+      tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: .7, ease: "power2.out" }, 0.25);
+      AM.pop(tl, "#" + SID + "-mind-core", 0.45);
+      {% for b in branch_list %}
+      var t{{ loop.index0 }} = 0.55 + {{ loop.index0 }} * 0.12;
+      AM.draw(tl, "#" + SID + "-line-{{ loop.index0 }}", t{{ loop.index0 }});
+      AM.pop(tl, "#" + SID + "-branch-{{ loop.index0 }}", t{{ loop.index0 }} + 0.18);
+      {% endfor %}
+      {% if fields.get('note') %}
+      tl.fromTo("#" + SID + "-note", { opacity: 0 }, { opacity: 1, duration: .6, ease: "power1.out" }, 0.75 * D);
+      {% endif %}
+      {% if not is_last %}
+      AM.exitSoft(tl, "#" + SID + "-mind-core, #" + SID + "-note", D);
+      {% endif %}
+
+      tl.to({}, { duration: D }, 0);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["{{ scene_id }}"] = tl;
+    })();
+  </script>
+</template></body></html>

@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+<body><template>
+  <style>
+    {{ base_css }}
+    #f-{{ scene_id }} .inv-page {
+      width: 60cqw;
+      margin: 0 auto;
+      padding-top: 7cqh;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+    }
+    #f-{{ scene_id }} .inv-top {
+      text-align: left;
+      margin-bottom: 1.6cqh;
+    }
+    #f-{{ scene_id }} .inv-kicker {
+      margin: 0 0 0.7cqh;
+      font-family: var(--font-mono);
+      font-size: 1.6cqmin;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--coral-deep);
+    }
+    #f-{{ scene_id }} .inv-headline {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: 5.2cqmin;
+      line-height: 1.12;
+      color: var(--ink);
+    }
+    #f-{{ scene_id }} .invoice {
+      position: relative;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 3cqh 3.2cqw;
+      background: var(--tile);
+      border: 1px solid var(--hairline-strong);
+      border-radius: var(--tile-radius);
+    }
+    #f-{{ scene_id }} .inv-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 2cqw;
+      padding-bottom: 1.3cqh;
+      margin-bottom: 1.2cqh;
+      border-bottom: 1px solid var(--hairline-strong);
+    }
+    #f-{{ scene_id }} .inv-title {
+      font-family: var(--font-display);
+      font-size: 2.8cqmin;
+      letter-spacing: 0.04em;
+      color: var(--ink);
+    }
+    #f-{{ scene_id }} .inv-no {
+      font-family: var(--font-mono);
+      font-size: 1.6cqmin;
+      letter-spacing: 0.06em;
+      color: var(--ink-faint);
+      white-space: nowrap;
+    }
+    #f-{{ scene_id }} .inv-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 0.8cqh;
+      border-bottom: 1px solid var(--ink);
+      font-family: var(--font-mono);
+      font-size: 1.5cqmin;
+      letter-spacing: 0.12em;
+      color: var(--ink-faint);
+    }
+    #f-{{ scene_id }} .inv-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 2cqw;
+      height: 4.4cqh;
+      border-bottom: 1px dashed var(--hairline);
+    }
+    #f-{{ scene_id }} .ir-name {
+      font-family: var(--font-body);
+      font-size: 2.4cqmin;
+      color: var(--ink-soft);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    #f-{{ scene_id }} .ir-amount {
+      font-family: var(--font-mono);
+      font-size: 2.4cqmin;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+    #f-{{ scene_id }} .inv-total {
+      display: flex;
+      justify-content: flex-end;
+      align-items: baseline;
+      gap: 1.2cqw;
+      padding-top: 1.4cqh;
+    }
+    #f-{{ scene_id }} .it-name {
+      font-family: var(--font-mono);
+      font-size: 1.9cqmin;
+      letter-spacing: 0.08em;
+      color: var(--ink-faint);
+    }
+    #f-{{ scene_id }} .it-amount {
+      font-family: var(--font-mono);
+      font-size: 4cqmin;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--coral-deep);
+      white-space: nowrap;
+    }
+    #f-{{ scene_id }} .inv-seller {
+      display: flex;
+      gap: 0.8cqw;
+      margin-top: 1.4cqh;
+      font-family: var(--font-mono);
+      font-size: 1.7cqmin;
+      letter-spacing: 0.06em;
+      color: var(--ink-faint);
+      text-align: left;
+    }
+    #f-{{ scene_id }} .inv-seal {
+      position: absolute;
+      right: -11.6cqw;
+      bottom: 3cqh;
+      width: 11cqw;
+      height: 11cqw;
+      aspect-ratio: 1 / 1;
+      box-sizing: border-box;
+      border: 3px solid var(--coral);
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3cqh;
+      color: var(--coral);
+      opacity: 0.84;
+      transform: rotate(-6deg);
+      z-index: 2;
+      pointer-events: none;
+    }
+    #f-{{ scene_id }} .seal-top {
+      font-family: var(--font-mono);
+      font-size: 1.5cqmin;
+      letter-spacing: 0.16em;
+      line-height: 1;
+    }
+    #f-{{ scene_id }} .seal-mid {
+      font-family: var(--font-display);
+      font-size: 2.2cqmin;
+      letter-spacing: 0.22em;
+      line-height: 1;
+    }
+    #f-{{ scene_id }} .seal-date {
+      font-family: var(--font-mono);
+      font-size: 1.2cqmin;
+      letter-spacing: 0.1em;
+      line-height: 1;
+      color: var(--coral-deep);
+    }
+    #f-{{ scene_id }} .inv-note {
+      margin-top: 1.6cqh;
+      font-family: var(--font-mono);
+      font-size: 1.5cqmin;
+      letter-spacing: 0.08em;
+      color: var(--ink-faint);
+      text-align: right;
+    }
+    @container frame (max-aspect-ratio: 10/16) {
+      #f-{{ scene_id }} .inv-page {
+        width: 86cqw;
+        padding-top: 6cqh;
+      }
+      #f-{{ scene_id }} .inv-headline {
+        font-size: 6.2cqmin;
+      }
+      #f-{{ scene_id }} .invoice {
+        padding: 3cqh 4.2cqw;
+      }
+      #f-{{ scene_id }} .inv-seal {
+        width: 13cqw;
+        height: 13cqw;
+        right: -6cqw;
+        bottom: 5%;
+      }
+      #f-{{ scene_id }} .seal-top {
+        font-size: 1.9cqmin;
+      }
+      #f-{{ scene_id }} .seal-mid {
+        font-size: 2.8cqmin;
+      }
+      #f-{{ scene_id }} .seal-date {
+        font-size: 1.5cqmin;
+      }
+    }
+  </style>
+  <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+       data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+    <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+    <div class="hf-safe">
+      <div class="inv-page" id="s-{{ scene_id }}-page">
+        <div class="inv-top">
+          <div class="inv-kicker" id="s-{{ scene_id }}-kicker">{{ fields.get('kicker', '') }}</div>
+          <h1 class="inv-headline" id="s-{{ scene_id }}-headline">{{ fields.get('headline', '') }}</h1>
+        </div>
+        <div class="invoice" id="s-{{ scene_id }}-invoice">
+          <div class="inv-title-row">
+            <div class="inv-title">费用明细单</div>
+            <div class="inv-no">NO. 2026-1024</div>
+          </div>
+          <div class="inv-head">
+            <span class="ih-name">项目</span>
+            <span class="ih-amount">金额</span>
+          </div>
+          {% for row in fields.get('rows', []) %}
+          {% set parts = row.split('|') %}
+          <div class="inv-row inv-row-{{ loop.index0 }}" id="s-{{ scene_id }}-row-{{ loop.index0 }}">
+            <span class="ir-name">{{ parts[0]|trim }}</span>
+            <span class="ir-amount">{{ parts[1]|trim }}</span>
+          </div>
+          {% endfor %}
+          {% set total_parts = fields.get('total', '').split('|') %}
+          <div class="inv-total" id="s-{{ scene_id }}-total">
+            <span class="it-name">{{ total_parts[0]|trim }}</span>
+            <span class="it-amount">{{ total_parts[1]|trim }}</span>
+          </div>
+          {% set seller_parts = fields.get('seller', '').split('|') %}
+          <div class="inv-seller" id="s-{{ scene_id }}-seller">
+            <span>{{ seller_parts[0]|trim }}</span>
+            <span>{{ seller_parts[1]|trim }}</span>
+          </div>
+          <div class="inv-seal" id="s-{{ scene_id }}-seal">
+            <span class="seal-top">费用专用</span>
+            <span class="seal-mid">章</span>
+            <span class="seal-date">2026-10</span>
+          </div>
+        </div>
+        {% if fields.get('note') %}
+        <div class="inv-note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var SID = "s-{{ scene_id }}";
+      var D = {{ duration }};
+      var tl = gsap.timeline({ paused: true });
+      AM.maskRise(tl, "#" + SID + "-kicker", 0.1 * D);
+      AM.maskRise(tl, "#" + SID + "-headline", 0.25 * D);
+      tl.fromTo("#" + SID + "-invoice",
+        { y: 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, ease: "power2.out" },
+        0.4 * D);
+      AM.stagger(tl, "{% for row in fields.get('rows', []) %}#" + SID + "-row-{{ loop.index0 }}{% if not loop.last %}, {% endif %}{% endfor %}", 0.55 * D, 0.14);
+      AM.focus(tl, "#" + SID + "-total", 0.62 * D);
+      AM.stamp(tl, "#" + SID + "-seal", 0.68 * D);
+      {% if fields.get('note') %}
+      AM.maskRise(tl, "#" + SID + "-note", 0.86 * D);
+      {% endif %}
+      tl.to({}, { duration: D }, 0);
+      {% if not is_last %}
+      AM.exitSoft(tl, "#" + SID + "-invoice, #" + SID + "-seal", D);
+      {% endif %}
+      window.__timelines = window.__timelines || {};
+      window.__timelines["{{ scene_id }}"] = tl;
+    })();
+  </script>
+</template></body></html>

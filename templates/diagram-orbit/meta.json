@@ -1,0 +1,18 @@
+{
+  "id": "diagram-orbit",
+  "name": "轨道图",
+  "role": "body",
+  "motion": "orbit",
+  "description": "中心核心 + 外围卫星的轨道图：中心大圆，2-4 颗卫星沿椭圆轨道分布并缓慢公转。适合「一个核心 + 若干外围要素」（平台与生态、模型与能力、主因与副作用）。",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "min_duration_s": 6,
+  "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "core", "moons", "note"],
+  "example": {
+    "kicker": "生态轨道",
+    "headline": "一个核心带起一圈能力",
+    "core": "大模型|中心引擎",
+    "moons": ["搜索|实时信息", "代码|自动执行", "多模态|图文理解"],
+    "note": "能力绕着核心转"
+  }
+}

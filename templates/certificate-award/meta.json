@@ -1,0 +1,19 @@
+{
+  "id": "certificate-award",
+  "name": "奖状证书",
+  "role": "body",
+  "motion": "seal-press",
+  "description": "一张烫边奖状：双线边框 + 获得者 + 奖项 + 颁发方，最后一枚红色印章重重盖下。适合「认证/达标/荣誉/里程碑」的仪式感收尾。",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "min_duration_s": 6,
+  "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "recipient", "honor", "issuer", "note"],
+  "example": {
+    "kicker": "认证时刻",
+    "headline": "这张证书等了三年",
+    "recipient": "某某团队|获得者",
+    "honor": "年度最佳|创新奖",
+    "issuer": "技术委员会|颁发",
+    "note": "盖章即生效"
+  }
+}

@@ -51,6 +51,18 @@ TEMPLATE_HINTS = [
     "finance-candle", "medical-report", "legal-clause", "grade-card",
     "resume-card", "itinerary-card", "waybill-track", "monitor-dash",
     "menu-board", "floor-plan",
+    "diagram-mindmap",
+    "diagram-orbit",
+    "diagram-triangle",
+    "chart-bump",
+    "chart-bubble",
+    "chart-area",
+    "payslip-stub",
+    "invoice-sheet",
+    "boarding-pass",
+    "certificate-award",
+    "sticky-notes",
+    "trading-card",
 ]
 
 _MAX = {"title": 24, "beat_title": 12, "point": 14, "narration": 64,
@@ -258,6 +270,18 @@ def _llm_outline(base: str, s, topic: str, duration_target_s: int) -> dict:
         "情景对话还原优先 chat-bubbles（messages 2-4 条「L|内容」或「R|内容」左右气泡）；"
         "换一个词改变句义优先 word-slot（sentence 用[]括住词槽 + variants 3 个「词|阶段注」）；"
         "记账/消费复盘的小票美学用 receipt-strip（items「品名|金额」3-5 + total 合计）；"
+        "中心主题往外发散的拆解优先 diagram-mindmap（center「中心|小注」+ branches「分支|说明」3-5 条）；"
+        "一个核心带一圈外围要素优先 diagram-orbit（core「核心|小注」+ moons「卫星|注释」2-4 颗）；"
+        "三个要素互相制衡/三难取舍优先 diagram-triangle（vertices 恰好 3 条「要素|解释」+ center 结论）；"
+        "排名随时间换位/谁反超谁优先 chart-bump（columns 恰好 4 期 + series「名称|名次1,2,3,4」3-4 条）；"
+        "两个指标加一个体量的三维对比优先 chart-bubble（bubbles「标签|x,y,大小」3-4 颗）；"
+        "累积增长/总量趋势优先 chart-area（points「年份|数值」4-6 点 + peak「标注|小注」）；"
+        "工资到手/一项项扣完的明细优先 payslip-stub（items「项目|金额」3-6 行 + total「标题|金额」）；"
+        "一笔账的构成/报销明细优先 invoice-sheet（rows「项目|金额」2-4 行 + total「合计|¥金额」+ seller「开票方|名称」）；"
+        "从 A 到 B 的迁移/出发抵达优先 boarding-pass（route 恰好 2 条「地点|代码」+ flight/gate/seat 三格）；"
+        "认证/达标/荣誉时刻优先 certificate-award（recipient「名称|标签」+ honor「奖项|后缀」+ issuer「机构|动作」）；"
+        "头脑风暴/灵感碎片/待办墙优先 sticky-notes（notes 3-6 条短句，不用分段）；"
+        "把产品/角色/版本做成属性卡优先 trading-card（card_name「卡名|代号」+ rarity + stats 恰好 3 条「属性|0-100」+ flavor）；"
         "人生转折/启程时刻用 ticket-stub（from/to 站名 + price_label 票价是勇气）；"
         "成分检测戏仿优先 nutrition-label（rows「成分|占比%|小注」3-6 + daily_label 建议值）；"
         "程序员/命令行叙事优先 terminal-window（command + outputs 输出行 2-4 + verdict）；"

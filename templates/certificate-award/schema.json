@@ -1,0 +1,43 @@
+{
+  "type": "object",
+  "properties": {
+    "kicker": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "奖状上方的短引导语"
+    },
+    "headline": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "主标题"
+    },
+    "recipient": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "获得者，格式为「名称|标签」"
+    },
+    "honor": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "奖项，格式为「奖项|后缀」"
+    },
+    "issuer": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "颁发方，格式为「机构|动作」"
+    },
+    "note": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 22,
+      "description": "底部补充说明，可省略"
+    }
+  },
+  "required": ["kicker", "headline", "recipient", "honor", "issuer"],
+  "additionalProperties": false
+}

@@ -1,0 +1,19 @@
+{
+  "id": "invoice-sheet",
+  "name": "发票",
+  "role": "body",
+  "motion": "stamp-slam",
+  "description": "一张增值税发票：票据头 + 两行项目明细 + 合计金额 + 一枚旋转盖下的红色发票专用章。适合「一笔账的构成」「成本明细」「付款清单」。",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "min_duration_s": 6,
+  "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "rows", "total", "seller", "note"],
+  "example": {
+    "kicker": "费用明细",
+    "headline": "这台机器到底花在哪",
+    "rows": ["服务器|¥3200", "带宽|¥800", "电费|¥600"],
+    "total": "合计|¥4600",
+    "seller": "开票方|某某云服务",
+    "note": "每一笔都可追溯"
+  }
+}
