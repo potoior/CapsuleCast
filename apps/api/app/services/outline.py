@@ -63,6 +63,18 @@ TEMPLATE_HINTS = [
     "certificate-award",
     "sticky-notes",
     "trading-card",
+    "chart-sankey",
+    "chart-heatmap",
+    "chart-stackedbar",
+    "diagram-venn-3",
+    "diagram-orgchart",
+    "diagram-sequence",
+    "word-cloud",
+    "stat-row",
+    "versus-table",
+    "search-results",
+    "email-client",
+    "pricing-table",
 ]
 
 _MAX = {"title": 24, "beat_title": 12, "point": 14, "narration": 64,
@@ -282,6 +294,18 @@ def _llm_outline(base: str, s, topic: str, duration_target_s: int) -> dict:
         "认证/达标/荣誉时刻优先 certificate-award（recipient「名称|标签」+ honor「奖项|后缀」+ issuer「机构|动作」）；"
         "头脑风暴/灵感碎片/待办墙优先 sticky-notes（notes 3-6 条短句，不用分段）；"
         "把产品/角色/版本做成属性卡优先 trading-card（card_name「卡名|代号」+ rarity + stats 恰好 3 条「属性|0-100」+ flavor）；"
+        "钱/人/流量都去哪了优先 chart-sankey（flows「来源|去向|数值」2-6 条，带宽随数值）；"
+        "时段×强度的分布洞察优先 chart-heatmap（cols 列标签 + rows「行标签|强度0-5列表」2-6 行）；"
+        "总量涨但构成变优先 chart-stackedbar（legend「段名|色注」2-3 + columns「标签|占比列表」2-5 根）；"
+        "三者同时满足/三圈交集优先 diagram-venn-3（circles 恰好 3 条「名称|小注」+ center「交集|小注」）；"
+        "团队怎么分工/层级归属优先 diagram-orgchart（root + branches 2-3 + leaves 2-4，均为「名称|职责」）；"
+        "一次调用经历了什么/系统怎么对话优先 diagram-sequence（actors 2-3 + messages「发起>目标|内容」3-5 条）；"
+        "大家都在聊什么/关键词全景优先 word-cloud（words「词|权重1-3」6-9 个）；"
+        "一组关键指标一起看优先 stat-row（items「数值|标签|小注」3-4 个横排）；"
+        "两个选项逐项对照优先 versus-table（left/right 各「选项|小注」+ rows「维度|左值|右值」3-5 + verdict）；"
+        "搜索出来的信息怎么筛优先 search-results（query + meta「结果数|耗时」+ results「标题|摘要」恰好 3 条）；"
+        "收到一封通知/邮件时刻优先 email-client（from「显示名|邮箱」+ subject + time + lines 正文 2-4 段）；"
+        "三档套餐/会员怎么选优先 pricing-table（tiers 恰好 3 条「档名|价格」+ features「权益|覆盖档位」3-5 条）；"
         "人生转折/启程时刻用 ticket-stub（from/to 站名 + price_label 票价是勇气）；"
         "成分检测戏仿优先 nutrition-label（rows「成分|占比%|小注」3-6 + daily_label 建议值）；"
         "程序员/命令行叙事优先 terminal-window（command + outputs 输出行 2-4 + verdict）；"

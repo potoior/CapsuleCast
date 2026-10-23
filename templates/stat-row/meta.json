@@ -1,0 +1,22 @@
+{
+  "id": "stat-row",
+  "name": "多指标横排",
+  "role": "body",
+  "motion": "counts-in",
+  "description": "3-4 个关键指标横向并排，每个大数字 + 标签 + 小注，中间竖线分隔。适合「一组数据一起看」的盘点、年度总结、体检式指标墙。",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "min_duration_s": 6,
+  "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "items", "note"],
+  "example": {
+    "kicker": "年度盘点",
+    "headline": "四个数字看完这一年",
+    "items": [
+      "128|篇内容|比去年多",
+      "3.2万|新增关注|翻了一倍",
+      "46|场直播|平均每周",
+      "0|断更|一天没停"
+    ],
+    "note": "数字不会骗人"
+  }
+}

@@ -163,6 +163,33 @@ window.AM = (function () {
       { opacity: 1, rotationX: 0, y: 0, duration: dur || 0.7, ease: "power3.out", stagger: 0.1 }, at);
   }
 
+  // 卡片翻面（票券/价格卡：沿 Y 轴翻正，带一点景深）
+  function flipY(tl, sel, at, dur) {
+    tl.fromTo(sel,
+      { opacity: 0, rotationY: -88, transformPerspective: 1000, transformOrigin: "50% 50%" },
+      { opacity: 1, rotationY: 0, duration: dur || 0.75, ease: "power3.out", stagger: 0.1 }, at);
+  }
+
+  // 打勾（SVG 对勾路径生长：清单/权益表）
+  function tick(tl, sel, at, dur) {
+    var els = Array.prototype.slice.call(document.querySelectorAll(sel));
+    els.forEach(function (el, i) {
+      if (!el || !el.getTotalLength) return;
+      var L = el.getTotalLength();
+      el.style.strokeDasharray = L;
+      el.style.strokeDashoffset = L;
+      tl.fromTo(el, { strokeDashoffset: L },
+        { strokeDashoffset: 0, duration: dur || 0.45, ease: "power2.out" }, at + i * 0.1);
+    });
+  }
+
+  // 缓慢漂移（背景网格/地图/热力底图：匀速平移固定距离，营造镜头呼吸）
+  function drift(tl, sel, at, D, dist) {
+    tl.fromTo(sel, { x: 0, y: 0 },
+      { x: -(dist || 24), y: -(dist || 24) * 0.4, duration: D || 8, ease: "none", stagger: 0 },
+      at || 0);
+  }
+
   /* ── 出场（为转场让路，非全隐）──────────────────────────── */
 
   function exitSoft(tl, sel, D) {
@@ -176,5 +203,5 @@ window.AM = (function () {
            shimmer: shimmer, float: float, exitSoft: exitSoft,
            stagger: stagger, slideX: slideX, growX: growX, stamp: stamp,
            orbit: orbit, marquee: marquee, blink: blink, ripple: ripple,
-           unfold: unfold };
+           unfold: unfold, flipY: flipY, tick: tick, drift: drift };
 })();

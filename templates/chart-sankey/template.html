@@ -1,0 +1,166 @@
+{% set flows = fields.get('flows', []) %}
+{% set ns = namespace(T=0, sources=[], sinks=[]) %}
+{% for f in flows %}
+  {% set p = f.split('|') %}
+  {% set v = p[2]|int %}
+  {% set ns.T = ns.T + v %}
+  {% if p[0] not in ns.sources %}{% set _ = ns.sources.append(p[0]) %}{% endif %}
+  {% if p[1] not in ns.sinks %}{% set _ = ns.sinks.append(p[1]) %}{% endif %}
+{% endfor %}
+{% set st = namespace(vals=[]) %}
+{% for s in ns.sources %}
+  {% set acc = namespace(v=0) %}
+  {% for f in flows %}
+    {% if f.split('|')[0] == s %}{% set acc.v = acc.v + (f.split('|')[2]|int) %}{% endif %}
+  {% endfor %}
+  {% set _ = st.vals.append(acc.v) %}
+{% endfor %}
+{% set kt = namespace(vals=[]) %}
+{% for s in ns.sinks %}
+  {% set acc = namespace(v=0) %}
+  {% for f in flows %}
+    {% if f.split('|')[1] == s %}{% set acc.v = acc.v + (f.split('|')[2]|int) %}{% endif %}
+  {% endfor %}
+  {% set _ = kt.vals.append(acc.v) %}
+{% endfor %}
+{% set sc = namespace(tops=[], centers=[]) %}
+{% set acc = namespace(top=0.0) %}
+{% for s in ns.sources %}
+  {% set idx = loop.index0 %}
+  {% set pct = st.vals[idx] / ns.T %}
+  {% set _ = sc.tops.append(acc.top) %}
+  {% set _ = sc.centers.append(acc.top + pct * 24) %}
+  {% set acc.top = acc.top + pct * 48 + 1.6 %}
+{% endfor %}
+{% set kc = namespace(tops=[], centers=[]) %}
+{% set acc = namespace(top=0.0) %}
+{% for s in ns.sinks %}
+  {% set idx = loop.index0 %}
+  {% set pct = kt.vals[idx] / ns.T %}
+  {% set _ = kc.tops.append(acc.top) %}
+  {% set _ = kc.centers.append(acc.top + pct * 24) %}
+  {% set acc.top = acc.top + pct * 48 + 1.6 %}
+{% endfor %}
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+<body><template>
+  <style>
+    {{ base_css }}
+    #f-{{ scene_id }} .sk-head { text-align: center; padding-top: 3cqh; }
+    #f-{{ scene_id }} .sk-kicker { font-family: var(--font-mono); font-size: 2.2cqmin; letter-spacing: 0.18em; color: var(--coral-deep); }
+    #f-{{ scene_id }} .sk-headline { font-family: var(--font-display); font-size: 5.2cqmin; line-height: 1.12; color: var(--ink); margin-top: 0.8cqh; }
+    #f-{{ scene_id }} .sankey { position: relative; width: 86cqw; height: 58cqh; margin: 2cqh auto 0; box-sizing: border-box; }
+    #f-{{ scene_id }} .sk-svg { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; }
+    #f-{{ scene_id }} .sk-node { position: absolute; z-index: 2; width: 15cqw; box-sizing: border-box; padding: 0.5cqmin; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; overflow: hidden; border-radius: 0.8cqmin; }
+    #f-{{ scene_id }} .sk-node-l { left: 0; background: var(--ink); color: var(--cream); }
+    #f-{{ scene_id }} .sk-node-r { left: 85%; background: var(--coral); color: var(--tile); }
+    #f-{{ scene_id }} .sk-name { font-family: var(--font-body); font-weight: 600; font-size: 2cqmin; line-height: 1.15; word-break: break-all; }
+    #f-{{ scene_id }} .sk-val { font-family: var(--font-mono); font-size: 1.6cqmin; line-height: 1.2; opacity: 0.82; margin-top: 0.3cqh; }
+    #f-{{ scene_id }} .sk-note { margin-top: 1.4cqh; text-align: center; font-family: var(--font-mono); font-size: 1.9cqmin; color: var(--ink-soft); }
+{% for s in ns.sources %}
+  {% set idx = loop.index0 %}
+  {% set pct = st.vals[idx] / ns.T %}
+    #f-{{ scene_id }} .sk-node-l-{{ idx }} { top: calc({{ sc.tops[idx]|round(3) }}cqh); height: calc({{ pct|round(5) }} * 48cqh); }
+{% endfor %}
+{% for s in ns.sinks %}
+  {% set idx = loop.index0 %}
+  {% set pct = kt.vals[idx] / ns.T %}
+    #f-{{ scene_id }} .sk-node-r-{{ idx }} { top: calc({{ kc.tops[idx]|round(3) }}cqh); height: calc({{ pct|round(5) }} * 48cqh); }
+{% endfor %}
+    @container frame (max-aspect-ratio: 10/16) {
+      #f-{{ scene_id }} .sankey { width: 92cqw; height: 50cqh; }
+      #f-{{ scene_id }} .sk-node { width: 20cqw; }
+      #f-{{ scene_id }} .sk-node-l { left: 0; }
+      #f-{{ scene_id }} .sk-node-r { left: 80%; }
+{% for s in ns.sources %}
+  {% set idx = loop.index0 %}
+  {% set pct = st.vals[idx] / ns.T %}
+      #f-{{ scene_id }} .sk-node-l-{{ idx }} { top: calc({{ (sc.tops[idx] * 0.862069)|round(3) }}cqh); height: calc({{ pct|round(5) }} * 41.379cqh); }
+{% endfor %}
+{% for s in ns.sinks %}
+  {% set idx = loop.index0 %}
+  {% set pct = kt.vals[idx] / ns.T %}
+      #f-{{ scene_id }} .sk-node-r-{{ idx }} { top: calc({{ (kc.tops[idx] * 0.862069)|round(3) }}cqh); height: calc({{ pct|round(5) }} * 41.379cqh); }
+{% endfor %}
+    }
+  </style>
+  <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+       data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+    <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+    <div class="hf-safe">
+      <div class="sk-head">
+        <div class="sk-kicker" id="s-{{ scene_id }}-kicker">{{ fields.get('kicker') }}</div>
+        <div class="sk-headline" id="s-{{ scene_id }}-headline">{{ fields.get('headline') }}</div>
+      </div>
+      <div class="sankey" id="s-{{ scene_id }}-sankey">
+        <svg class="sk-svg" viewBox="0 0 100 58" preserveAspectRatio="none" aria-hidden="true">
+{% set lg = namespace(d={}) %}
+{% for s in ns.sources %}{% set _ = lg.d.update({s: 0.0}) %}{% endfor %}
+{% set rg = namespace(d={}) %}
+{% for s in ns.sinks %}{% set _ = rg.d.update({s: 0.0}) %}{% endfor %}
+{% for f in flows %}
+  {% set p = f.split('|') %}
+  {% set v = p[2]|int %}
+  {% set i1 = ns.sources.index(p[0]) %}
+  {% set i2 = ns.sinks.index(p[1]) %}
+  {% set sh = v / ns.T * 48 %}
+  {% set yl = sc.tops[i1] + lg.d[p[0]] + sh / 2 %}
+  {% set yr = kc.tops[i2] + rg.d[p[1]] + sh / 2 %}
+  {% set _ = lg.d.update({p[0]: lg.d[p[0]] + sh}) %}
+  {% set _ = rg.d.update({p[1]: rg.d[p[1]] + sh}) %}
+  {% set w = sh if sh > 0.5 else 0.5 %}
+          <path id="s-{{ scene_id }}-flow-{{ loop.index0 }}" d="M 15 {{ yl|round(3) }} C 45 {{ yl|round(3) }} 55 {{ yr|round(3) }} 85 {{ yr|round(3) }}" fill="none" stroke="var(--coral)" stroke-width="{{ w|round(3) }}" stroke-linecap="round" opacity="0.45" />
+{% endfor %}
+        </svg>
+{% for s in ns.sources %}
+  {% set idx = loop.index0 %}
+        <div class="sk-node sk-node-l sk-node-l-{{ idx }}" id="s-{{ scene_id }}-node-l-{{ idx }}">
+          <span class="sk-name">{{ s }}</span>
+          <span class="sk-val">{{ st.vals[idx] }}</span>
+        </div>
+{% endfor %}
+{% for s in ns.sinks %}
+  {% set idx = loop.index0 %}
+        <div class="sk-node sk-node-r sk-node-r-{{ idx }}" id="s-{{ scene_id }}-node-r-{{ idx }}">
+          <span class="sk-name">{{ s }}</span>
+          <span class="sk-val">{{ kt.vals[idx] }}</span>
+        </div>
+{% endfor %}
+      </div>
+{% if fields.get('note') %}
+      <div class="sk-note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>
+{% endif %}
+    </div>
+  </div>
+  <script>
+    (function () {
+      var SID = "s-{{ scene_id }}";
+      var D = {{ duration }};
+      var tl = gsap.timeline({ paused: true });
+      AM.maskRise(tl, "#" + SID + "-kicker", 0.1 * D);
+      AM.maskRise(tl, "#" + SID + "-headline", 0.25 * D);
+{% set lbase = ns.sources|length %}
+{% for s in ns.sources %}
+      AM.pop(tl, "#" + SID + "-node-l-{{ loop.index0 }}", 0.4 * D + {{ loop.index0 }} * 0.1);
+{% endfor %}
+{% for s in ns.sinks %}
+      AM.pop(tl, "#" + SID + "-node-r-{{ loop.index0 }}", 0.4 * D + {{ lbase + loop.index0 }} * 0.1);
+{% endfor %}
+{% for f in flows %}
+      AM.draw(tl, "#" + SID + "-flow-{{ loop.index0 }}", 0.55 * D + {{ loop.index0 }} * 0.12);
+{% endfor %}
+{% if fields.get('note') %}
+      AM.maskRise(tl, "#" + SID + "-note", 0.82 * D);
+{% endif %}
+{% if not is_last %}
+{% set ex = namespace(parts=[]) %}
+{% for s in ns.sources %}{% set _ = ex.parts.append("#s-" ~ scene_id ~ "-node-l-" ~ loop.index0) %}{% endfor %}
+{% for s in ns.sinks %}{% set _ = ex.parts.append("#s-" ~ scene_id ~ "-node-r-" ~ loop.index0) %}{% endfor %}
+      AM.exitSoft(tl, "{{ ex.parts|join(', ') }}", D);
+{% endif %}
+      tl.to({}, { duration: D }, 0);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["{{ scene_id }}"] = tl;
+    })();
+  </script>
+</template></body></html>

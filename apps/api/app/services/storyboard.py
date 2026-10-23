@@ -474,6 +474,31 @@ def _choose_body_template(text: str) -> str:
             pass
     if _STEP_HINT.search(text):
         return "process-steps"
+    # ── 第 13 批（桑基/热力/堆叠/三圆/架构/时序/词云/指标排/对比表/搜索结果/邮件/价目）──
+    if re.search(r"流向|都去哪了|去哪了|桑基|来源.{0,6}去向", text):
+        return "chart-sankey"
+    if re.search(r"热力图|时段分布|哪.{0,4}最忙|忙碌分布|高峰时段", text):
+        return "chart-heatmap"
+    if re.search(r"堆叠|构成变化|结构变了|占比结构", text):
+        return "chart-stackedbar"
+    if re.search(r"三者都|三个都|三圈|三者交集|同时满足.{0,6}三个", text):
+        return "diagram-venn-3"
+    if re.search(r"组织架构|架构图|团队结构|怎么分工|汇报线|部门设置", text):
+        return "diagram-orgchart"
+    if re.search(r"时序|调用过程|请求过程|一来一回|发送.{0,6}返回", text):
+        return "diagram-sequence"
+    if re.search(r"词云|关键词云|都在聊|高频词|热词", text):
+        return "word-cloud"
+    if re.search(r"年度盘点|四个数字|指标墙|一组数据|几个数字", text):
+        return "stat-row"
+    if re.search(r"逐项对比|对比表|二选一.{0,4}比|哪个更值", text):
+        return "versus-table"
+    if re.search(r"搜索结果|一搜|搜出来|搜索引擎", text):
+        return "search-results"
+    if re.search(r"邮件|收件箱|offer|拒信", text, re.I):
+        return "email-client"
+    if re.search(r"价目|套餐|三档|会员权益|定价方案", text):
+        return "pricing-table"
     # 交集 / 树状分类 / 漏斗（字段合成优先 LLM，规则 NoFit 由调用方兜底）
     if _VENN_HINT.search(text):
         return "diagram-venn"
@@ -831,6 +856,11 @@ def _fields_batch12(text: str) -> dict:
     raise _NoFit("第 12 批结构化字段交给 LLM 合成")
 
 
+def _fields_batch13(text: str) -> dict:
+    """第 13 批（桑基/热力/堆叠/三圆/架构/时序/词云/指标排/对比表/搜索结果/邮件/价目）：交给 LLM 合成。"""
+    raise _NoFit("第 13 批结构化字段交给 LLM 合成")
+
+
 def _fields_rank(text: str) -> dict:
     """排行榜：名次节点对（3-5 条）。"""
     items = _pair_nodes(text, min_n=3, max_n=5)
@@ -1079,6 +1109,18 @@ _EXTRACTORS = {
     "certificate-award": _fields_batch12,
     "sticky-notes": _fields_batch12,
     "trading-card": _fields_batch12,
+    "chart-sankey": _fields_batch13,
+    "chart-heatmap": _fields_batch13,
+    "chart-stackedbar": _fields_batch13,
+    "diagram-venn-3": _fields_batch13,
+    "diagram-orgchart": _fields_batch13,
+    "diagram-sequence": _fields_batch13,
+    "word-cloud": _fields_batch13,
+    "stat-row": _fields_batch13,
+    "versus-table": _fields_batch13,
+    "search-results": _fields_batch13,
+    "email-client": _fields_batch13,
+    "pricing-table": _fields_batch13,
     "rank-list": _fields_rank,
     "diagram-fishbone": _fields_fishbone,
     "diagram-journey": _fields_journey,

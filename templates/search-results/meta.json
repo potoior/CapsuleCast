@@ -1,0 +1,23 @@
+{
+  "id": "search-results",
+  "name": "搜索结果页",
+  "role": "body",
+  "motion": "results-stagger",
+  "description": "搜索引擎结果页样式：搜索框 + 结果统计 + 3 条结果（蓝标题/灰网址/黑摘要）。适合「一搜发现全是坑」「信息怎么筛选」的场景。",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "min_duration_s": 6,
+  "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "query", "meta", "results", "note"],
+  "example": {
+    "kicker": "信息检索",
+    "headline": "一搜才发现水这么深",
+    "query": "新手怎么选第一台相机",
+    "meta": "约 12,400,000 条结果|0.42 秒",
+    "results": [
+      "2026 相机选购指南|从预算和用途出发，别先看参数。",
+      "新手最容易踩的五个坑|样片好看不等于适合你。",
+      "三个月后我后悔了|买了才发现用不上的三个功能。"
+    ],
+    "note": "越搜越冷静"
+  }
+}

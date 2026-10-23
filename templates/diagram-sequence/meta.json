@@ -1,0 +1,23 @@
+{
+  "id": "diagram-sequence",
+  "name": "时序图",
+  "role": "body",
+  "motion": "messages-draw",
+  "description": "横向排列 2-3 个角色，纵向虚线生命线，消息箭头在角色之间来回穿梭。适合「一次请求经历了什么」「两个系统怎么对话」的调用过程。",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "min_duration_s": 6,
+  "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "actors", "messages", "note"],
+  "example": {
+    "kicker": "调用时序",
+    "headline": "一次点击背后发生了什么",
+    "actors": ["用户", "前端", "服务器"],
+    "messages": [
+      "用户>前端|点击按钮",
+      "前端>服务器|发请求",
+      "服务器>前端|返回数据",
+      "前端>用户|刷新页面"
+    ],
+    "note": "一来一回，四步搞定"
+  }
+}

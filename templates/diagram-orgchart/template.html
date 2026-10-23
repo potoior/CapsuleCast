@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+<body><template>
+  <style>
+    {{ base_css }}
+    {% set branches = fields.get('branches', []) %}
+    {% set leaves = fields.get('leaves', []) %}
+    {% set bcount = branches|length %}
+    {% set lcount = leaves|length %}
+    {% if bcount == 2 %}{% set bxs = [30, 70] %}{% else %}{% set bxs = [22, 50, 78] %}{% endif %}
+    {% if lcount == 2 %}{% set lxs = [30, 70] %}{% elif lcount == 3 %}{% set lxs = [22, 50, 78] %}{% else %}{% set lxs = [14, 38, 62, 86] %}{% endif %}
+    {% set root_parts = fields.get('root', '').split('|') %}
+    #f-{{ scene_id }} .page {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 5cqh 4cqw 0;
+      box-sizing: border-box;
+    }
+    #f-{{ scene_id }} .kicker {
+      font-family: var(--font-mono);
+      font-size: 1.7cqmin;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      text-align: center;
+      line-height: 1.3;
+    }
+    #f-{{ scene_id }} .headline {
+      font-family: var(--font-display);
+      font-size: 5.2cqmin;
+      line-height: 1.08;
+      color: var(--ink);
+      text-align: center;
+      margin-top: 0.9cqh;
+      max-width: 86cqw;
+    }
+    #f-{{ scene_id }} .org {
+      position: relative;
+      width: 82cqw;
+      height: 58cqh;
+      margin-top: 2.2cqh;
+      flex: 0 0 auto;
+    }
+    #f-{{ scene_id }} .org-links {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      z-index: 1;
+    }
+    #f-{{ scene_id }} .org-links path {
+      stroke: var(--hairline-strong);
+      stroke-width: 0.35;
+      fill: none;
+    }
+    #f-{{ scene_id }} .org-root {
+      position: absolute;
+      left: 50%;
+      top: 4%;
+      transform: translate(-50%, 0);
+      width: 26cqw;
+      box-sizing: border-box;
+      background: var(--ink);
+      color: var(--cream);
+      padding: 1.2cqh 1.6cqw;
+      border-radius: var(--tile-radius);
+      text-align: center;
+      z-index: 2;
+    }
+    #f-{{ scene_id }} .or-name {
+      font-family: var(--font-display);
+      font-size: 3cqmin;
+      line-height: 1.15;
+      word-break: break-word;
+    }
+    #f-{{ scene_id }} .or-sub {
+      font-family: var(--font-mono);
+      font-size: 1.5cqmin;
+      opacity: 0.75;
+      margin-top: 0.4cqh;
+      line-height: 1.3;
+      word-break: break-word;
+    }
+    #f-{{ scene_id }} .org-branch {
+      position: absolute;
+      top: 34%;
+      transform: translate(-50%, 0);
+      width: 22cqw;
+      box-sizing: border-box;
+      background: var(--tile);
+      border: 1px solid var(--hairline-strong);
+      border-radius: var(--tile-radius);
+      padding: 1cqh 1.2cqw;
+      text-align: center;
+      z-index: 2;
+    }
+    {% for i in range(bcount) %}
+    #f-{{ scene_id }} .org-branch-{{ i }} { left: {{ bxs[i] }}%; }
+    {% endfor %}
+    #f-{{ scene_id }} .ob-name {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 2.4cqmin;
+      line-height: 1.2;
+      word-break: break-word;
+    }
+    #f-{{ scene_id }} .ob-sub {
+      font-family: var(--font-mono);
+      font-size: 1.5cqmin;
+      color: var(--ink-soft);
+      margin-top: 0.3cqh;
+      line-height: 1.3;
+      word-break: break-word;
+    }
+    #f-{{ scene_id }} .org-leaf {
+      position: absolute;
+      top: 66%;
+      transform: translate(-50%, 0);
+      width: 20cqw;
+      box-sizing: border-box;
+      background: color-mix(in srgb, var(--coral) 10%, var(--tile));
+      border: 1px solid var(--hairline);
+      border-radius: var(--tile-radius);
+      padding: 0.9cqh 1cqw;
+      text-align: center;
+      z-index: 2;
+    }
+    {% for i in range(lcount) %}
+    #f-{{ scene_id }} .org-leaf-{{ i }} { left: {{ lxs[i] }}%; }
+    {% endfor %}
+    #f-{{ scene_id }} .ol-name {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 2.2cqmin;
+      line-height: 1.2;
+      word-break: break-word;
+    }
+    #f-{{ scene_id }} .ol-sub {
+      font-family: var(--font-mono);
+      font-size: 1.3cqmin;
+      color: var(--ink-soft);
+      margin-top: 0.3cqh;
+      line-height: 1.3;
+      word-break: break-word;
+    }
+    #f-{{ scene_id }} .note {
+      font-family: var(--font-mono);
+      font-size: 1.6cqmin;
+      color: var(--ink-faint);
+      text-align: center;
+      line-height: 1.4;
+      max-width: 70cqw;
+      margin-top: 1.4cqh;
+    }
+    @container frame (max-aspect-ratio: 10/16) {
+      #f-{{ scene_id }} .page {
+        padding: 6cqh 4cqw 0;
+      }
+      #f-{{ scene_id }} .org {
+        width: 92cqw;
+        height: 54cqh;
+      }
+      #f-{{ scene_id }} .org-root {
+        width: 40cqw;
+      }
+      #f-{{ scene_id }} .org-branch {
+        width: 34cqw;
+      }
+      {% if bcount == 3 %}
+      #f-{{ scene_id }} .org-branch-0 { left: 18%; }
+      #f-{{ scene_id }} .org-branch-1 { left: 50%; }
+      #f-{{ scene_id }} .org-branch-2 { left: 82%; }
+      {% endif %}
+      #f-{{ scene_id }} .org-leaf {
+        width: 30cqw;
+      }
+    }
+  </style>
+  <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+       data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+    <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+    <div class="hf-safe">
+      <div class="page">
+        <div class="kicker" id="s-{{ scene_id }}-kicker">{{ fields.get('kicker') }}</div>
+        <div class="headline" id="s-{{ scene_id }}-headline">{{ fields.get('headline') }}</div>
+        <div class="org">
+          <svg class="org-links" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+            {% for i in range(bcount) %}
+            <path id="s-{{ scene_id }}-link-r-{{ i }}" d="M 50 12 L 50 22 L {{ bxs[i] }} 22 L {{ bxs[i] }} 34" />
+            {% endfor %}
+            {% for i in range(lcount) %}
+            <path id="s-{{ scene_id }}-link-b-{{ i }}" d="M {{ bxs[(i * bcount) // lcount] }} 44 L {{ bxs[(i * bcount) // lcount] }} 54 L {{ lxs[i] }} 54 L {{ lxs[i] }} 66" />
+            {% endfor %}
+          </svg>
+          <div class="org-root" id="s-{{ scene_id }}-root">
+            <div class="or-name">{{ root_parts[0] }}</div>
+            {% if root_parts|length > 1 %}<div class="or-sub">{{ root_parts[1] }}</div>{% endif %}
+          </div>
+          {% for i in range(bcount) %}
+          {% set bp = branches[i].split('|') %}
+          <div class="org-branch org-branch-{{ i }}" id="s-{{ scene_id }}-branch-{{ i }}">
+            <div class="ob-name">{{ bp[0] }}</div>
+            {% if bp|length > 1 %}<div class="ob-sub">{{ bp[1] }}</div>{% endif %}
+          </div>
+          {% endfor %}
+          {% for i in range(lcount) %}
+          {% set lp = leaves[i].split('|') %}
+          <div class="org-leaf org-leaf-{{ i }}" id="s-{{ scene_id }}-leaf-{{ i }}">
+            <div class="ol-name">{{ lp[0] }}</div>
+            {% if lp|length > 1 %}<div class="ol-sub">{{ lp[1] }}</div>{% endif %}
+          </div>
+          {% endfor %}
+        </div>
+        {% if fields.get('note') %}
+        <div class="note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var SID = "s-{{ scene_id }}";
+      var D = {{ duration }};
+      var tl = gsap.timeline({ paused: true });
+      var BRANCHES = [{% for i in range(bcount) %}"#" + SID + "-branch-{{ i }}"{% if not loop.last %}, {% endif %}{% endfor %}].join(", ");
+      var LEAVES = [{% for i in range(lcount) %}"#" + SID + "-leaf-{{ i }}"{% if not loop.last %}, {% endif %}{% endfor %}].join(", ");
+      var EXIT = ["#" + SID + "-root", {% for i in range(bcount) %}"#" + SID + "-branch-{{ i }}"{% if not loop.last %}, {% endif %}{% endfor %}].join(", ");
+
+      AM.maskRise(tl, "#" + SID + "-kicker", 0.1);
+      AM.maskRise(tl, "#" + SID + "-headline", 0.25);
+      AM.pop(tl, "#" + SID + "-root", 0.4);
+
+      {% for i in range(bcount) %}
+      AM.draw(tl, "#" + SID + "-link-r-{{ i }}", {{ 0.5 + i * 0.1 }});
+      {% endfor %}
+      {% for i in range(bcount) %}
+      AM.pop(tl, "#" + SID + "-branch-{{ i }}", {{ 0.6 + i * 0.1 }});
+      {% endfor %}
+      {% for i in range(lcount) %}
+      AM.draw(tl, "#" + SID + "-link-b-{{ i }}", {{ 0.68 + i * 0.06 }});
+      {% endfor %}
+
+      AM.stagger(tl, LEAVES, 0.76);
+      {% if fields.get('note') %}
+      AM.pop(tl, "#" + SID + "-note", 0.88 * D);
+      {% endif %}
+
+      {% if not is_last %}
+      AM.exitSoft(tl, EXIT, D);
+      {% endif %}
+
+      tl.to({}, { duration: D }, 0);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["{{ scene_id }}"] = tl;
+    })();
+  </script>
+</template></body></html>

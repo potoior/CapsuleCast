@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+<body><template>
+  <style>
+    {{ base_css }}
+    #f-{{ scene_id }} .hf-safe {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 4.5cqh 4cqw 0;
+      box-sizing: border-box;
+    }
+    #f-{{ scene_id }} .vt-head {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 2.2cqh;
+    }
+    #f-{{ scene_id }} .vt-kicker {
+      font-family: var(--font-mono);
+      font-size: 1.5cqmin;
+      line-height: 1.2;
+      color: var(--coral-deep);
+      letter-spacing: 0.12em;
+    }
+    #f-{{ scene_id }} .vt-title {
+      font-family: var(--font-display);
+      font-size: 5.2cqmin;
+      line-height: 1.12;
+      color: var(--ink);
+      margin-top: 0.6cqh;
+    }
+    #f-{{ scene_id }} .vt {
+      width: 80cqw;
+      display: grid;
+      grid-template-columns: 20cqw 1fr 1fr;
+      align-items: stretch;
+      box-sizing: border-box;
+    }
+    #f-{{ scene_id }} .vt * {
+      box-sizing: border-box;
+    }
+    #f-{{ scene_id }} .vh-corner {
+      height: 7cqh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--tile);
+      border-bottom: 1px solid var(--hairline-strong);
+      font-family: var(--font-mono);
+      font-size: 1.3cqmin;
+      color: var(--ink-faint);
+    }
+    #f-{{ scene_id }} .vh {
+      height: 7cqh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3cqh;
+      padding: 0 1.2cqw;
+      color: var(--cream);
+      border-bottom: 1px solid var(--hairline-strong);
+      min-width: 0;
+    }
+    #f-{{ scene_id }} .vh-left {
+      background: var(--ink);
+    }
+    #f-{{ scene_id }} .vh-right {
+      background: var(--coral);
+    }
+    #f-{{ scene_id }} .vh-name {
+      font-family: var(--font-display);
+      font-size: 2.4cqmin;
+      line-height: 1.1;
+      max-width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    #f-{{ scene_id }} .vh-note {
+      font-family: var(--font-mono);
+      font-size: 1.4cqmin;
+      line-height: 1.1;
+      opacity: 0.8;
+      max-width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    #f-{{ scene_id }} .vr-row {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 20cqw 1fr 1fr;
+      height: 4.6cqh;
+      border-bottom: 1px solid var(--hairline);
+    }
+    #f-{{ scene_id }} .vr-k,
+    #f-{{ scene_id }} .vr-l,
+    #f-{{ scene_id }} .vr-r {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      padding: 0 1.2cqw;
+      font-family: var(--font-body);
+      font-size: 2.1cqmin;
+      line-height: 1.15;
+      overflow: hidden;
+    }
+    #f-{{ scene_id }} .vr-k {
+      background: var(--tile);
+      padding-left: 1.6cqw;
+      font-weight: 600;
+      color: var(--ink-soft);
+    }
+    #f-{{ scene_id }} .vr-l {
+      color: var(--ink);
+    }
+    #f-{{ scene_id }} .vr-r {
+      background: color-mix(in srgb, var(--coral) 6%, transparent);
+      color: var(--ink);
+    }
+    #f-{{ scene_id }} .vt-verdict {
+      grid-column: 1 / -1;
+      margin-top: 1.6cqh;
+      padding: 1.2cqh 2cqw;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--coral-soft);
+      color: var(--coral-deep);
+      font-family: var(--font-display);
+      font-size: 2.8cqmin;
+      line-height: 1.2;
+      text-align: center;
+    }
+    #f-{{ scene_id }} .vt-note {
+      margin-top: 1.2cqh;
+      font-family: var(--font-mono);
+      font-size: 1.4cqmin;
+      line-height: 1.3;
+      color: var(--ink-faint);
+      text-align: center;
+      letter-spacing: 0.05em;
+    }
+    @container frame (max-aspect-ratio: 10/16) {
+      #f-{{ scene_id }} .hf-safe {
+        padding-top: 4cqh;
+      }
+      #f-{{ scene_id }} .vt {
+        width: 92cqw;
+        grid-template-columns: 16cqw 1fr 1fr;
+      }
+      #f-{{ scene_id }} .vr-row {
+        grid-template-columns: 16cqw 1fr 1fr;
+        height: 4.2cqh;
+      }
+      #f-{{ scene_id }} .vr-k,
+      #f-{{ scene_id }} .vr-l,
+      #f-{{ scene_id }} .vr-r {
+        font-size: 1.9cqmin;
+        padding: 0 0.9cqw;
+      }
+      #f-{{ scene_id }} .vr-k {
+        padding-left: 1.2cqw;
+      }
+      #f-{{ scene_id }} .vh-name {
+        font-size: 2.1cqmin;
+      }
+      #f-{{ scene_id }} .vt-verdict {
+        font-size: 2.4cqmin;
+      }
+    }
+  </style>
+  <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+       data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+    <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+    <div class="hf-safe">
+      <div class="vt-head" id="s-{{ scene_id }}-head">
+        <div class="vt-kicker" id="s-{{ scene_id }}-kicker">{{ fields.get('kicker') }}</div>
+        <div class="vt-title" id="s-{{ scene_id }}-headline">{{ fields.get('headline') }}</div>
+      </div>
+      {% set lp = fields.get('left').split('|') %}
+      {% set rp = fields.get('right').split('|') %}
+      <div class="vt" id="s-{{ scene_id }}-vt">
+        <div class="vh-corner" id="s-{{ scene_id }}-vh-corner">对比</div>
+        <div class="vh vh-left" id="s-{{ scene_id }}-vh-left">
+          <div class="vh-name">{{ lp[0] }}</div>
+          {% if lp|length > 1 %}<div class="vh-note">{{ lp[1] }}</div>{% endif %}
+        </div>
+        <div class="vh vh-right" id="s-{{ scene_id }}-vh-right">
+          <div class="vh-name">{{ rp[0] }}</div>
+          {% if rp|length > 1 %}<div class="vh-note">{{ rp[1] }}</div>{% endif %}
+        </div>
+        {% for row in fields.get('rows', []) %}
+        {% set p = row.split('|') %}
+        <div class="vr-row" id="s-{{ scene_id }}-row-{{ loop.index0 }}">
+          <div class="vr-k" id="s-{{ scene_id }}-row-{{ loop.index0 }}-k">{{ p[0] }}</div>
+          <div class="vr-l" id="s-{{ scene_id }}-row-{{ loop.index0 }}-l">{% if p|length > 1 %}{{ p[1] }}{% endif %}</div>
+          <div class="vr-r" id="s-{{ scene_id }}-row-{{ loop.index0 }}-r">{% if p|length > 2 %}{{ p[2] }}{% endif %}</div>
+        </div>
+        {% endfor %}
+        <div class="vt-verdict" id="s-{{ scene_id }}-verdict">{{ fields.get('verdict') }}</div>
+      </div>
+      {% if fields.get('note') %}
+      <div class="vt-note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>
+      {% endif %}
+    </div>
+  </div>
+  <script>
+    (function () {
+      var SID = "s-{{ scene_id }}";
+      var D = {{ duration }};
+      var tl = gsap.timeline({ paused: true });
+      AM.pop(tl, "#" + SID + "-kicker", 0.1);
+      AM.maskRise(tl, "#" + SID + "-headline", 0.25);
+      AM.slideX(tl, "#" + SID + "-vh-left", 0.38, -1);
+      AM.slideX(tl, "#" + SID + "-vh-right", 0.38, 1);
+      AM.stagger(tl, "#" + SID + "-vt .vr-row", 0.5, 0.14);
+      AM.focus(tl, "#" + SID + "-verdict", 0.68 * D);
+      {% if fields.get('note') %}AM.pop(tl, "#" + SID + "-note", 0.86 * D);{% endif %}
+      {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-vt", D);{% endif %}
+      tl.to({}, { duration: D }, 0);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["{{ scene_id }}"] = tl;
+    })();
+  </script>
+</template></body></html>

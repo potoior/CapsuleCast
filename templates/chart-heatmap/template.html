@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+<body><template>
+  <style>
+    {{ base_css }}
+    #f-{{ scene_id }} .hm-wrap {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 6cqh;
+      box-sizing: border-box;
+    }
+    #f-{{ scene_id }} .hm-kicker {
+      font-family: var(--font-mono);
+      font-size: 1.7cqmin;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      text-align: center;
+      margin-bottom: 1.6cqh;
+    }
+    #f-{{ scene_id }} .hm-headline {
+      font-family: var(--font-display);
+      font-size: 5.2cqmin;
+      font-weight: 700;
+      line-height: 1.12;
+      color: var(--ink);
+      text-align: center;
+      margin-bottom: 3cqh;
+      max-width: 78cqw;
+    }
+    #f-{{ scene_id }} .heat {
+      width: 78cqw;
+      height: 54cqh;
+      display: grid;
+      grid-template-columns: 12cqw repeat({{ cols|length }}, 1fr);
+      grid-template-rows: repeat({{ rows|length + 1 }}, 1fr);
+      gap: 0.6cqh 0.7cqw;
+      box-sizing: border-box;
+    }
+    #f-{{ scene_id }} .hm-lab {
+      display: flex;
+      align-items: center;
+    }
+    #f-{{ scene_id }} .hm-col {
+      font-family: var(--font-mono);
+      font-size: 1.7cqmin;
+      color: var(--ink-faint);
+      justify-content: center;
+      text-align: center;
+    }
+    #f-{{ scene_id }} .hm-row {
+      font-family: var(--font-body);
+      font-size: 2cqmin;
+      color: var(--ink-soft);
+      justify-content: flex-end;
+      text-align: right;
+      padding-right: 0.8cqw;
+      box-sizing: border-box;
+    }
+    #f-{{ scene_id }} .hm-cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.5cqmin;
+      border: 1px solid var(--hairline);
+      font-family: var(--font-mono);
+      font-size: 1.75cqmin;
+      font-variant-numeric: tabular-nums;
+      box-sizing: border-box;
+    }
+    #f-{{ scene_id }} .hm-legend {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5cqw;
+      margin-top: 3cqh;
+    }
+    #f-{{ scene_id }} .hm-legend-label {
+      font-family: var(--font-mono);
+      font-size: 1.4cqmin;
+      color: var(--ink-faint);
+    }
+    #f-{{ scene_id }} .hm-swatch {
+      width: 2cqw;
+      height: 1.6cqh;
+      border-radius: 0.3cqmin;
+      border: 1px solid var(--hairline);
+      box-sizing: border-box;
+    }
+    #f-{{ scene_id }} .hm-note {
+      font-family: var(--font-mono);
+      font-size: 1.5cqmin;
+      color: var(--ink-faint);
+      text-align: center;
+      margin-top: 2cqh;
+      max-width: 76cqw;
+    }
+    @container frame (max-aspect-ratio: 10/16) {
+      #f-{{ scene_id }} .heat {
+        width: 92cqw;
+        height: 46cqh;
+        grid-template-columns: 10cqw repeat({{ cols|length }}, 1fr);
+      }
+      #f-{{ scene_id }} .hm-headline {
+        font-size: 6.4cqmin;
+        max-width: 88cqw;
+      }
+      #f-{{ scene_id }} .hm-row {
+        font-size: 2.2cqmin;
+        padding-right: 0.6cqw;
+      }
+      #f-{{ scene_id }} .hm-legend {
+        gap: 1cqw;
+      }
+      #f-{{ scene_id }} .hm-swatch {
+        width: 3cqw;
+      }
+    }
+  </style>
+  <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+       data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+    <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+    <div class="hf-safe">
+      <div class="hm-wrap">
+        <div class="hm-kicker" id="s-{{ scene_id }}-kicker">{{ fields.get('kicker') }}</div>
+        <div class="hm-headline" id="s-{{ scene_id }}-headline">{{ fields.get('headline') }}</div>
+        <div class="heat" id="s-{{ scene_id }}-heat">
+          <div class="hm-lab" id="s-{{ scene_id }}-corner"></div>
+          {% for i in range(cols|length) %}
+          <div class="hm-lab hm-col" id="s-{{ scene_id }}-col-{{ i }}">{{ cols[i] }}</div>
+          {% endfor %}
+          {% for ri in range(rows|length) %}
+          {% set parts = rows[ri].split('|') %}
+          <div class="hm-lab hm-row" id="s-{{ scene_id }}-row-{{ ri }}">{{ parts[0] }}</div>
+          {% for ci in range(cols|length) %}
+          {% set s = parts[1].split(',')[ci] | int %}
+          <div class="hm-cell" id="s-{{ scene_id }}-cell-{{ ri }}-{{ ci }}"
+               style="background: color-mix(in srgb, var(--coral) {{ s * 18 }}%, var(--tile)); color: {% if s >= 3 %}var(--cream){% else %}var(--ink-faint){% endif %};">{{ s }}</div>
+          {% endfor %}
+          {% endfor %}
+        </div>
+        <div class="hm-legend" id="s-{{ scene_id }}-legend">
+          <span class="hm-legend-label">低</span>
+          {% for k in range(5) %}
+          <span class="hm-swatch" id="s-{{ scene_id }}-swatch-{{ k }}"
+                style="background: color-mix(in srgb, var(--coral) {{ k * 20 }}%, var(--tile));"></span>
+          {% endfor %}
+          <span class="hm-legend-label">高</span>
+        </div>
+        {% if fields.get('note') %}
+        <div class="hm-note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var SID = "s-{{ scene_id }}";
+      var D = {{ duration }};
+      var tl = gsap.timeline({ paused: true });
+      tl.fromTo("#" + SID + "-kicker", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5 }, 0.1 * D);
+      tl.fromTo("#" + SID + "-headline", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6 }, 0.25 * D);
+      AM.stagger(tl, "#" + SID + "-heat .hm-lab", 0.35 * D, 0.4, 0.03);
+      AM.stagger(tl, "#" + SID + "-heat .hm-cell", 0.45 * D, 0.5, 0.018);
+      tl.fromTo("#" + SID + "-legend", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 0.55 * D);
+      {% if fields.get('note') %}
+      tl.fromTo("#" + SID + "-note", { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.4 }, 0.85 * D);
+      {% endif %}
+      {% if not is_last %}
+      AM.exitSoft(tl, "#" + SID + "-heat", D);
+      {% endif %}
+      tl.to({}, { duration: D }, 0);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["{{ scene_id }}"] = tl;
+    })();
+  </script>
+</template></body></html>

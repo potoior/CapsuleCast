@@ -1,0 +1,18 @@
+{
+  "id": "chart-heatmap",
+  "name": "热力图",
+  "role": "body",
+  "motion": "cells-fill",
+  "description": "行列网格热力图：每个格子按强度上色，右侧一条低→高图例。适合「一周什么时段最忙」「哪些组合最常出现」的分布洞察。",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "min_duration_s": 6,
+  "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "cols", "rows", "note"],
+  "example": {
+    "kicker": "忙碌热力",
+    "headline": "一周里哪些时段最挤",
+    "cols": ["一", "二", "三", "四", "五"],
+    "rows": ["上午|1,4,3,5,4", "下午|3,5,4,4,5", "晚上|2,2,3,4,3"],
+    "note": "越红越忙"
+  }
+}

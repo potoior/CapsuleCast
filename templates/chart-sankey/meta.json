@@ -1,0 +1,17 @@
+{
+  "id": "chart-sankey",
+  "name": "桑基图",
+  "role": "body",
+  "motion": "flow-draw",
+  "description": "最常见的两段式桑基图：左边来源节点、右边去向节点，带宽代表流量。适合「钱/人/时间都去哪了」的流向拆解。",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "min_duration_s": 6,
+  "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "flows", "note"],
+  "example": {
+    "kicker": "流量去向",
+    "headline": "一百个用户最后去了哪",
+    "flows": ["新用户|付费|18", "新用户|流失|62", "老用户|付费|12", "老用户|流失|8"],
+    "note": "线越粗，人越多"
+  }
+}

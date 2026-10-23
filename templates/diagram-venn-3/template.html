@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+<body><template>
+  <style>
+    {{ base_css }}
+    #f-{{ scene_id }} .hf-head {
+      position: absolute;
+      left: 0;
+      top: 4.2cqh;
+      width: 100%;
+      text-align: center;
+    }
+    #f-{{ scene_id }} .v-kicker {
+      font-family: var(--font-mono);
+      font-size: 1.7cqmin;
+      letter-spacing: 0.18em;
+      color: var(--ink-faint);
+      text-transform: uppercase;
+    }
+    #f-{{ scene_id }} .v-headline {
+      font-family: var(--font-display);
+      font-size: 5.2cqmin;
+      line-height: 1.08;
+      color: var(--ink);
+      margin-top: 0.8cqh;
+    }
+    #f-{{ scene_id }} .venn3 {
+      position: absolute;
+      left: 50%;
+      margin-left: -35cqw;
+      top: 22cqh;
+      width: 70cqw;
+      height: 54cqh;
+    }
+    #f-{{ scene_id }} .vc {
+      position: absolute;
+      height: 42cqh;
+      width: 42cqh;
+      margin-left: -21cqh;
+      margin-top: -21cqh;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--coral) 16%, transparent);
+      border: 2px solid var(--coral);
+      mix-blend-mode: multiply;
+      z-index: 1;
+    }
+    #f-{{ scene_id }} .vc-0 { left: 50%; top: 34%; }
+    #f-{{ scene_id }} .vc-1 { left: 36%; top: 66%; }
+    #f-{{ scene_id }} .vc-2 { left: 64%; top: 66%; }
+    #f-{{ scene_id }} .vl {
+      position: absolute;
+      width: 24cqw;
+      text-align: center;
+      z-index: 2;
+    }
+    #f-{{ scene_id }} .vl-0 { left: 50%; margin-left: -12cqw; top: 5%; }
+    #f-{{ scene_id }} .vl-1 { left: 6%; top: 70%; }
+    #f-{{ scene_id }} .vl-2 { right: 6%; top: 70%; }
+    #f-{{ scene_id }} .vl-name {
+      font-family: var(--font-display);
+      font-size: 3.2cqmin;
+      color: var(--ink);
+      line-height: 1.15;
+    }
+    #f-{{ scene_id }} .vl-sub {
+      font-family: var(--font-mono);
+      font-size: 1.6cqmin;
+      color: var(--ink-faint);
+      margin-top: 0.3cqh;
+    }
+    #f-{{ scene_id }} .v-center {
+      position: absolute;
+      left: 50%;
+      margin-left: -13cqw;
+      top: 52%;
+      width: 26cqw;
+      background: var(--tile);
+      border: 1px solid var(--hairline-strong);
+      border-radius: var(--tile-radius);
+      padding: 0.9cqh 1.2cqw;
+      text-align: center;
+      z-index: 3;
+    }
+    #f-{{ scene_id }} .vc-main {
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: 2.6cqmin;
+      color: var(--coral-deep);
+      line-height: 1.2;
+    }
+    #f-{{ scene_id }} .vc-sub {
+      font-family: var(--font-mono);
+      font-size: 1.5cqmin;
+      color: var(--ink-faint);
+      margin-top: 0.4cqh;
+    }
+    #f-{{ scene_id }} .v-note-wrap {
+      position: absolute;
+      left: 50%;
+      margin-left: -30cqw;
+      width: 60cqw;
+      top: 78.4cqh;
+      text-align: center;
+    }
+    #f-{{ scene_id }} .v-note {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 1.7cqmin;
+      color: var(--ink-soft);
+      white-space: nowrap;
+    }
+    @container frame (max-aspect-ratio: 10/16) {
+      #f-{{ scene_id }} .venn3 {
+        width: 92cqw;
+        margin-left: -46cqw;
+        height: 50cqh;
+        top: 24cqh;
+      }
+      #f-{{ scene_id }} .vc {
+        height: 34cqh;
+        width: 34cqh;
+        margin-left: -17cqh;
+        margin-top: -17cqh;
+      }
+      #f-{{ scene_id }} .vc-0 { left: 50%; top: 30%; }
+      #f-{{ scene_id }} .vc-1 { left: 30%; top: 68%; }
+      #f-{{ scene_id }} .vc-2 { left: 70%; top: 68%; }
+      #f-{{ scene_id }} .vl-0 { top: 4%; }
+      #f-{{ scene_id }} .vl-1 { left: 8%; top: 76%; }
+      #f-{{ scene_id }} .vl-2 { right: 8%; top: 76%; }
+      #f-{{ scene_id }} .v-center { width: 40cqw; margin-left: -20cqw; top: 50%; }
+      #f-{{ scene_id }} .v-note-wrap { top: 77.6cqh; }
+    }
+  </style>
+  <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+       data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+    <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+    <div class="hf-safe">
+      <div class="hf-head">
+        <div class="v-kicker" id="s-{{ scene_id }}-kicker">{{ fields.get('kicker') }}</div>
+        <div class="v-headline" id="s-{{ scene_id }}-headline">{{ fields.get('headline') }}</div>
+      </div>
+      <div class="venn3" id="s-{{ scene_id }}-venn3">
+        {% for c in fields.get('circles') %}
+        {% set parts = c.split('|') %}
+        <div class="vc vc-{{ loop.index0 }}" id="s-{{ scene_id }}-vc-{{ loop.index0 }}"></div>
+        <div class="vl vl-{{ loop.index0 }}" id="s-{{ scene_id }}-vl-{{ loop.index0 }}">
+          <div class="vl-name">{{ parts[0] }}</div>
+          {% if parts|length > 1 %}<div class="vl-sub">{{ parts[1] }}</div>{% endif %}
+        </div>
+        {% endfor %}
+        {% set cp = fields.get('center', '').split('|') %}
+        <div class="v-center" id="s-{{ scene_id }}-v-center">
+          <div class="vc-main">{{ cp[0] }}</div>
+          {% if cp|length > 1 %}<div class="vc-sub">{{ cp[1] }}</div>{% endif %}
+        </div>
+      </div>
+      {% if fields.get('note') %}
+      <div class="v-note-wrap">
+        <div class="v-note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  <script>
+    (function () {
+      var SID = "s-{{ scene_id }}";
+      var D = {{ duration }};
+      var tl = gsap.timeline({ paused: true });
+      AM.wipe(tl, "#" + SID + "-kicker", 0.1);
+      AM.maskRise(tl, "#" + SID + "-headline", 0.25);
+      AM.pop(tl, "#" + SID + "-vc-0", 0.40);
+      AM.pop(tl, "#" + SID + "-vc-1", 0.55);
+      AM.pop(tl, "#" + SID + "-vc-2", 0.70);
+      AM.stagger(tl, "#" + SID + "-vl-0, #" + SID + "-vl-1, #" + SID + "-vl-2", 0.75);
+      AM.stamp(tl, "#" + SID + "-v-center", 0.82);
+      {% if fields.get('note') %}AM.maskRise(tl, "#" + SID + "-note", 0.9 * D);{% endif %}
+      {% if not is_last %}AM.exitSoft(tl, "#" + SID + "-vc-0, #" + SID + "-vc-1, #" + SID + "-vc-2, #" + SID + "-v-center", D);{% endif %}
+      tl.to({}, { duration: D }, 0);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["{{ scene_id }}"] = tl;
+    })();
+  </script>
+</template></body></html>

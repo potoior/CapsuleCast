@@ -1,0 +1,18 @@
+{
+  "id": "pricing-table",
+  "name": "价目表",
+  "role": "body",
+  "motion": "tiers-flip",
+  "description": "三档套餐价目表：中间档高亮推荐，下方逐条权益用对勾/横线标注覆盖档位。适合「三个版本怎么选」「服务分档」「会员权益」。",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "min_duration_s": 6,
+  "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "tiers", "features", "note"],
+  "example": {
+    "kicker": "三档方案",
+    "headline": "别一上来就买最贵的",
+    "tiers": ["基础|免费", "专业|99/月", "旗舰|299/月"],
+    "features": ["不限次数|2,3", "多端同步|2,3", "专属客服|3", "定制报告|3"],
+    "note": "先跑通，再升级"
+  }
+}

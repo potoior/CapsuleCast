@@ -1,0 +1,19 @@
+{
+  "id": "diagram-orgchart",
+  "name": "组织架构图",
+  "role": "body",
+  "motion": "org-grow",
+  "description": "上层一个根节点、中层 2-3 个部门、下层成员的架构图，连线自上而下生长。适合「团队怎么分工」「一个系统分几层」「职责归属」。",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "min_duration_s": 6,
+  "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "root", "branches", "leaves", "note"],
+  "example": {
+    "kicker": "团队分工",
+    "headline": "三个人怎么扛一整摊事",
+    "root": "内容组|总负责",
+    "branches": ["策划|选题", "制作|成片", "运营|分发"],
+    "leaves": ["小周|脚本", "阿凯|剪辑", "小敏|投放"],
+    "note": "每人一摊，各管一段"
+  }
+}

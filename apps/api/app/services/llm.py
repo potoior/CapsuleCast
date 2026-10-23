@@ -250,6 +250,18 @@ DIAGRAM_TIDS = frozenset({
     "certificate-award",
     "sticky-notes",
     "trading-card",
+    "chart-sankey",
+    "chart-heatmap",
+    "chart-stackedbar",
+    "diagram-venn-3",
+    "diagram-orgchart",
+    "diagram-sequence",
+    "word-cloud",
+    "stat-row",
+    "versus-table",
+    "search-results",
+    "email-client",
+    "pricing-table",
 })
 
 

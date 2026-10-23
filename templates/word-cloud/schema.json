@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "word-cloud",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "kicker": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16
+    },
+    "headline": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16
+    },
+    "words": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 9,
+      "items": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 10,
+        "pattern": "^[^|\\n]{1,8}\\|[1-3]$"
+      }
+    },
+    "note": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 22
+    }
+  },
+  "required": ["kicker", "headline", "words"]
+}

@@ -43,7 +43,7 @@ pytest apps/api/tests -q                     # 57 条回归必须全绿
 - 时间轴收尾注册 `window.__timelines["{{ scene_id }}"] = tl`，前面加 `tl.to({}, { duration: D }, 0)` 全跨度锚点
 - 布局数学写在 build 期（直接写 `el.style`），动画只碰 `transform/opacity/clipPath` 等可平滑属性
 - 竖屏适配：`@container frame (max-aspect-ratio: 10/16) { … }` 断点
-- 可用的共享动画库 `window.AM`（21 个词）：`pop / maskRise / wipe / focus / draw / countUp / kenburns / pulse / shimmer / float / exitSoft / stagger / slideX / growX / stamp / orbit / marquee / blink / ripple / unfold`（出场一律 `{% if not is_last %}AM.exitSoft(...){% endif %}`）
+- 可用的共享动画库 `window.AM`（24 个词）：`pop / maskRise / wipe / focus / draw / countUp / kenburns / pulse / shimmer / float / exitSoft / stagger / slideX / growX / stamp / orbit / marquee / blink / ripple / unfold / flipY / tick / drift`（出场一律 `{% if not is_last %}AM.exitSoft(...){% endif %}`）
 - 尺寸单位用容器单位 `cqw/cqh`，别用 px
 
 **第 3 步 · 登记四处**（缺一处 LLM 选不到你的模板）：

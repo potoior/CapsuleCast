@@ -1,0 +1,18 @@
+{
+  "id": "diagram-venn-3",
+  "name": "三圆维恩",
+  "role": "body",
+  "motion": "circles-merge",
+  "description": "三个圆交叠的维恩图：三个概念在交叠处给出共同结论。适合「三者交集/缺一不可/共同点」的关系说明。",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "min_duration_s": 6,
+  "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "circles", "center", "note"],
+  "example": {
+    "kicker": "三者交集",
+    "headline": "同时满足才算数",
+    "circles": ["快|上线速度", "省|成本可控", "好|质量过关"],
+    "center": "三者都要|只能小步快跑",
+    "note": "交集才是及格线"
+  }
+}

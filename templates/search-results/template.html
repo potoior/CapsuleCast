@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+<body><template>
+  <style>
+    {{ base_css }}
+    #f-{{ scene_id }} .sr-stage {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2.6cqh;
+      padding: 0 4cqw 16cqh 0;
+    }
+    #f-{{ scene_id }} .sr-head {
+      text-align: center;
+      width: 100%;
+    }
+    #f-{{ scene_id }} .sr-kicker {
+      font-family: var(--font-mono);
+      font-size: 1.8cqmin;
+      letter-spacing: 0.18em;
+      color: var(--ink-faint);
+      margin-bottom: 1cqh;
+    }
+    #f-{{ scene_id }} .sr-headline {
+      font-family: var(--font-display);
+      font-size: 5.2cqmin;
+      line-height: 1.15;
+      color: var(--ink);
+    }
+    #f-{{ scene_id }} .sr {
+      width: 76cqw;
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+    #f-{{ scene_id }} .sr-bar {
+      display: flex;
+      align-items: center;
+      gap: 1.2cqw;
+      height: 6cqh;
+      border: 1px solid var(--hairline-strong);
+      border-radius: 999px;
+      padding: 0 2cqw;
+      background: var(--tile);
+      transform-origin: 50% 50%;
+    }
+    #f-{{ scene_id }} .sr-glass {
+      font-family: var(--font-mono);
+      font-size: 2.6cqmin;
+      line-height: 1;
+      color: var(--ink-faint);
+    }
+    #f-{{ scene_id }} .sr-query {
+      font-family: var(--font-body);
+      font-size: 2.4cqmin;
+      color: var(--ink);
+    }
+    #f-{{ scene_id }} .sr-meta {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-top: 1.4cqh;
+      padding-bottom: 1cqh;
+      border-bottom: 1px solid var(--hairline-strong);
+    }
+    #f-{{ scene_id }} .sr-count,
+    #f-{{ scene_id }} .sr-time {
+      font-family: var(--font-mono);
+      font-size: 1.5cqmin;
+      color: var(--ink-soft);
+    }
+    #f-{{ scene_id }} .sr-list {
+      width: 100%;
+    }
+    #f-{{ scene_id }} .sr-item {
+      padding: 1.2cqh 0;
+      border-bottom: 1px solid var(--hairline);
+    }
+    #f-{{ scene_id }} .sr-item:last-child {
+      border-bottom: none;
+    }
+    #f-{{ scene_id }} .si-title {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 2.4cqmin;
+      line-height: 1.3;
+      color: #4a6fa5;
+    }
+    #f-{{ scene_id }} .si-url {
+      font-family: var(--font-mono);
+      font-size: 1.5cqmin;
+      color: var(--ink-soft);
+      margin-top: 0.3cqh;
+    }
+    #f-{{ scene_id }} .si-snippet {
+      font-family: var(--font-body);
+      font-size: 1.95cqmin;
+      line-height: 1.5;
+      color: var(--ink);
+      margin-top: 0.4cqh;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    #f-{{ scene_id }} .sr-note {
+      font-family: var(--font-body);
+      font-size: 1.8cqmin;
+      color: var(--ink-faint);
+      margin-top: 1.6cqh;
+      text-align: right;
+    }
+    @container frame (max-aspect-ratio: 10/16) {
+      #f-{{ scene_id }} .sr {
+        width: 92cqw;
+      }
+      #f-{{ scene_id }} .sr-stage {
+        gap: 2.2cqh;
+        padding-bottom: 14cqh;
+      }
+      #f-{{ scene_id }} .sr-headline {
+        font-size: 4.7cqmin;
+      }
+      #f-{{ scene_id }} .sr-query {
+        font-size: 2.15cqmin;
+      }
+      #f-{{ scene_id }} .si-title {
+        font-size: 2.15cqmin;
+      }
+      #f-{{ scene_id }} .si-snippet {
+        font-size: 1.7cqmin;
+      }
+      #f-{{ scene_id }} .si-url {
+        font-size: 1.26cqmin;
+      }
+      #f-{{ scene_id }} .sr-count,
+      #f-{{ scene_id }} .sr-time {
+        font-size: 1.35cqmin;
+      }
+      #f-{{ scene_id }} .sr-note {
+        font-size: 1.6cqmin;
+      }
+    }
+  </style>
+  <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+       data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+    <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+    <div class="hf-safe">
+      <div class="sr-stage">
+        <div class="sr-head">
+          <div class="sr-kicker" id="s-{{ scene_id }}-kicker">{{ fields.get('kicker') }}</div>
+          <div class="sr-headline" id="s-{{ scene_id }}-headline">{{ fields.get('headline') }}</div>
+        </div>
+        <div class="sr">
+          <div class="sr-bar" id="s-{{ scene_id }}-bar">
+            <span class="sr-glass">&#8981;</span>
+            <span class="sr-query" id="s-{{ scene_id }}-query">{{ fields.get('query') }}</span>
+          </div>
+          <div class="sr-meta">
+            <span class="sr-count" id="s-{{ scene_id }}-meta">{{ fields.get('meta').split("|")[0] }}</span>
+            <span class="sr-time">{{ fields.get('meta').split("|")[1] }}</span>
+          </div>
+          <div class="sr-list" id="s-{{ scene_id }}-list">
+            {% for item in fields.get('results') %}
+            <div class="sr-item" id="s-{{ scene_id }}-item-{{ loop.index0 }}">
+              <div class="si-title">{{ item.split("|")[0] }}</div>
+              <div class="si-url">example.com &rsaquo; &hellip;</div>
+              <div class="si-snippet">{{ item.split("|")[1] }}</div>
+            </div>
+            {% endfor %}
+          </div>
+          {% if fields.get('note') %}
+          <div class="sr-note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var SID = "s-{{ scene_id }}";
+      var D = {{ duration }};
+      var tl = gsap.timeline({ paused: true });
+      AM.focus(tl, "#" + SID + "-kicker", 0.1 * D);
+      AM.maskRise(tl, "#" + SID + "-headline", 0.25 * D);
+      tl.fromTo("#" + SID + "-bar",
+        { scaleX: 0.9, opacity: 0 },
+        { scaleX: 1, opacity: 1, duration: 0.55, ease: "power2.out" }, 0.35 * D);
+      AM.focus(tl, "#" + SID + "-query", 0.45 * D);
+      tl.fromTo("#" + SID + "-meta",
+        { opacity: 0, y: 8 },
+        { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 0.52 * D);
+      AM.stagger(tl, "#" + SID + "-item-0, #" + SID + "-item-1, #" + SID + "-item-2", 0.6 * D, 0.16);
+      {% if fields.get('note') %}
+      AM.focus(tl, "#" + SID + "-note", 0.85 * D);
+      {% endif %}
+      {% if not is_last %}
+      AM.exitSoft(tl, "#" + SID + "-list", D);
+      {% endif %}
+      tl.to({}, { duration: D }, 0);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["{{ scene_id }}"] = tl;
+    })();
+  </script>
+</template></body></html>

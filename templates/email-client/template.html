@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8" /><title>{{ scene_id }}</title></head>
+<body><template>
+  <style>
+    {{ base_css }}
+    #f-{{ scene_id }} .ec-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      padding: 6cqh 4cqw 20cqh;
+      box-sizing: border-box;
+    }
+    #f-{{ scene_id }} .ec-head {
+      text-align: center;
+      margin-bottom: 3.2cqh;
+    }
+    #f-{{ scene_id }} .ec-kicker {
+      font-family: var(--font-mono);
+      font-size: 1.5cqmin;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--coral-deep);
+      margin-bottom: 1.2cqh;
+    }
+    #f-{{ scene_id }} .ec-headline {
+      font-family: var(--font-display);
+      font-size: 5.2cqmin;
+      line-height: 1.15;
+      color: var(--ink);
+    }
+    #f-{{ scene_id }} .ec-main {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+    #f-{{ scene_id }} .mail {
+      width: 70cqw;
+      background: var(--tile);
+      border: 1px solid var(--hairline-strong);
+      border-radius: var(--tile-radius);
+      overflow: hidden;
+      box-shadow: 0 2.4cqh 6cqh color-mix(in srgb, var(--ink) 14%, transparent);
+    }
+    #f-{{ scene_id }} .mail-top {
+      height: 4.6cqh;
+      background: color-mix(in srgb, var(--ink) 6%, var(--tile));
+      display: flex;
+      align-items: center;
+      gap: 1.1cqmin;
+      padding: 0 2.4cqw;
+      position: relative;
+    }
+    #f-{{ scene_id }} .mt-dot {
+      width: 1.2cqmin;
+      height: 1.2cqmin;
+      border-radius: 50%;
+      flex: none;
+    }
+    #f-{{ scene_id }} .mt-dot.red { background: var(--coral); }
+    #f-{{ scene_id }} .mt-dot.yellow { background: var(--coral-soft); }
+    #f-{{ scene_id }} .mt-dot.green { background: var(--hairline); }
+    #f-{{ scene_id }} .mt-title {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font-mono);
+      font-size: 1.4cqmin;
+      color: var(--ink-faint);
+      letter-spacing: 0.18em;
+      white-space: nowrap;
+    }
+    #f-{{ scene_id }} .mail-from {
+      display: flex;
+      align-items: center;
+      gap: 1.8cqw;
+      padding: 1.8cqh 3.2cqw;
+    }
+    #f-{{ scene_id }} .mf-avatar {
+      width: 6cqh;
+      height: 6cqh;
+      flex: none;
+      border-radius: 50%;
+      background: var(--coral-soft);
+      color: var(--coral-deep);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 2.4cqmin;
+      line-height: 1;
+    }
+    #f-{{ scene_id }} .mf-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5cqh;
+      min-width: 0;
+    }
+    #f-{{ scene_id }} .mf-name {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 2.2cqmin;
+      color: var(--ink);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    #f-{{ scene_id }} .mf-addr {
+      font-family: var(--font-mono);
+      font-size: 1.3cqmin;
+      color: var(--ink-faint);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    #f-{{ scene_id }} .mf-time {
+      margin-left: auto;
+      flex: none;
+      font-family: var(--font-mono);
+      font-size: 1.3cqmin;
+      color: var(--ink-faint);
+      white-space: nowrap;
+    }
+    #f-{{ scene_id }} .mail-subject-wrap {
+      margin: 0 3.2cqw;
+      overflow: hidden;
+      border-bottom: 1px solid var(--hairline);
+    }
+    #f-{{ scene_id }} .mail-subject {
+      font-family: var(--font-display);
+      font-size: 2.8cqmin;
+      line-height: 1.3;
+      color: var(--ink);
+      padding: 1.4cqh 0;
+    }
+    #f-{{ scene_id }} .mail-body {
+      padding: 1.4cqh 3.2cqw 2.4cqh;
+    }
+    #f-{{ scene_id }} .mb-line {
+      font-family: var(--font-body);
+      font-size: 2cqmin;
+      line-height: 1.7;
+      color: var(--ink);
+      margin: 0.9cqh 0;
+    }
+    #f-{{ scene_id }} .ec-note {
+      margin-top: 2.6cqh;
+      font-family: var(--font-mono);
+      font-size: 1.4cqmin;
+      letter-spacing: 0.16em;
+      color: var(--ink-faint);
+      text-align: center;
+    }
+    @container frame (max-aspect-ratio: 10/16) {
+      #f-{{ scene_id }} .ec-wrap { padding: 8cqh 4cqw 20cqh; }
+      #f-{{ scene_id }} .mail { width: 92cqw; }
+      #f-{{ scene_id }} .ec-headline { font-size: 4.7cqmin; }
+      #f-{{ scene_id }} .mail-subject { font-size: 2.5cqmin; }
+      #f-{{ scene_id }} .mb-line { font-size: 1.7cqmin; }
+      #f-{{ scene_id }} .mf-name { font-size: 2cqmin; }
+      #f-{{ scene_id }} .mf-addr,
+      #f-{{ scene_id }} .mf-time { font-size: 1.2cqmin; }
+      #f-{{ scene_id }} .mf-avatar { font-size: 2.2cqmin; }
+    }
+  </style>
+  <div id="f-{{ scene_id }}" data-composition-id="{{ scene_id }}"
+       data-width="{{ width }}" data-height="{{ height }}" data-duration="{{ duration }}">
+    <div class="clip hf-ground" id="s-{{ scene_id }}-ground" data-start="0" data-duration="{{ duration }}"></div>
+    <div class="hf-safe">
+      <div class="ec-wrap">
+        {% set from_parts = fields.get('from').split('|') %}
+        <div class="ec-head">
+          <div class="ec-kicker" id="s-{{ scene_id }}-kicker">{{ fields.get('kicker') }}</div>
+          <div class="ec-headline" id="s-{{ scene_id }}-headline">{{ fields.get('headline') }}</div>
+        </div>
+        <div class="ec-main">
+          <div class="mail" id="s-{{ scene_id }}-mail">
+            <div class="mail-top" id="s-{{ scene_id }}-top">
+              <span class="mt-dot red"></span>
+              <span class="mt-dot yellow"></span>
+              <span class="mt-dot green"></span>
+              <span class="mt-title">收件箱</span>
+            </div>
+            <div class="mail-from" id="s-{{ scene_id }}-from">
+              <div class="mf-avatar">{{ from_parts[0][:1] }}</div>
+              <div class="mf-meta">
+                <div class="mf-name">{{ from_parts[0] }}</div>
+                <div class="mf-addr">{{ from_parts[1] }}</div>
+              </div>
+              <div class="mf-time">{{ fields.get('time') }}</div>
+            </div>
+            <div class="mail-subject-wrap">
+              <div class="mail-subject" id="s-{{ scene_id }}-subject">{{ fields.get('subject') }}</div>
+            </div>
+            <div class="mail-body" id="s-{{ scene_id }}-body">
+              {% for line in fields.get('lines') %}
+              <p class="mb-line mb-line-{{ loop.index0 }}" id="s-{{ scene_id }}-line-{{ loop.index0 }}">{{ line }}</p>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        {% if fields.get('note') %}
+        <div class="ec-note" id="s-{{ scene_id }}-note">{{ fields.get('note') }}</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var SID = "s-{{ scene_id }}";
+      var D = {{ duration }};
+      var LINESEL = [{% for line in fields.get('lines') %}"#" + SID + "-line-{{ loop.index0 }}"{% if not loop.last %}, {% endif %}{% endfor %}].join(", ");
+      var tl = gsap.timeline({ paused: true });
+      AM.pop(tl, "#" + SID + "-kicker", 0.1);
+      AM.maskRise(tl, "#" + SID + "-headline", 0.25);
+      AM.unfold(tl, "#" + SID + "-mail", 0.38);
+      AM.slideX(tl, "#" + SID + "-from", 0.55, -1);
+      AM.maskRise(tl, "#" + SID + "-subject", 0.62);
+      AM.stagger(tl, LINESEL, 0.68, 0.14);
+      {% if fields.get('note') %}
+      AM.maskRise(tl, "#" + SID + "-note", 0.86 * D);
+      {% endif %}
+      {% if not is_last %}
+      AM.exitSoft(tl, "#" + SID + "-mail", D);
+      {% endif %}
+      tl.to({}, { duration: D }, 0);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["{{ scene_id }}"] = tl;
+    })();
+  </script>
+</template></body></html>

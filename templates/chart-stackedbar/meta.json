@@ -1,0 +1,18 @@
+{
+  "id": "chart-stackedbar",
+  "name": "堆叠柱状图",
+  "role": "body",
+  "motion": "segments-rise",
+  "description": "堆叠柱状图：每根柱子由几段构成，段与段颜色区分，底部图例说明构成。适合「总量在涨，但结构变了」的构成对比。",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "min_duration_s": 6,
+  "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "legend", "columns", "note"],
+  "example": {
+    "kicker": "结构变化",
+    "headline": "收入涨了，来源变了",
+    "legend": ["产品|深色", "服务|橙色", "其他|浅色"],
+    "columns": ["2022|40,35,25", "2023|45,38,17", "2024|52,34,14"],
+    "note": "总量变大，主力没变"
+  }
+}

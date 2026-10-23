@@ -1,0 +1,17 @@
+{
+  "id": "word-cloud",
+  "name": "词云",
+  "role": "body",
+  "motion": "words-pop",
+  "description": "错落排布的词云：6-9 个词按权重分级字号，依次弹出，主词高亮。适合「大家都在聊什么」「关键词全景」「标签分布」。",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "min_duration_s": 6,
+  "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "words", "note"],
+  "example": {
+    "kicker": "关键词云",
+    "headline": "评论区都在聊这几个词",
+    "words": ["焦虑|3", "机会|3", "成本|2", "效率|2", "选择|2", "拖延|1", "重启|1", "副业|1"],
+    "note": "字号就是热度"
+  }
+}

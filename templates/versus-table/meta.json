@@ -1,0 +1,25 @@
+{
+  "id": "versus-table",
+  "name": "双列对比表",
+  "role": "body",
+  "motion": "rows-compare",
+  "description": "左右两个选项的对比表：表头两列、逐行维度对比、底部裁决。适合「A 和 B 到底选哪个」「旧方案 vs 新方案」的逐项对照。",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "min_duration_s": 6,
+  "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "left", "right", "rows", "verdict", "note"],
+  "example": {
+    "kicker": "二选一",
+    "headline": "租房还是买房，逐项比",
+    "left": "租房|灵活",
+    "right": "买房|安定",
+    "rows": [
+      "首付|几乎为零|三成起",
+      "月供|房租三千|房贷八千",
+      "灵活度|随时换城|被套牢",
+      "十年后|钱没了|有套房"
+    ],
+    "verdict": "先算清楚你要什么",
+    "note": "没有标准答案"
+  }
+}

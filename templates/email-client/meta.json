@@ -1,0 +1,24 @@
+{
+  "id": "email-client",
+  "name": "邮件界面",
+  "role": "body",
+  "motion": "mail-open",
+  "description": "一封打开的邮件：发件人头像 + 主题 + 正文段落，像邮箱客户端。适合「收到一封通知/拒信/offer」「一纸通知改变一切」的叙事时刻。",
+  "aspects": ["16:9", "9:16", "1:1"],
+  "min_duration_s": 6,
+  "max_duration_s": 20,
+  "field_order": ["kicker", "headline", "from", "subject", "time", "lines", "note"],
+  "example": {
+    "kicker": "收件箱",
+    "headline": "那封改变计划的邮件",
+    "from": "招聘组|hr@example.com",
+    "subject": "关于你的面试结果",
+    "time": "今天 09:12",
+    "lines": [
+      "感谢你参加上周的终面。",
+      "很遗憾，这次我们选择了另一位候选人。",
+      "你的资料已进入人才库，欢迎再次投递。"
+    ],
+    "note": "一封邮件，一个岔路口"
+  }
+}

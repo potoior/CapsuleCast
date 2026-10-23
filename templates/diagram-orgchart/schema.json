@@ -1,0 +1,54 @@
+{
+  "type": "object",
+  "properties": {
+    "kicker": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "顶部小标签"
+    },
+    "headline": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "主标题"
+    },
+    "root": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 16,
+      "description": "根节点，格式「名称|职责」"
+    },
+    "branches": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 3,
+      "items": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 14,
+        "description": "中层部门，格式「部门|职责」"
+      },
+      "description": "中层部门 2-3 个"
+    },
+    "leaves": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 4,
+      "items": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 14,
+        "description": "下层成员，格式「成员|职责」"
+      },
+      "description": "下层成员 2-4 个"
+    },
+    "note": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 22,
+      "description": "底部补充说明，可省略"
+    }
+  },
+  "required": ["kicker", "headline", "root", "branches", "leaves"]
+}
